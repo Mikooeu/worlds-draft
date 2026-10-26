@@ -2,7 +2,7 @@ import { esc } from './common.js';
 export function renderHome(data, msg = '') {
   return `<div class="home"><div class="home-card">
     <div><h1>Worlds <span>Draft</span> 2026</h1>
-    <p class="muted">Affronte un ami en draft avec les équipes des Worlds. Le % de victoire est calculé à partir des stats réelles du tournoi.</p></div>
+    <p class="muted">Affronte un ami en draft avec les meilleures équipes du monde.</p></div>
     ${msg ? `<div class="panel">${esc(msg)}</div>` : ''}
     <button class="btn btn-gold" data-act="create">Créer une partie</button>
     <div class="divider">ou rejoindre avec un code</div>
