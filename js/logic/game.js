@@ -107,7 +107,7 @@ function reduce(s, a, pid, ctx) {
       return s;
     }
     case 'setTeam': {
-      if (s.phase !== 'lobby' || !isPlayer(s, pid) || !ctx.data.teams[a.team]) return null;
+      if (s.phase !== 'lobby' || !isPlayer(s, pid) || !ctx.data.teams[a.team] || ctx.data.teams[a.team].playable === false) return null;
       const o = other(s, pid);
       if (o && s.seats[o]?.team === a.team) return null;
       // re-cliquer sur sa propre équipe la libère

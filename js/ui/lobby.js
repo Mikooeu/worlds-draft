@@ -14,7 +14,8 @@ export function renderLobby(s, data, me) {
   const isHost = me === s.hostId;
   const opp = isHost ? s.guestId : s.hostId;
   const mySeat = s.seats[me], oppSeat = opp ? s.seats[opp] : {};
-  const regions = [...new Set(Object.values(data.teams).map(t => t.region))];
+  const playable = Object.values(data.teams).filter(t => t.playable !== false);
+  const regions = [...new Set(playable.map(t => t.region))];
   const ready = s.guestId && [s.hostId, s.guestId].every(p => s.seats[p]?.team && s.seats[p]?.side);
   const fmt = f => `<button class="choice ${s.format === f ? 'on' : ''}" data-act="format" data-v="${f}" ${isHost ? '' : 'disabled'}>${f.toUpperCase()}</button>`;
   return `<div class="wrap">
@@ -29,7 +30,7 @@ export function renderLobby(s, data, me) {
     <div class="panel">
       <h3 class="section-title">Ton équipe</h3>
       ${regions.map(r => `<div class="muted small" style="margin:10px 0 6px">${esc(r)}</div><div class="teams">${
-        Object.values(data.teams).filter(t => t.region === r).map(t => {
+        playable.filter(t => t.region === r).map(t => {
           const cls = mySeat?.team === t.tag ? 'mine' : (oppSeat?.team === t.tag ? 'theirs' : '');
           return `<button class="team-btn ${cls}" data-act="team" data-v="${t.tag}" ${oppSeat?.team === t.tag ? 'disabled' : ''}>${teamBadge(t)}<span class="tn" title="${esc(t.name)}">${esc(shortName(t))}<span class="rec">${t.wins}V – ${t.losses}D</span></span></button>`;
         }).join('')}</div>`).join('')}

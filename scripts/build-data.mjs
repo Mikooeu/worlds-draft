@@ -13,7 +13,7 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
   const teams = {}, players = {};
   for (const line of rows) {
     const v = Object.fromEntries(line.split(',').map((x, i) => [cols[i], x.trim()]));
-    teams[v.tag] = { tag: v.tag, name: v.name, region: v.region, wins: 0, losses: 0, players: Object.fromEntries(ROLES.map(r => [r, v[r]])) };
+    teams[v.tag] = { tag: v.tag, name: v.name, region: v.region, playable: v.region !== 'PLAYIN', wins: 0, losses: 0, players: Object.fromEntries(ROLES.map(r => [r, v[r]])) };
     for (const r of ROLES) players[v[r]] = { team: v.tag, role: r, champs: {} };
   }
   const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {};
@@ -53,7 +53,12 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const root = new URL('../', import.meta.url);
-  const d = buildData(readFileSync(new URL('data/raw/teams.csv', root), 'utf8'), readFileSync(new URL('data/raw/games.txt', root), 'utf8'), process.argv[2] || new Date().toISOString().slice(0, 10));
+  const opt = f => { try { return readFileSync(new URL(f, root), 'utf8'); } catch { return ''; } };
+  // Play-In : équipes éliminées comptées pour les stats seulement (région PLAYIN, non jouables)
+  const playinRosters = opt('data/raw/playin-rosters.csv').trim().split(/\r?\n/).slice(1).join('\n');
+  const teamsCsv = readFileSync(new URL('data/raw/teams.csv', root), 'utf8').trim() + (playinRosters ? '\n' + playinRosters : '');
+  const gamesTxt = readFileSync(new URL('data/raw/games.txt', root), 'utf8').trim() + '\n' + opt('data/raw/playin.txt').trim();
+  const d = buildData(teamsCsv, gamesTxt, process.argv[2] || new Date().toISOString().slice(0, 10));
   writeFileSync(new URL('data/worlds.json', root), JSON.stringify(d));
   const games = Object.values(d.teams).reduce((n, t) => n + t.wins + t.losses, 0) / 2;
   console.log(`worlds.json : ${Object.keys(d.teams).length} équipes, ${games} games, ${Object.keys(d.champions).length} champions`);
