@@ -1,0 +1,45 @@
+// Charge les stats du tournoi et la liste des champions Data Dragon, puis les relie.
+import { champKey } from './champKey.js';
+
+export function resolveData(raw, ddragon) {
+  const byKey = new Map();
+  for (const c of ddragon) { byKey.set(champKey(c.id), c); byKey.set(champKey(c.name), c); }
+  const unknown = [];
+  const idOf = k => byKey.get(k)?.id ?? k;
+  const champions = {};
+  for (const c of ddragon) champions[c.id] = { id: c.id, name: c.name, games: 0, wins: 0, roles: {} };
+  for (const [k, c] of Object.entries(raw.champions)) {
+    const dd = byKey.get(k);
+    if (!dd) unknown.push(c.name);
+    const id = dd?.id ?? k;
+    champions[id] = { id, name: dd?.name ?? c.name, games: c.games, wins: c.wins, roles: { ...c.roles } };
+  }
+  const players = {};
+  for (const [n, p] of Object.entries(raw.players)) {
+    players[n] = { ...p, champs: Object.fromEntries(Object.entries(p.champs).map(([k, v]) => [idOf(k), v])) };
+  }
+  const matchups = {};
+  for (const [role, m] of Object.entries(raw.matchups)) {
+    matchups[role] = Object.fromEntries(Object.entries(m).map(([key, v]) => {
+      const [a, b] = key.split('|'); return [`${idOf(a)}|${idOf(b)}`, v];
+    }));
+  }
+  const champList = Object.values(champions)
+    .map(c => ({ id: c.id, name: c.name, known: byKey.has(champKey(c.id)) }))
+    .sort((x, y) => x.name.localeCompare(y.name));
+  return { updatedAt: raw.updatedAt, teams: raw.teams, players, champions, matchups, champList, unknown };
+}
+
+export async function loadData() {
+  const raw = await (await fetch('data/worlds.json', { cache: 'no-cache' })).json();
+  let ddragon = [], version = null;
+  try {
+    version = (await (await fetch('https://ddragon.leagueoflegends.com/api/versions.json')).json())[0];
+    const j = await (await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/fr_FR/champion.json`)).json();
+    ddragon = Object.values(j.data).map(c => ({ id: c.id, name: c.name }));
+  } catch (e) { console.warn('Data Dragon indisponible, champions limités aux stats du tournoi', e); }
+  const data = resolveData(raw, ddragon);
+  data.iconUrl = id => (version && data.champList.find(c => c.id === id)?.known)
+    ? `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${id}.png` : null;
+  return data;
+}

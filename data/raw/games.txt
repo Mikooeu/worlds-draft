@@ -1,0 +1,23 @@
+83638|GEN|IG|Kiin:Ornn;Canyon:Qiyana;Chovy:Akali;Ruler:Corki;Duro:Nautilus|TheShy:Rumble;Wei:Jarvan IV;RooKie:Aurora;JiaQi:Jhin;meiko:Alistar
+83639|CFO|TL|Rest:Rumble;Shad0w:Qiyana;Pout:Viktor;Doggo:Aphelios;Kino:Alistar|Morgan:Galio;Josedeodo:Lee Sin;Quid:Syndra;Yeon:Jhin;CoreJJ:Rakan
+83640|KC|AL|Canna:Jax;Yike:Jarvan IV;Kyeahoo:Orianna;Caliste:Kalista;Busio:Renata Glasc|Breathe:Olaf;Tarzan:Nocturne;Shanks:Akali;Hope:Miss Fortune;Kael:Neeko
+83641|DK|G2|Siwoo:Olaf;Lucid:Vi;ShowMaker:Syndra;Smash:Ziggs;Career:Poppy|BrokenBlade:KSante;SkewMond:Jarvan IV;Caps:Viktor;Hans Sama:Kalista;Labrov:Renata Glasc
+83642|HLE|TES|Zeus:Ambessa;Kanavi:Nocturne;Zeka:Locke;Gumayusi:Jhin;Delight:Shen|369:KSante;Tian:Lee Sin;Creme:Orianna;JackeyLove:Ezreal;Zhuo:Alistar
+83643|T1|LOS|Doran:Jayce;Oner:Lee Sin;Faker:LeBlanc;Peyz:Jhin;Keria:Alistar|Zest:KSante;Curse:Pantheon;Feisty:Syndra;Duduhh:Tristana;Ackerman:Rakan
+83644|LYON|TSW|Dhokla:KSante;Inspired:Nocturne;Saint:Anivia;Berserker:Ezreal;Isles:Alistar|Pun:Rumble;Hizto:Lee Sin;Dire:Ryze;Eddie:Kaisa;Bie:Nautilus
+83645|MKOI|BLG|Myrwn:Renekton;Elyoya:Jarvan IV;jojopyun:Sylas;Supa:Ezreal;Alvaro:Karma|Bin:Ambessa;XUN:Pantheon;Knight:Akali;Viper:Ashe;ON:Seraphine
+83646|TES|AL|369:Ambessa;Tian:Nocturne;Creme:Locke;JackeyLove:Kalista;Zhuo:Renata Glasc|Breathe:Rumble;Tarzan:Jarvan IV;Shanks:Orianna;Hope:Lucian;Kael:Milio
+83647|MKOI|CFO|Myrwn:Trundle;Elyoya:Qiyana;jojopyun:Cassiopeia;Supa:Kalista;Alvaro:Renata Glasc|Rest:Olaf;Shad0w:Lee Sin;Pout:Akali;Doggo:Tristana;Kino:Lulu
+83648|G2|LOS|BrokenBlade:KSante;SkewMond:Lee Sin;Caps:Locke;Hans Sama:Ezreal;Labrov:Karma|Zest:Jayce;Curse:Nocturne;Feisty:Orianna;Duduhh:Kalista;Ackerman:Renata Glasc
+83649|LYON|KC|Dhokla:Galio;Inspired:Wukong;Saint:Syndra;Berserker:Yunara;Isles:Lulu|Canna:Rumble;Yike:Lee Sin;Kyeahoo:Cassiopeia;Caliste:Kalista;Busio:Renata Glasc
+83650|IG|TSW|TheShy:KSante;Wei:Nocturne;RooKie:Orianna;JiaQi:Ashe;meiko:Seraphine|Pun:Shen;Hizto:Qiyana;Dire:Locke;Eddie:Ezreal;Bie:Alistar
+83651|GEN|HLE|Kiin:Rumble;Canyon:Qiyana;Chovy:Syndra;Ruler:Ezreal;Duro:Leona|Zeus:Ambessa;Kanavi:Pantheon;Zeka:Taliyah;Gumayusi:Jhin;Delight:Alistar
+83652|DK|T1|Siwoo:KSante;Lucid:Jarvan IV;ShowMaker:Viktor;Smash:Kalista;Career:Renata Glasc|Doran:Jayce;Oner:Vi;Faker:Anivia;Peyz:Caitlyn;Keria:Neeko
+83653|BLG|TL|Bin:Camille;XUN:Lee Sin;Knight:Orianna;Viper:Jhin;ON:Nautilus|Morgan:KSante;Josedeodo:Jarvan IV;Quid:Locke;Yeon:Ezreal;CoreJJ:Karma
+83654|IG|HLE|TheShy:Kled;Wei:Nocturne;RooKie:Annie;JiaQi:Yunara;meiko:Lulu|Zeus:Olaf;Kanavi:Qiyana;Zeka:Lissandra;Gumayusi:Kalista;Delight:Renata Glasc
+83655|TES|G2|369:Ambessa;Tian:Nocturne;Creme:Orianna;JackeyLove:Varus;Zhuo:Nautilus|BrokenBlade:Shen;SkewMond:Wukong;Caps:Akali;Hans Sama:Ezreal;Labrov:Karma
+83656|DK|MKOI|Siwoo:Ornn;Lucid:Lee Sin;ShowMaker:Cassiopeia;Smash:Kaisa;Career:Nautilus|Myrwn:Jayce;Elyoya:Trundle;jojopyun:Anivia;Supa:Ezreal;Alvaro:Karma
+83657|DK|MKOI|Siwoo:Irelia;Lucid:Jarvan IV;ShowMaker:Syndra;Smash:Caitlyn;Career:Bard|Myrwn:Gnar;Elyoya:Vi;jojopyun:Diana;Supa:Yunara;Alvaro:Lulu
+83659|LYON|GEN|Dhokla:Olaf;Inspired:Xin Zhao;Saint:Ahri;Berserker:Kalista;Isles:Renata Glasc|Kiin:Rumble;Canyon:Qiyana;Chovy:Anivia;Ruler:Jhin;Duro:Alistar
+83660|GEN|LYON|Kiin:Ambessa;Canyon:Nocturne;Chovy:Lissandra;Ruler:Ashe;Duro:Seraphine|Dhokla:Shen;Inspired:Vi;Saint:Akali;Berserker:Yunara;Isles:Lulu
+83661|GEN|LYON|Kiin:Camille;Canyon:Jayce;Chovy:Galio;Ruler:Ezreal;Duro:Nautilus|Dhokla:KSante;Inspired:Maokai;Saint:Tristana;Berserker:Lucian;Isles:Milio
