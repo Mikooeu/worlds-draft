@@ -30,6 +30,20 @@ const C = await newPage(); await C.goto(url);
 await C.waitForSelector('text=Partie complète'); await C.close();
 
 await A.click('[data-act=start]');
+// Sélectionner un champion ne doit pas redessiner l'écran (pas de rechargement des images)
+{
+  await A.waitForSelector('.draft'); await B.waitForSelector('.draft');
+  const P = (await A.$('[data-act=lock]')) ? A : B;
+  await P.evaluate(() => { document.querySelector('.grid').dataset.mark = '1'; });
+  await P.click('.champ:not([disabled])');
+  assert.equal(await P.evaluate(() => document.querySelector('.grid').dataset.mark), '1', 'la grille a été redessinée au clic');
+  assert.ok(await P.$('.champ.sel'), 'champion sélectionné');
+  assert.ok(await P.$('[data-act=lock]:not([disabled])'), 'bouton actif');
+  await P.fill('[data-input=search]', 'zz-aucun');
+  assert.equal(await P.evaluate(() => document.querySelector('.grid').dataset.mark), '1', 'la grille a été redessinée à la recherche');
+  assert.equal(await P.$$eval('.grid .champ:not([hidden])', e => e.length), 0);
+  await P.fill('[data-input=search]', '');
+}
 
 async function playGame(n) {
   await A.waitForSelector('.draft'); await B.waitForSelector('.draft');

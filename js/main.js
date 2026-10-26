@@ -1,15 +1,15 @@
-import { loadData } from './data.js?v=202610261959';
-import { openStore } from './store/store.js?v=202610261959';
-import { createGame, normalize } from './logic/game.js?v=202610261959';
-import { autoAssignRoles } from './logic/roles.js?v=202610261959';
-import { ROLES } from './logic/winrate.js?v=202610261959';
-import { toast } from './ui/common.js?v=202610261959';
-import { createTimeoutGate } from './timeouts.js?v=202610261959';
-import { renderHome } from './ui/home.js?v=202610261959';
-import { renderLobby } from './ui/lobby.js?v=202610261959';
-import { renderDraft } from './ui/draft.js?v=202610261959';
-import { renderRoles } from './ui/roles.js?v=202610261959';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610261959';
+import { loadData } from './data.js?v=202610262004';
+import { openStore } from './store/store.js?v=202610262004';
+import { createGame, normalize } from './logic/game.js?v=202610262004';
+import { autoAssignRoles } from './logic/roles.js?v=202610262004';
+import { ROLES } from './logic/winrate.js?v=202610262004';
+import { toast } from './ui/common.js?v=202610262004';
+import { createTimeoutGate } from './timeouts.js?v=202610262004';
+import { renderHome } from './ui/home.js?v=202610262004';
+import { renderLobby } from './ui/lobby.js?v=202610262004';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262004';
+import { renderRoles } from './ui/roles.js?v=202610262004';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610262004';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -56,6 +56,7 @@ function render() {
     case 'result': case 'seriesEnd': app.innerHTML = renderResult(state, data, me()); break;
     case 'sideChoice': app.innerHTML = renderSideChoice(state, data, me()); break;
   }
+  if (state.phase === 'draft') applyDraftFilters(app, ui);
   if (focused) { const i = app.querySelector('[data-input="search"]'); i?.focus(); i?.setSelectionRange(caret, caret); }
   if (scroll != null) { const gr = app.querySelector('.grid'); if (gr) gr.scrollTop = scroll; }
   tick();
@@ -112,8 +113,8 @@ app.addEventListener('click', async (e) => {
     case 'side': dispatch({ type: 'setSide', side: v }); break;
     case 'format': dispatch({ type: 'setFormat', format: v }); break;
     case 'start': dispatch({ type: 'start' }); break;
-    case 'role': ui.role = v; render(); break;
-    case 'sel': ui.sel = v; render(); break;
+    case 'role': ui.role = v; applyDraftFilters(app, ui); break;
+    case 'sel': ui.sel = v; showSelection(app, data, ui); break;
     case 'lock': if (ui.sel) dispatch({ type: 'draft', step: state.step, champ: ui.sel }).then(ok => { if (!ok) toast('Action refusée'); }); break;
     case 'setRoles': dispatch({ type: 'setRoles', roles: ui.roles }); break;
     case 'nextGame': dispatch({ type: 'nextGame' }); break;
@@ -127,7 +128,7 @@ app.addEventListener('dblclick', (e) => {
   if (b && !b.disabled && state?.phase === 'draft') dispatch({ type: 'draft', step: state.step, champ: b.dataset.v });
 });
 app.addEventListener('input', (e) => {
-  if (e.target.dataset.input === 'search') { ui.search = e.target.value; render(); }
+  if (e.target.dataset.input === 'search') { ui.search = e.target.value; applyDraftFilters(app, ui); }
 });
 app.addEventListener('change', (e) => {
   if (e.target.dataset.input !== 'role') return;

@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610261959';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610261959';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610261959';
-import { ROLES } from '../logic/winrate.js?v=202610261959';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610262004';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610262004';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610262004';
+import { ROLES } from '../logic/winrate.js?v=202610262004';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
@@ -30,9 +30,7 @@ export function renderDraft(s, data, me, ui) {
       <div class="ph">${champIcon(data, id)}</div>
       <div><div class="label">${id ? esc(champName(data, id)) : (active ? 'En cours…' : '')}</div><div class="sub">${esc((side === 'blue' ? teamB : teamR).players[ROLES[i]])}</div></div></div>`;
   };
-  const q = ui.search.trim().toLowerCase();
-  const list = data.champList.filter(c => (!q || c.name.toLowerCase().includes(q))
-    && (ui.role === 'all' || (data.champions[c.id]?.positions || []).includes(ui.role)));
+  const list = data.champList;
   const turnText = !cur ? '' : myTurn ? `À toi : ${cur.type === 'ban' ? 'bannis' : 'choisis'} un champion` : `L'adversaire ${cur.type === 'ban' ? 'bannit' : 'choisit'}…`;
 
   return `<div class="draft" data-step="${s.step}">
@@ -54,14 +52,40 @@ export function renderDraft(s, data, me, ui) {
         </div>
         <div class="grid">${list.map(c => {
           const ok = avail.has(c.id);
-          return `<button class="champ ${ui.sel === c.id ? 'sel' : ''}" data-act="sel" data-v="${esc(c.id)}" ${ok && myTurn ? '' : 'disabled'} title="${esc(c.name)}">
+          return `<button class="champ ${ui.sel === c.id ? 'sel' : ''}" data-act="sel" data-v="${esc(c.id)}" data-name="${esc(c.name.toLowerCase())}" data-pos="${esc((data.champions[c.id]?.positions || []).join(' '))}" ${ok && myTurn ? '' : 'disabled'} title="${esc(c.name)}">
             ${champIcon(data, c.id)}${locked.has(c.id) ? '<span class="lock" title="Fearless">🔒</span>' : ''}<span class="nm">${esc(c.name)}</span></button>`;
         }).join('') || '<p class="muted">Aucun champion.</p>'}</div>
       </div>
       <div class="picks red">${[0, 1, 2, 3, 4].map(i => slot('red', 'pick', i)).join('')}</div>
     </div>
     <div class="dfoot">${myTurn
-      ? `<button class="btn btn-gold" data-act="lock" ${ui.sel && avail.has(ui.sel) ? '' : 'disabled'}>${cur.type === 'ban' ? 'Bannir' : 'Valider'}${ui.sel ? ' ' + esc(champName(data, ui.sel)) : ''}</button>`
+      ? `<button class="btn btn-gold" data-act="lock" ${ui.sel && avail.has(ui.sel) ? '' : 'disabled'}>${cur.type === 'ban' ? 'Bannir' : 'Valider'}</button>`
       : '<span class="muted">En attente de l\'adversaire…</span>'}</div>
   </div>`;
+}
+
+// Filtre la grille sans la redessiner (évite de recharger les images).
+export function applyDraftFilters(root, ui) {
+  const q = ui.search.trim().toLowerCase();
+  for (const b of root.querySelectorAll('.grid .champ')) {
+    const okName = !q || b.dataset.name.includes(q);
+    const okRole = ui.role === 'all' || b.dataset.pos.split(' ').includes(ui.role);
+    b.hidden = !(okName && okRole);
+  }
+  for (const b of root.querySelectorAll('.rolef')) b.classList.toggle('on', b.dataset.v === ui.role);
+}
+
+// Met à jour la sélection et l'aperçu dans la case active, sans redessiner l'écran.
+export function showSelection(root, data, ui) {
+  for (const b of root.querySelectorAll('.grid .champ.sel')) b.classList.remove('sel');
+  const btn = ui.sel && root.querySelector(`.grid .champ[data-v="${CSS.escape(ui.sel)}"]`);
+  if (btn) btn.classList.add('sel');
+  const lock = root.querySelector('[data-act=lock]');
+  if (lock) lock.disabled = !(btn && !btn.disabled);
+  const slot = root.querySelector('.pick.active, .ban.active');
+  if (!slot || !ui.sel) return;
+  if (slot.classList.contains('ban')) { slot.innerHTML = champIcon(data, ui.sel); return; }
+  slot.classList.add('preview');
+  const ph = slot.querySelector('.ph'); if (ph) ph.innerHTML = champIcon(data, ui.sel);
+  const label = slot.querySelector('.label'); if (label) label.textContent = champName(data, ui.sel);
 }

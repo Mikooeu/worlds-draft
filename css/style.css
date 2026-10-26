@@ -162,3 +162,4 @@ table.lanes .wr { font-size: 18px; }
 
 .src { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); margin-left: 4px; }
 table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
+.grid .champ[hidden] { display: none; }
