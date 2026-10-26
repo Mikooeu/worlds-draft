@@ -1,5 +1,5 @@
-import { esc, champIcon, champName, ROLE_FR } from './common.js?v=202610262004';
-import { ROLES } from '../logic/winrate.js?v=202610262004';
+import { esc, champIcon, champName, ROLE_FR } from './common.js?v=202610262005';
+import { ROLES } from '../logic/winrate.js?v=202610262005';
 
 export function renderRoles(s, data, me, ui) {
   const g = s.games[s.games.length - 1];

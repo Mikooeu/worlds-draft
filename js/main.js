@@ -1,15 +1,15 @@
-import { loadData } from './data.js?v=202610262004';
-import { openStore } from './store/store.js?v=202610262004';
-import { createGame, normalize } from './logic/game.js?v=202610262004';
-import { autoAssignRoles } from './logic/roles.js?v=202610262004';
-import { ROLES } from './logic/winrate.js?v=202610262004';
-import { toast } from './ui/common.js?v=202610262004';
-import { createTimeoutGate } from './timeouts.js?v=202610262004';
-import { renderHome } from './ui/home.js?v=202610262004';
-import { renderLobby } from './ui/lobby.js?v=202610262004';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262004';
-import { renderRoles } from './ui/roles.js?v=202610262004';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610262004';
+import { loadData } from './data.js?v=202610262005';
+import { openStore } from './store/store.js?v=202610262005';
+import { createGame, normalize } from './logic/game.js?v=202610262005';
+import { autoAssignRoles } from './logic/roles.js?v=202610262005';
+import { ROLES } from './logic/winrate.js?v=202610262005';
+import { toast } from './ui/common.js?v=202610262005';
+import { createTimeoutGate } from './timeouts.js?v=202610262005';
+import { renderHome } from './ui/home.js?v=202610262005';
+import { renderLobby } from './ui/lobby.js?v=202610262005';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262005';
+import { renderRoles } from './ui/roles.js?v=202610262005';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610262005';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -126,6 +126,12 @@ app.addEventListener('click', async (e) => {
 app.addEventListener('dblclick', (e) => {
   const b = e.target.closest('[data-act="sel"]');
   if (b && !b.disabled && state?.phase === 'draft') dispatch({ type: 'draft', step: state.step, champ: b.dataset.v });
+});
+// Retour arrière dans la recherche : efface tout le mot d'un coup
+app.addEventListener('keydown', (e) => {
+  if (e.target.dataset?.input !== 'search' || e.key !== 'Backspace' || !e.target.value) return;
+  e.preventDefault();
+  e.target.value = ''; ui.search = ''; applyDraftFilters(app, ui);
 });
 app.addEventListener('input', (e) => {
   if (e.target.dataset.input === 'search') { ui.search = e.target.value; applyDraftFilters(app, ui); }

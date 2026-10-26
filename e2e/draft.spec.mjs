@@ -42,7 +42,10 @@ await A.click('[data-act=start]');
   await P.fill('[data-input=search]', 'zz-aucun');
   assert.equal(await P.evaluate(() => document.querySelector('.grid').dataset.mark), '1', 'la grille a été redessinée à la recherche');
   assert.equal(await P.$$eval('.grid .champ:not([hidden])', e => e.length), 0);
-  await P.fill('[data-input=search]', '');
+  await P.fill('[data-input=search]', 'ahri');
+  await P.focus('[data-input=search]'); await P.keyboard.press('Backspace');
+  assert.equal(await P.inputValue('[data-input=search]'), '', 'retour arrière efface tout');
+  assert.ok(await P.$$eval('.grid .champ:not([hidden])', e => e.length) > 10);
 }
 
 async function playGame(n) {
