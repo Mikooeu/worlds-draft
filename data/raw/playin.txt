@@ -1,0 +1,22 @@
+83593|MVK|FUR|Kratos:Olaf;Gury:Vi;Chika:Cassiopeia;Harky:Ashe;Siuloong:Seraphine|Guigo:Jax;Tatu:Trundle;Tutsz:Galio;Ayu:Yunara;JoJo:Lulu
+83594|MVK|FUR|Kratos:Rumble;Gury:Lee Sin;Chika:Viktor;Harky:Lucian;Siuloong:Milio|Guigo:Ornn;Tatu:Wukong;Tutsz:Syndra;Ayu:Xayah;JoJo:Rakan
+83595|MVK|FUR|Kratos:Zaahen;Gury:Jarvan IV;Chika:KogMaw;Harky:Jhin;Siuloong:Camille|Guigo:KSante;Tatu:Naafiri;Tutsz:Ryze;Ayu:Kaisa;JoJo:Leona
+83598|C9|KC|Thanatos:Gnar;Blaber:Xin Zhao;Loki:Locke;Tactical:Ezreal;Vulcan:Karma|Canna:Rumble;Yike:Lee Sin;Kyeahoo:Syndra;Caliste:Miss Fortune;Busio:Nautilus
+83599|KC|C9|Canna:Jayce;Yike:Vi;Kyeahoo:Cassiopeia;Caliste:Varus;Busio:VelKoz|Thanatos:Camille;Blaber:Wukong;Loki:Akali;Tactical:Kalista;Vulcan:Renata Glasc
+83600|C9|KC|Thanatos:Olaf;Blaber:Jarvan IV;Loki:Annie;Tactical:Jhin;Vulcan:Alistar|Canna:Kled;Yike:Naafiri;Kyeahoo:Anivia;Caliste:Lucian;Busio:Nami
+83601|KC|C9|Canna:Renekton;Yike:Qiyana;Kyeahoo:Orianna;Caliste:Xayah;Busio:Rakan|Thanatos:Zaahen;Blaber:Sejuani;Loki:Sylas;Tactical:Yunara;Vulcan:Lulu
+83602|KC|C9|Canna:Ambessa;Yike:Trundle;Kyeahoo:Ahri;Caliste:Kaisa;Busio:Rell|Thanatos:KSante;Blaber:Lillia;Loki:Yone;Tactical:Ziggs;Vulcan:Shen
+83623|C9|FUR|Thanatos:Rumble;Blaber:Qiyana;Loki:Syndra;Tactical:Lucian;Vulcan:Milio|Guigo:Ambessa;Tatu:Jarvan IV;Tutsz:Ahri;Ayu:Kalista;JoJo:Renata Glasc
+83624|FUR|C9|Guigo:Olaf;Tatu:Sejuani;Tutsz:Akali;Ayu:Yunara;JoJo:Lulu|Thanatos:KSante;Blaber:Lee Sin;Loki:Sylas;Tactical:Caitlyn;Vulcan:Bard
+83625|FUR|C9|Guigo:Volibear;Tatu:Chogath;Tutsz:Viktor;Ayu:Sivir;JoJo:Karma|Thanatos:Renekton;Blaber:Naafiri;Loki:Orianna;Tactical:Ezreal;Vulcan:Alistar
+83626|FUR|C9|Guigo:Jax;Tatu:Vi;Tutsz:Twisted Fate;Ayu:Miss Fortune;JoJo:Rell|Thanatos:Aatrox;Blaber:Trundle;Loki:Locke;Tactical:Ziggs;Vulcan:Nautilus
+83628|KC|MVK|Canna:Jayce;Yike:Vi;Kyeahoo:Syndra;Caliste:Draven;Busio:Nautilus|Kratos:Ambessa;Gury:Maokai;Chika:KSante;Harky:Tristana;Siuloong:Lulu
+83629|KC|MVK|Canna:Galio;Yike:Lee Sin;Kyeahoo:Ahri;Caliste:Ashe;Busio:Seraphine|Kratos:Twisted Fate;Gury:Qiyana;Chika:Rumble;Harky:Ezreal;Siuloong:Pyke
+83630|KC|MVK|Canna:Kennen;Yike:Jarvan IV;Kyeahoo:Viktor;Caliste:Xayah;Busio:Rakan|Kratos:Yorick;Gury:Wukong;Chika:KogMaw;Harky:Lucian;Siuloong:Milio
+83631|MVK|FUR|Kratos:Zaahen;Gury:Jarvan IV;Chika:Cassiopeia;Harky:Ezreal;Siuloong:Lulu|Guigo:Camille;Tatu:Sejuani;Tutsz:Syndra;Ayu:Lucian;JoJo:Milio
+83632|MVK|FUR|Kratos:Gnar;Gury:Vi;Chika:KogMaw;Harky:Jhin;Siuloong:Bard|Guigo:Ambessa;Tatu:Nasus;Tutsz:Viktor;Ayu:Xayah;JoJo:Rakan
+83633|FUR|MVK|Guigo:Rumble;Tatu:Skarner;Tutsz:Twisted Fate;Ayu:Miss Fortune;JoJo:Seraphine|Kratos:KSante;Gury:Jayce;Chika:Mel;Harky:Ziggs;Siuloong:Leona
+83634|MVK|FUR|Kratos:Olaf;Gury:Wukong;Chika:Ryze;Harky:Corki;Siuloong:Shen|Guigo:Jax;Tatu:Pantheon;Tutsz:Taliyah;Ayu:Sivir;JoJo:Alistar
+83635|KC|MVK|Canna:Jayce;Yike:Lee Sin;Kyeahoo:Cassiopeia;Caliste:Zeri;Busio:Yuumi|Kratos:Yorick;Gury:Jarvan IV;Chika:Akali;Harky:Ashe;Siuloong:Seraphine
+83636|KC|MVK|Canna:Galio;Yike:Qiyana;Kyeahoo:Ryze;Caliste:Yunara;Busio:Lulu|Kratos:Rumble;Gury:Malphite;Chika:Hwei;Harky:Lucian;Siuloong:Milio
+83637|KC|MVK|Canna:Zaahen;Yike:Naafiri;Kyeahoo:Viktor;Caliste:Ezreal;Busio:Leona|Kratos:Yone;Gury:Aatrox;Chika:Locke;Harky:Twitch;Siuloong:Camille
