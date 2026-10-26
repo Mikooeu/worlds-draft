@@ -164,4 +164,4 @@ table.lanes .wr { font-size: 18px; }
 table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
 .grid .champ[hidden] { display: none; }
 .btn-reset { position: fixed; top: 12px; right: 12px; z-index: 5; padding: 6px 14px; font-size: 13px; background: var(--bg); }
-.draft .dhead { padding-right: 90px; }
+.dcenter .btn-reset { position: static; margin-top: 6px; padding: 4px 12px; font-size: 12px; min-width: 110px; }

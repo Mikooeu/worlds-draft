@@ -1,5 +1,5 @@
 // Transport Firebase Realtime Database : chaque action est appliquée dans une transaction.
-import { applyAction } from '../logic/game.js?v=202610262033';
+import { applyAction } from '../logic/game.js?v=202610262039';
 
 const V = '10.12.0';
 const base = `https://www.gstatic.com/firebasejs/${V}`;
