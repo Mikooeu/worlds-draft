@@ -1,4 +1,4 @@
-import { esc, teamBadge } from './common.js?v=202610261824';
+import { esc, teamBadge, shortName } from './common.js?v=202610261835';
 
 function seatCard(s, data, pid, label) {
   const seat = s.seats[pid] || {};
@@ -31,7 +31,7 @@ export function renderLobby(s, data, me) {
       ${regions.map(r => `<div class="muted small" style="margin:10px 0 6px">${esc(r)}</div><div class="teams">${
         Object.values(data.teams).filter(t => t.region === r).map(t => {
           const cls = mySeat?.team === t.tag ? 'mine' : (oppSeat?.team === t.tag ? 'theirs' : '');
-          return `<button class="team-btn ${cls}" data-act="team" data-v="${t.tag}" ${oppSeat?.team === t.tag ? 'disabled' : ''}>${teamBadge(t)}<span>${esc(t.name)}<span class="rec">${t.wins}V – ${t.losses}D</span></span></button>`;
+          return `<button class="team-btn ${cls}" data-act="team" data-v="${t.tag}" ${oppSeat?.team === t.tag ? 'disabled' : ''}>${teamBadge(t)}<span class="tn" title="${esc(t.name)}">${esc(shortName(t))}<span class="rec">${t.wins}V – ${t.losses}D</span></span></button>`;
         }).join('')}</div>`).join('')}
       <h3 class="section-title">Ton side</h3>
       <div class="choice-row">

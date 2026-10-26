@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610261824';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610261824';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610261824';
-import { ROLES } from '../logic/winrate.js?v=202610261824';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610261835';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610261835';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610261835';
+import { ROLES } from '../logic/winrate.js?v=202610261835';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';

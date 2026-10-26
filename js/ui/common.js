@@ -5,6 +5,10 @@ const TEAM_COLORS = {
   GEN: '#aa8a00', HLE: '#f37321', T1: '#e2012d', DK: '#1d3c6e', BLG: '#00a3e0', TES: '#e60012', IG: '#2c2c2c', AL: '#7a2ea0',
   G2: '#333333', MKOI: '#4c2a85', KC: '#0d4fd0', TL: '#0a2240', LYON: '#003a70', LOS: '#d4a017', CFO: '#0b8a5d', TSW: '#5a6470',
 };
+// Nom court affiché dans le choix d'équipe (sigle, sauf exceptions)
+const SHORT = { TL: 'TLAW' };
+export const shortName = (team) => SHORT[team.tag] || team.tag;
+
 export function teamBadge(team, size = '') {
   const c = TEAM_COLORS[team.tag] || '#444';
   const fallback = `<span class=\\'badge ${size}\\' style=\\'background:${c}\\'>${esc(team.tag)}</span>`;
