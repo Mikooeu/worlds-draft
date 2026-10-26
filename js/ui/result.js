@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610261939';
-import { seriesLine } from './draft.js?v=202610261939';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610261957';
+import { seriesLine } from './draft.js?v=202610261957';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -34,14 +34,6 @@ export function renderResult(s, data, me) {
         <td class="c hide-m"><div class="wr ${wrCls(l.red.wr)}">${pct(l.red.wr)}</div><div class="muted small">${games(l.red.games)}</div></td>
         <td class="r"><div class="lc r">${champIcon(data, l.red.champ)}<div><b>${esc(l.red.player)}</b><div class="muted small">${esc(champName(data, l.red.champ))}</div></div></div></td>
       </tr>`).join('')}
-      ${r.duo ? `<tr class="duo-row">
-        <td class="role">Duo bot</td>
-        <td><span class="muted small">${esc(champName(data, r.lanes[3].blue.champ))} + ${esc(champName(data, r.lanes[4].blue.champ))}</span></td>
-        <td class="c hide-m">${r.duo.blue.games ? `<div class="wr ${wrCls(r.duo.blue.wr)}">${pct(r.duo.blue.wr)}</div><div class="muted small">${games(r.duo.blue.games)} ${srcTag(r.duo.blue)}</div>` : '<span class="muted small">Jamais joué</span>'}</td>
-        <td class="c mu">Synergie</td>
-        <td class="c hide-m">${r.duo.red.games ? `<div class="wr ${wrCls(r.duo.red.wr)}">${pct(r.duo.red.wr)}</div><div class="muted small">${games(r.duo.red.games)} ${srcTag(r.duo.red)}</div>` : '<span class="muted small">Jamais joué</span>'}</td>
-        <td class="r"><span class="muted small">${esc(champName(data, r.lanes[3].red.champ))} + ${esc(champName(data, r.lanes[4].red.champ))}</span></td>
-      </tr>` : ''}
       ${r.synergy ? `<tr class="duo-row">
         <td class="role">Synergie</td>
         <td><span class="muted small">Composition complète</span></td>
@@ -51,7 +43,7 @@ export function renderResult(s, data, me) {
         <td class="r"><span class="muted small">Composition complète</span></td>
       </tr>` : ''}
       </tbody></table>
-      <p class="muted small">Winrate du joueur sur ce champion aux Worlds. S'il ne l'a jamais joué, on prend le winrate du champion sur le tournoi, sinon 50 %. Synergie : winrate moyen des paires de champions de l'équipe jouées ensemble (hors duo bot). Matchups, duos et synergies : Worlds en priorité, sinon dernier split des grandes régions. Les petits échantillons sont ramenés vers 50 %.</p>
+      <p class="muted small">Winrate du joueur sur ce champion aux Worlds. S'il ne l'a jamais joué, on prend le winrate du champion sur le tournoi, sinon 50 %. Synergie : winrate moyen des paires de champions de l'équipe jouées ensemble. Matchups et synergies : Worlds en priorité, sinon dernier split des grandes régions. Les petits échantillons sont ramenés vers 50 %.</p>
     </div>
     ${end ? `<div class="panel recap"><h3 style="color:var(--gold)">${esc(data.teams[seriesWinnerTag].name)} remporte la série ${Math.max(...Object.values(s.wins))}–${Math.min(...Object.values(s.wins))}</h3>
       ${s.games.map((x, i) => `<div class="g"><span>Game ${i + 1} · ${esc(x.blueTeam)} vs ${esc(x.redTeam)}</span><span>${x.result.displayBlue} % – ${x.result.displayRed} % · <b>${esc(x.result.winnerTeam)}</b></span></div>`).join('')}</div>` : ''}
