@@ -1,0 +1,54 @@
+82967|Rumble;Qiyana;Annie;Jhin;Nautilus|KSante;Jarvan IV;Aurora;Yunara;Lulu
+82968|Gnar;Chogath;Viktor;Ashe;Seraphine|Kaisa;Naafiri;Orianna;Kalista;Renata Glasc
+82970|Olaf;Maokai;Yone;Miss Fortune;Rell|Camille;Lee Sin;Ahri;Caitlyn;Karma
+82836|Ornn;Nocturne;Annie;Lucian;Milio|Rumble;Qiyana;Ryze;Ashe;Seraphine
+82837|Gnar;Skarner;Orianna;Kalista;Renata Glasc|Varus;Naafiri;Locke;Caitlyn;Bard
+82838|Yorick;Sejuani;Viktor;Yunara;Lulu|Jayce;Maokai;Sylas;Ezreal;Karma
+82839|Gwen;Lee Sin;Aurora;Aphelios;Thresh|KSante;Trundle;Azir;Miss Fortune;Neeko
+82840|Olaf;Chogath;Akali;Jinx;Tahm Kench|Anivia;Xin Zhao;LeBlanc;Zeri;Yuumi
+82793|Gnar;Naafiri;Syndra;Ashe;Seraphine|Ambessa;Pantheon;Ryze;Ezreal;Karma
+82794|Trundle;Jarvan IV;Aurora;Yunara;Lulu|Olaf;Qiyana;Galio;Lucian;Milio
+82795|Rumble;Skarner;Orianna;Aphelios;Thresh|Camille;Maokai;Taliyah;Kalista;Renata Glasc
+82725|Ryze;Qiyana;Rumble;Ashe;Seraphine|Galio;Pantheon;Syndra;Ezreal;Karma
+82726|Camille;Trundle;Orianna;Yunara;Lulu|KSante;Naafiri;Akali;Lucian;Milio
+82727|Olaf;Skarner;Locke;Kalista;Renata Glasc|Nasus;Maokai;Anivia;Corki;Neeko
+82720|Kled;Qiyana;Anivia;Lucian;Milio|Olaf;Pantheon;Ryze;Ashe;Seraphine
+82721|Gnar;Trundle;Locke;Sivir;Karma|Ezreal;Jayce;Orianna;Kaisa;Alistar
+82722|Yorick;Lee Sin;Ahri;Yunara;Lulu|Varus;Naafiri;Galio;Caitlyn;Bard
+82723|Camille;Maokai;Tristana;Kalista;Renata Glasc|Ambessa;Skarner;Akali;Corki;Neeko
+82724|Aatrox;Vi;Syndra;Xayah;Rell|Rumble;Poppy;Azir;Jhin;Rakan
+82715|Gwen;Nocturne;Syndra;Yunara;Lulu|KSante;Lee Sin;Ryze;Caitlyn;Bard
+82716|Galio;Wukong;Akali;Lucian;Milio|Rumble;Naafiri;Orianna;Xayah;Rakan
+82717|Yorick;Trundle;Twisted Fate;Jhin;Seraphine|Jayce;Camille;Corki;Ashe;Maokai
+82718|Kled;Qiyana;Viktor;Kalista;Alistar|Olaf;Pantheon;Annie;Sivir;Karma
+82429|Olaf;Qiyana;Twisted Fate;Ezreal;Karma|KSante;Pantheon;Ryze;Caitlyn;Bard
+82430|Varus;Shyvana;Galio;Ashe;Seraphine|Rumble;Vi;Ahri;Jhin;Nautilus
+82431|Gnar;Nocturne;Taliyah;Xayah;Rakan|Renekton;Trundle;Sylas;Kalista;Renata Glasc
+82424|Rumble;Jarvan IV;Orianna;Caitlyn;Lux|Olaf;Qiyana;Akali;Lucian;Milio
+82425|Gwen;Naafiri;Ryze;Ashe;Seraphine|KSante;Maokai;Anivia;Kalista;Renata Glasc
+82426|Gragas;Lee Sin;Yone;Syndra;Nautilus|Jayce;Skarner;Azir;Corki;Rell
+82427|Renekton;Trundle;Viktor;Ezreal;Poppy|Wukong;Dr. Mundo;Ahri;Jhin;Alistar
+82428|Camille;Nocturne;Galio;Aphelios;Thresh|Vayne;Xin Zhao;Hwei;Zeri;Yuumi
+82439|Gnar;Naafiri;Ryze;Sivir;Karma|Jayce;Trundle;Orianna;Ezreal;Seraphine
+82440|Yorick;Nocturne;Syndra;Lucian;Milio|KSante;Lee Sin;Viktor;Yunara;Lulu
+82441|Ambessa;Maokai;Yone;Caitlyn;Lux|Camille;Pantheon;Ahri;Jhin;Bard
+82442|Nasus;Qiyana;Annie;Corki;Neeko|Jax;Chogath;Twisted Fate;Kalista;Renata Glasc
+82434|Camille;Jarvan IV;Twisted Fate;Sivir;Karma|KSante;Naafiri;Ryze;Ezreal;Neeko
+82435|Rumble;Skarner;Anivia;Yunara;Lulu|Ornn;Pantheon;Akali;Corki;Nautilus
+82436|Sion;Lee Sin;Ahri;Caitlyn;Bard|Jayce;Chogath;Syndra;Kalista;Renata Glasc
+82437|Gnar;Vi;Annie;Ashe;Alistar|Yorick;Poppy;Viktor;Jhin;Nami
+82183|Rumble;Qiyana;LeBlanc;Jhin;Bard|Ornn;Jarvan IV;Akali;Yunara;Lulu
+82184|KSante;Naafiri;Ryze;Ezreal;Neeko|Ambessa;Trundle;Anivia;Sivir;Karma
+82185|Olaf;Maokai;Viktor;Kalista;Renata Glasc|Camille;Lee Sin;Taliyah;Ashe;Seraphine
+82186|Sion;Wukong;Annie;Jinx;Tahm Kench|Nocturne;Jax;Aurora;Xayah;Rakan
+82178|Olaf;Lee Sin;Ahri;Ezreal;Karma|KSante;Jarvan IV;Ryze;Ashe;Seraphine
+82179|Gnar;Skarner;Akali;Lucian;Milio|Renekton;Xin Zhao;Orianna;Yunara;Lulu
+82180|Ambessa;Maokai;Yone;Kaisa;Rell|Rumble;Nautilus;Tristana;Sivir;Poppy
+82181|Sion;Qiyana;Azir;Xayah;Rakan|Jayce;Nocturne;Syndra;Aphelios;Thresh
+82182|Jax;Wukong;Sylas;Caitlyn;Bard|Dr. Mundo;Trundle;Viktor;Zeri;Yuumi
+82173|Camille;Trundle;Galio;Yunara;Lulu|Olaf;Vi;Cassiopeia;Varus;Bard
+82174|Ambessa;Naafiri;Twisted Fate;Ashe;Seraphine|Rumble;Lee Sin;Sylas;Ezreal;Karma
+82175|Vayne;Maokai;Orianna;Kalista;Renata Glasc|Renekton;Qiyana;Ryze;Aphelios;Thresh
+82168|Gnar;Chogath;Cassiopeia;Ashe;Seraphine|Varus;Pantheon;Anivia;Ezreal;Karma
+82169|Trundle;Qiyana;Locke;Yunara;Lulu|Olaf;Jarvan IV;Zoe;Caitlyn;Bard
+82170|Ambessa;Shyvana;Orianna;Corki;Alistar|Vayne;Naafiri;Rumble;Jhin;Shen

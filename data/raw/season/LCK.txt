@@ -1,0 +1,41 @@
+82962|Galio;Naafiri;Orianna;Caitlyn;Bard|Rumble;Vi;Ryze;Lucian;Milio
+82963|Varus;Nocturne;Lissandra;Kalista;Renata Glasc|Anivia;Jarvan IV;Akali;Yunara;Lulu
+82964|Sion;Lee Sin;Sylas;Zeri;Yuumi|Dr. Mundo;Chogath;Syndra;Ashe;Seraphine
+82965|Gwen;Trundle;Viktor;Corki;Alistar|Fiora;Skarner;Locke;Jhin;Karma
+82745|Jayce;Qiyana;Ryze;Jhin;Alistar|Gragas;Naafiri;Orianna;Lucian;Milio
+82746|Galio;Jarvan IV;Yone;Caitlyn;Karma|Rumble;Pantheon;Syndra;Yunara;Lulu
+82747|KSante;Vi;Akali;Zeri;Yuumi|Olaf;Lee Sin;Twisted Fate;Ashe;Seraphine
+82748|Gnar;Chogath;Viktor;Xayah;Rakan|Jax;Nocturne;Azir;Jinx;Tahm Kench
+82692|Rumble;Lee Sin;Cassiopeia;Xayah;Rakan|Gnar;Vi;Taliyah;Lucian;Milio
+82693|KSante;Jarvan IV;Ryze;Ashe;Lulu|Jayce;Qiyana;Anivia;Mel;Alistar
+82694|Olaf;Skarner;Locke;Sivir;Karma|Trundle;Pantheon;Viktor;Jhin;Rell
+82695|Camille;Naafiri;Galio;Kalista;Renata Glasc|Jax;Chogath;Annie;Ezreal;Seraphine
+82625|Jayce;Nocturne;Orianna;Lucian;Milio|Yorick;Chogath;Ryze;Ezreal;Karma
+82626|Rumble;Jarvan IV;Locke;Jhin;Shen|Ambessa;Qiyana;Syndra;Caitlyn;Bard
+82627|Gwen;Aatrox;Akali;Ashe;Seraphine|Camille;Pantheon;Ahri;Ziggs;Pyke
+82628|Varus;Vi;Vex;Miss Fortune;Neeko|Nasus;Naafiri;Sylas;Kalista;Renata Glasc
+82620|KSante;Pantheon;Ahri;Ezreal;Seraphine|Jayce;Jarvan IV;Aurora;Sivir;Karma
+82621|Vayne;Naafiri;Orianna;Lucian;Milio|Olaf;Xin Zhao;Ryze;Yunara;Lulu
+82622|Gnar;Trundle;Viktor;Jhin;Leona|Ambessa;Chogath;Syndra;Varus;Nautilus
+82623|Renekton;Vi;Annie;Miss Fortune;Neeko|Gwen;Skarner;Akali;Kalista;Renata Glasc
+82409|KSante;Pantheon;Viktor;Lucian;Milio|Jayce;Lee Sin;Syndra;Xayah;Rakan
+82410|Kaisa;Qiyana;Ryze;Caitlyn;Bard|Gnar;Jarvan IV;Ahri;Ezreal;Karma
+82411|Ambessa;Wukong;Annie;Ashe;Seraphine|Chogath;Olaf;Hwei;Jhin;Shen
+82412|Yorick;Naafiri;Twisted Fate;Yunara;Lulu|Rumble;Hecarim;Lissandra;Zeri;Yuumi
+82413|Camille;Kindred;Taliyah;Varus;Ziggs|Kled;Maokai;Tristana;Aphelios;Thresh
+82419|Jayce;Pantheon;Ryze;Kalista;Renata Glasc|Olaf;Lee Sin;Annie;Ashe;Seraphine
+82420|Gwen;Qiyana;Anivia;Jhin;Blitzcrank|KSante;Jarvan IV;Ahri;Yunara;Lulu
+82421|Camille;Sejuani;Akali;Miss Fortune;Shen|Kennen;Maokai;Yone;Kaisa;Alistar
+82422|Gragas;Xin Zhao;Cassiopeia;Varus;Nautilus|Aatrox;Skarner;Orianna;Lucian;Milio
+82423|Ambessa;Chogath;Taliyah;Caitlyn;Karma|Gnar;Naafiri;Lissandra;Jinx;Bard
+82414|Camille;Lee Sin;Ryze;Yunara;Lulu|Olaf;Pantheon;Orianna;Kalista;Renata Glasc
+82415|Aatrox;Chogath;Akali;Ashe;Seraphine|Galio;Nocturne;Jayce;Zeri;Yuumi
+82416|Twisted Fate;Skarner;Syndra;Sivir;Karma|Gnar;Wukong;Ahri;Ezreal;Nautilus
+82383|Trundle;Jarvan IV;Syndra;Ezreal;Nautilus|Olaf;Xin Zhao;Orianna;Caitlyn;Bard
+82384|Rumble;Skarner;Ahri;Kalista;Renata Glasc|Jayce;Vi;Annie;Taliyah;Alistar
+82385|Gnar;Chogath;Ryze;Ashe;Seraphine|Ambessa;Naafiri;Aurora;Yunara;Lulu
+82396|Jayce;Vi;Taliyah;Yunara;Lulu|KSante;Jarvan IV;Ryze;Lucian;Milio
+82397|Rumble;Pantheon;Ahri;Zeri;Yuumi|Ornn;Nocturne;Akali;Ezreal;Seraphine
+82398|Kled;Lee Sin;Annie;Kaisa;Shen|Olaf;Naafiri;Galio;Jhin;Bard
+82399|Nasus;Skarner;Anivia;Miss Fortune;Neeko|Yorick;Maokai;Viktor;Corki;Nami
+82400|Kennen;Poppy;Yone;Varus;Renata Glasc|Lissandra;Xin Zhao;Azir;Kalista;Soraka
