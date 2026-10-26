@@ -110,16 +110,16 @@ function reduce(s, a, pid, ctx) {
       if (s.phase !== 'lobby' || !isPlayer(s, pid) || !ctx.data.teams[a.team]) return null;
       const o = other(s, pid);
       if (o && s.seats[o]?.team === a.team) return null;
-      if (s.seats[pid].team === a.team) return null;
-      s.seats[pid] = { ...s.seats[pid], team: a.team };
+      // re-cliquer sur sa propre équipe la libère
+      s.seats[pid] = { ...s.seats[pid], team: s.seats[pid].team === a.team ? null : a.team };
       return s;
     }
     case 'setSide': {
       if (s.phase !== 'lobby' || !isPlayer(s, pid) || !SIDES.includes(a.side)) return null;
       const o = other(s, pid);
       if (o && s.seats[o]?.side === a.side) return null;
-      if (s.seats[pid].side === a.side) return null;
-      s.seats[pid] = { ...s.seats[pid], side: a.side };
+      // re-cliquer sur son propre side le libère
+      s.seats[pid] = { ...s.seats[pid], side: s.seats[pid].side === a.side ? null : a.side };
       return s;
     }
     case 'setFormat': {

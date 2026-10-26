@@ -43,7 +43,7 @@ export function renderLobby(s, data, me) {
       ${s.format !== 'bo1' ? '<p class="muted small">Fearless : un champion pické dans une game précédente ne peut plus être pické dans la série.</p>' : ''}
     </div>
     <div class="lobby-foot">
-      <span class="muted small">${ready ? (isHost ? 'Tout est prêt !' : 'En attente du lancement par l\'hôte…') : 'Chaque joueur choisit une équipe et un side différents.'}</span>
+      <span class="muted small">${ready ? (isHost ? 'Tout est prêt !' : 'En attente du lancement par l\'hôte…') : 'Chaque joueur choisit une équipe et un side différents. Reclique sur ton choix pour le libérer.'}</span>
       ${isHost ? `<button class="btn btn-gold" data-act="start" ${ready ? '' : 'disabled'}>Lancer la draft</button>` : ''}
     </div>
   </div>`;

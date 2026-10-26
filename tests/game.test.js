@@ -127,3 +127,18 @@ test('normalize restores fields Firebase drops (empty arrays/objects)', () => {
   assert.deepEqual(s.games[0].bans, { blue: [], red: [] });
   assert.deepEqual(s.seats, { H: { team: null, side: null } }); assert.equal(s.guestId, null);
 });
+test('clicking your own side or team again releases it for the opponent', () => {
+  let s = createGame('ABCD', 'H', clock);
+  s = act(s, { type: 'join', playerId: 'G' });
+  s = act(s, { type: 'setSide', playerId: 'H', side: 'blue' });
+  s = act(s, { type: 'setTeam', playerId: 'H', team: 'AAA' });
+  assert.equal(act(s, { type: 'setSide', playerId: 'G', side: 'blue' }), s);
+  s = act(s, { type: 'setSide', playerId: 'H', side: 'blue' });
+  assert.equal(s.seats.H.side, null);
+  s = act(s, { type: 'setSide', playerId: 'G', side: 'blue' });
+  assert.equal(s.seats.G.side, 'blue');
+  s = act(s, { type: 'setTeam', playerId: 'H', team: 'AAA' });
+  assert.equal(s.seats.H.team, null);
+  s = act(s, { type: 'setTeam', playerId: 'G', team: 'AAA' });
+  assert.equal(s.seats.G.team, 'AAA');
+});
