@@ -21,13 +21,30 @@ function playerChamp(data, playerName, id) {
   if (!pc || !pc.games) return { games: 0, wr: prior };
   return { games: pc.games, wr: smooth(pc.wins, pc.games, prior) };
 }
-function matchup(data, role, a, b) {
-  const m = data.matchups?.[role] || {};
-  const direct = m[`${a}|${b}`];
-  if (direct) return { games: direct.games, wr: smooth(direct.wins, direct.games, 0.5) };
-  const rev = m[`${b}|${a}`];
-  if (rev) return { games: rev.games, wr: smooth(rev.games - rev.wins, rev.games, 0.5) };
-  return { games: 0, wr: 0.5 };
+// Cherche une paire (a|b) dans une table, dans les deux sens. Renvoie { games, wins } du point de vue de a.
+function lookupPair(m, a, b) {
+  const d = m?.[`${a}|${b}`];
+  if (d && d.games) return { games: d.games, wins: d.wins };
+  const r = m?.[`${b}|${a}`];
+  if (r && r.games) return { games: r.games, wins: r.games - r.wins };
+  return null;
+}
+// Worlds d'abord ; sinon dernier split des grandes régions ; sinon neutre.
+function pairStat(worldsTable, seasonTable, a, b) {
+  for (const [src, table] of [['worlds', worldsTable], ['season', seasonTable]]) {
+    const p = lookupPair(table, a, b);
+    if (p) return { games: p.games, wr: smooth(p.wins, p.games, 0.5), source: src };
+  }
+  return { games: 0, wr: 0.5, source: null };
+}
+const matchup = (data, role, a, b) => pairStat(data.matchups?.[role], data.season?.matchups?.[role], a, b);
+// duo bot : clé adc|support, sans notion de sens
+function duo(data, adc, sup) {
+  for (const [src, table] of [['worlds', data.duos], ['season', data.season?.duos]]) {
+    const d = table?.[`${adc}|${sup}`];
+    if (d && d.games) return { games: d.games, wr: smooth(d.wins, d.games, 0.5), source: src };
+  }
+  return { games: 0, wr: 0.5, source: null };
 }
 
 export function computeResult(data, blue, red) {
@@ -40,6 +57,8 @@ export function computeResult(data, blue, red) {
     S += logit(b.wr) - logit(r.wr) + logit(mu.wr);
     return { role, blue: { player: bp, champ: bc, ...b }, red: { player: rp, champ: rc, ...r }, matchupBlue: mu };
   });
+  const duoB = duo(data, blue.roles.adc, blue.roles.support), duoR = duo(data, red.roles.adc, red.roles.support);
+  S += logit(duoB.wr) - logit(duoR.wr);
   const eqB = teamWr(data, blue.team), eqR = teamWr(data, red.team);
   S += logit(eqB) - logit(eqR);
   const pBlue = 1 / (1 + Math.exp(-C * S));
@@ -48,5 +67,5 @@ export function computeResult(data, blue, red) {
   let winner;
   if (pBlue !== pRed) winner = pBlue > pRed ? 'blue' : 'red';
   else winner = eqR > eqB ? 'red' : 'blue';
-  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, teamWr: { blue: eqB, red: eqR } };
+  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, duo: { blue: duoB, red: duoR }, teamWr: { blue: eqB, red: eqR } };
 }

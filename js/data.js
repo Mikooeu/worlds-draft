@@ -3,7 +3,7 @@ import { champKey } from './champKey.js';
 import { CHAMP_POSITIONS } from './champPositions.js';
 const ROLE_ORDER = ['top', 'jungle', 'mid', 'adc', 'support'];
 
-export function resolveData(raw, ddragon) {
+export function resolveData(raw, ddragon, rawSeason = null) {
   const byKey = new Map();
   for (const c of ddragon) { byKey.set(champKey(c.id), c); byKey.set(champKey(c.name), c); }
   const unknown = [];
@@ -30,21 +30,32 @@ export function resolveData(raw, ddragon) {
       const [a, b] = key.split('|'); return [`${idOf(a)}|${idOf(b)}`, v];
     }));
   }
+  const mapPairs = (m = {}) => Object.fromEntries(Object.entries(m).map(([key, v]) => {
+    const [a, b] = key.split('|'); return [`${idOf(a)}|${idOf(b)}`, v];
+  }));
+  const duos = mapPairs(raw.duos);
+  const season = {
+    label: rawSeason?.label || null,
+    matchups: Object.fromEntries(Object.entries(rawSeason?.matchups || {}).map(([r, m]) => [r, mapPairs(m)])),
+    duos: mapPairs(rawSeason?.duos),
+  };
   const champList = Object.values(champions)
     .map(c => ({ id: c.id, name: c.name, known: byKey.has(champKey(c.id)) }))
     .sort((x, y) => x.name.localeCompare(y.name));
-  return { updatedAt: raw.updatedAt, teams: raw.teams, players, champions, matchups, champList, unknown };
+  return { updatedAt: raw.updatedAt, teams: raw.teams, players, champions, matchups, duos, season, champList, unknown };
 }
 
 export async function loadData() {
   const raw = await (await fetch('data/worlds.json', { cache: 'no-cache' })).json();
+  let rawSeason = null;
+  try { const r = await fetch('data/season.json', { cache: 'no-cache' }); if (r.ok) rawSeason = await r.json(); } catch {}
   let ddragon = [], version = null;
   try {
     version = (await (await fetch('https://ddragon.leagueoflegends.com/api/versions.json')).json())[0];
     const j = await (await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/fr_FR/champion.json`)).json();
     ddragon = Object.values(j.data).map(c => ({ id: c.id, name: c.name }));
   } catch (e) { console.warn('Data Dragon indisponible, champions limités aux stats du tournoi', e); }
-  const data = resolveData(raw, ddragon);
+  const data = resolveData(raw, ddragon, rawSeason);
   data.iconUrl = id => (version && data.champList.find(c => c.id === id)?.known)
     ? `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${id}.png` : null;
   return data;

@@ -82,7 +82,7 @@ function finishGame(s, ctx) {
   };
   const r = computeResult(ctx.data, { team: g.blueTeam, roles: roles.blue }, { team: g.redTeam, roles: roles.red });
   const winnerTeam = r.winner === 'blue' ? g.blueTeam : g.redTeam;
-  const result = { pBlue: r.pBlue, displayBlue: r.displayBlue, displayRed: r.displayRed, winner: r.winner, winnerTeam, lanes: r.lanes };
+  const result = { pBlue: r.pBlue, displayBlue: r.displayBlue, displayRed: r.displayRed, winner: r.winner, winnerTeam, lanes: r.lanes, duo: r.duo };
   s.games = [...s.games.slice(0, -1), { ...g, roles, result }];
   s.wins = { ...s.wins, [winnerTeam]: (s.wins[winnerTeam] || 0) + 1 };
   s.phase = seriesWinner(s.format, s.wins) ? 'seriesEnd' : 'result';
