@@ -8,3 +8,4 @@ Draft League of Legends à deux joueurs, en temps réel, avec les équipes des W
 - Tests : `npm test` (logique) et `node e2e/draft.spec.mjs http://localhost:8080/` (bout en bout, Playwright)
 
 Stats : gol.gg, Worlds 2026 Main Event. Icônes : Riot Data Dragon. Projet de fan non affilié à Riot Games.
+- Avant chaque mise en ligne : `node scripts/bump-version.mjs` (force les navigateurs à recharger les fichiers)
