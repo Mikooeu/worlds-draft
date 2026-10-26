@@ -19,16 +19,17 @@ test('build-data aggregates bot duos (adc|support)', () => {
   assert.deepEqual(d.duos['kalista|renata'], { games: 2, wins: 2 });
   assert.deepEqual(d.duos['jhin|alistar'], { games: 2, wins: 0 });
 });
-test('duo synergy enters the score; Worlds data first, season as fallback', () => {
-  const d = resolveData(buildData(teams, games, 'x'), dd, season);
+test('bot duo is part of team synergy (no separate duo term); season pairs as fallback', () => {
+  const seasonP = { ...season, pairs: { 'ezreal|karma': { games: 8, wins: 2 } } };
+  const d = resolveData(buildData(teams, games, 'x'), dd, seasonP);
   const A = side('AAA', ['Gnar','Vi','Ahri','Kalista','Renata']);
   const B = side('BBB', ['Sion','LeeSin','Syndra','Ezreal','Karma']);
   const r = computeResult(d, A, B);
-  assert.equal(r.duo.blue.source, 'worlds'); close(r.duo.blue.wr, smooth(2, 2, 0.5));
-  assert.equal(r.duo.red.source, 'season'); close(r.duo.red.wr, smooth(2, 8, 0.5));
-  // sans duo : probabilité plus basse pour le blue (son duo gagnant ne compte plus)
-  const noDuo = computeResult({ ...d, duos: {}, season: { matchups: {}, duos: {} } }, A, B);
-  assert.ok(r.pBlue > noDuo.pBlue);
+  assert.equal(r.duo, undefined);
+  assert.equal(r.synergy.blue.known, 10); // 10 paires jouées ensemble aux Worlds (dont Kalista + Renata)
+  assert.equal(r.synergy.red.season, 1);  // Ezreal + Karma : seulement au split
+  const noKarma = computeResult({ ...d, season: { ...d.season, pairs: {} } }, A, B);
+  assert.ok(r.synergy.red.wr < noKarma.synergy.red.wr); // 2/8 au split fait baisser la synergie red
 });
 test('lane matchup: Worlds data wins over season, season used when Worlds has none', () => {
   const d = resolveData(buildData(teams, games, 'x'), dd, season);

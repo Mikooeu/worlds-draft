@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610261957';
-import { seriesLine } from './draft.js?v=202610261957';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610261959';
+import { seriesLine } from './draft.js?v=202610261959';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -37,9 +37,9 @@ export function renderResult(s, data, me) {
       ${r.synergy ? `<tr class="duo-row">
         <td class="role">Synergie</td>
         <td><span class="muted small">Composition complète</span></td>
-        <td class="c hide-m"><div class="wr ${wrCls(r.synergy.blue.wr)}">${pct(r.synergy.blue.wr)}</div><div class="muted small">${r.synergy.blue.known}/9 paires</div></td>
+        <td class="c hide-m"><div class="wr ${wrCls(r.synergy.blue.wr)}">${pct(r.synergy.blue.wr)}</div><div class="muted small">${r.synergy.blue.known}/10 paires</div></td>
         <td class="c mu">Équipe</td>
-        <td class="c hide-m"><div class="wr ${wrCls(r.synergy.red.wr)}">${pct(r.synergy.red.wr)}</div><div class="muted small">${r.synergy.red.known}/9 paires</div></td>
+        <td class="c hide-m"><div class="wr ${wrCls(r.synergy.red.wr)}">${pct(r.synergy.red.wr)}</div><div class="muted small">${r.synergy.red.known}/10 paires</div></td>
         <td class="r"><span class="muted small">Composition complète</span></td>
       </tr>` : ''}
       </tbody></table>

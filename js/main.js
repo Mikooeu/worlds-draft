@@ -1,15 +1,15 @@
-import { loadData } from './data.js?v=202610261957';
-import { openStore } from './store/store.js?v=202610261957';
-import { createGame, normalize } from './logic/game.js?v=202610261957';
-import { autoAssignRoles } from './logic/roles.js?v=202610261957';
-import { ROLES } from './logic/winrate.js?v=202610261957';
-import { toast } from './ui/common.js?v=202610261957';
-import { createTimeoutGate } from './timeouts.js?v=202610261957';
-import { renderHome } from './ui/home.js?v=202610261957';
-import { renderLobby } from './ui/lobby.js?v=202610261957';
-import { renderDraft } from './ui/draft.js?v=202610261957';
-import { renderRoles } from './ui/roles.js?v=202610261957';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610261957';
+import { loadData } from './data.js?v=202610261959';
+import { openStore } from './store/store.js?v=202610261959';
+import { createGame, normalize } from './logic/game.js?v=202610261959';
+import { autoAssignRoles } from './logic/roles.js?v=202610261959';
+import { ROLES } from './logic/winrate.js?v=202610261959';
+import { toast } from './ui/common.js?v=202610261959';
+import { createTimeoutGate } from './timeouts.js?v=202610261959';
+import { renderHome } from './ui/home.js?v=202610261959';
+import { renderLobby } from './ui/lobby.js?v=202610261959';
+import { renderDraft } from './ui/draft.js?v=202610261959';
+import { renderRoles } from './ui/roles.js?v=202610261959';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610261959';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

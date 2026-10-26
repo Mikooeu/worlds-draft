@@ -17,3 +17,11 @@ test('Play-In teams count for stats but are not playable', () => {
   assert.equal(applyAction(s, { type: 'setTeam', playerId: 'H', team: 'PPP' }, ctx), s);
   assert.notEqual(applyAction(s, { type: 'setTeam', playerId: 'H', team: 'AAA' }, ctx), s);
 });
+test('Play-In games feed champion/player stats but not team records', () => {
+  const main = `1|AAA|PPP|a1:Gnar;a2:Vi;a3:Ahri;a4:Jhin;a5:Rell|p1:Sion;p2:Lee Sin;p3:Syndra;p4:Kaisa;p5:Alistar`;
+  const playin = `2|AAA|PPP|a1:Gnar;a2:Vi;a3:Ahri;a4:Jhin;a5:Rell|p1:Sion;p2:Lee Sin;p3:Syndra;p4:Kaisa;p5:Alistar`;
+  const d = buildData(teams, main, 'x', playin);
+  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses], [1, 0]);
+  assert.equal(d.players.a1.champs.gnar.games, 2);
+  assert.equal(d.champions.ahri.games, 2);
+});

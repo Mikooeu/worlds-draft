@@ -1,9 +1,9 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610261957';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610261957';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610261957';
-import { computeResult, ROLES } from './winrate.js?v=202610261957';
-import { autoAssignRoles } from './roles.js?v=202610261957';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610261959';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610261959';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610261959';
+import { computeResult, ROLES } from './winrate.js?v=202610261959';
+import { autoAssignRoles } from './roles.js?v=202610261959';
 
 export const ACTION_MS = 30000;
 const SIDES = ['blue', 'red'];
@@ -82,7 +82,7 @@ function finishGame(s, ctx) {
   };
   const r = computeResult(ctx.data, { team: g.blueTeam, roles: roles.blue }, { team: g.redTeam, roles: roles.red });
   const winnerTeam = r.winner === 'blue' ? g.blueTeam : g.redTeam;
-  const result = { pBlue: r.pBlue, displayBlue: r.displayBlue, displayRed: r.displayRed, winner: r.winner, winnerTeam, lanes: r.lanes, duo: r.duo, synergy: r.synergy };
+  const result = { pBlue: r.pBlue, displayBlue: r.displayBlue, displayRed: r.displayRed, winner: r.winner, winnerTeam, lanes: r.lanes, synergy: r.synergy };
   s.games = [...s.games.slice(0, -1), { ...g, roles, result }];
   s.wins = { ...s.wins, [winnerTeam]: (s.wins[winnerTeam] || 0) + 1 };
   s.phase = seriesWinner(s.format, s.wins) ? 'seriesEnd' : 'result';

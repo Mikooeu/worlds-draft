@@ -21,11 +21,11 @@ test('build scripts record all champion pairs of a team (sorted key)', () => {
   const s = buildSeason({ X: '9|Jax;Vi;Orianna;Jhin;Rell|Sion;Lee Sin;Syndra;Ezreal;Karma' }, 'x');
   assert.deepEqual(s.pairs['orianna|vi'], { games: 1, wins: 1 });
 });
-test('team synergy (pairs other than bot duo) shifts the win probability', () => {
+test('team synergy (all 10 pairs incl. bot duo) shifts the win probability', () => {
   const d = resolveData(buildData(teams, games, 'x'), dd, buildSeason({ X: '9|Jax;Vi;Orianna;Jhin;Rell|Sion;Lee Sin;Syndra;Ezreal;Karma' }, 'x'));
   const A = side('AAA', ['Gnar','Vi','Ahri','Jhin','Rell']), B = side('BBB', ['Sion','LeeSin','Syndra','Ezreal','Karma']);
   const r = computeResult(d, A, B);
-  assert.equal(r.synergy.blue.known, 9); assert.equal(r.synergy.red.known, 9);
+  assert.equal(r.synergy.blue.known, 10); assert.equal(r.synergy.red.known, 10);
   assert.ok(r.synergy.blue.wr > 0.5 && r.synergy.red.wr < 0.5);
   const flat = computeResult({ ...d, pairs: {}, season: { ...d.season, pairs: {} } }, A, B);
   assert.ok(r.pBlue > flat.pBlue);

@@ -38,22 +38,13 @@ function pairStat(worldsTable, seasonTable, a, b) {
   return { games: 0, wr: 0.5, source: null };
 }
 const matchup = (data, role, a, b) => pairStat(data.matchups?.[role], data.season?.matchups?.[role], a, b);
-// duo bot : clé adc|support, sans notion de sens
-function duo(data, adc, sup) {
-  for (const [src, table] of [['worlds', data.duos], ['season', data.season?.duos]]) {
-    const d = table?.[`${adc}|${sup}`];
-    if (d && d.games) return { games: d.games, wr: smooth(d.wins, d.games, 0.5), source: src };
-  }
-  return { games: 0, wr: 0.5, source: null };
-}
 
-// Synergie de composition : moyenne (en logit) des 9 paires de champions hors duo bot.
+// Synergie de composition : moyenne (en logit) des 10 paires de champions (duo bot compris).
 // Paire triée ; Worlds d'abord, sinon split, sinon neutre (50 %).
 function teamSynergy(data, roles) {
   const champs = ROLES.map(r => roles[r]);
   let sum = 0, n = 0, worlds = 0, season = 0;
   for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) {
-    if (i === 3 && j === 4) continue; // adc + support : déjà compté comme duo bot
     const key = [champs[i], champs[j]].sort().join('|');
     let wr = 0.5;
     const w = data.pairs?.[key], s = data.season?.pairs?.[key];
@@ -75,8 +66,6 @@ export function computeResult(data, blue, red) {
     S += logit(b.wr) - logit(r.wr) + logit(mu.wr);
     return { role, blue: { player: bp, champ: bc, ...b }, red: { player: rp, champ: rc, ...r }, matchupBlue: mu };
   });
-  const duoB = duo(data, blue.roles.adc, blue.roles.support), duoR = duo(data, red.roles.adc, red.roles.support);
-  S += logit(duoB.wr) - logit(duoR.wr);
   const synB = teamSynergy(data, blue.roles), synR = teamSynergy(data, red.roles);
   S += synB.logit - synR.logit;
   const eqB = teamWr(data, blue.team), eqR = teamWr(data, red.team);
@@ -87,5 +76,5 @@ export function computeResult(data, blue, red) {
   let winner;
   if (pBlue !== pRed) winner = pBlue > pRed ? 'blue' : 'red';
   else winner = eqR > eqB ? 'red' : 'blue';
-  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, duo: { blue: duoB, red: duoR }, synergy: { blue: { wr: synB.wr, known: synB.known, worlds: synB.worlds, season: synB.season }, red: { wr: synR.wr, known: synR.known, worlds: synR.worlds, season: synR.season } }, teamWr: { blue: eqB, red: eqR } };
+  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, synergy: { blue: { wr: synB.wr, known: synB.known, worlds: synB.worlds, season: synB.season }, red: { wr: synR.wr, known: synR.known, worlds: synR.worlds, season: synR.season } }, teamWr: { blue: eqB, red: eqR } };
 }

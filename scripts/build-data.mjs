@@ -7,7 +7,7 @@ export { champKey };
 
 const ROLES = ['top', 'jungle', 'mid', 'adc', 'support'];
 
-export function buildData(teamsCsv, gamesTxt, updatedAt) {
+export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '') {
   const [header, ...rows] = teamsCsv.trim().split(/\r?\n/);
   const cols = header.split(',');
   const teams = {}, players = {};
@@ -19,12 +19,16 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
   const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {}, pairs = {};
   const bump = (o, k, win) => { o[k] ??= { games: 0, wins: 0 }; o[k].games++; if (win) o[k].wins++; };
 
-  for (const line of gamesTxt.trim().split(/\r?\n/).filter(Boolean)) {
+  const lines = [
+    ...gamesTxt.trim().split(/\r?\n/).filter(Boolean).map(l => [l, true]),
+    ...playinTxt.trim().split(/\r?\n/).filter(Boolean).map(l => [l, false]),
+  ];
+  for (const [line, isMain] of lines) {
     const [gameId, wTag, lTag, wPicks, lPicks] = line.split('|');
     const byRole = {};
     for (const [tag, list, win] of [[wTag, wPicks, true], [lTag, lPicks, false]]) {
       if (!teams[tag]) throw new Error(`game ${gameId}: équipe inconnue ${tag}`);
-      teams[tag][win ? 'wins' : 'losses']++;
+      if (isMain) teams[tag][win ? 'wins' : 'losses']++; // bilan : Main Event seulement
       const entries = list.split(';').map(s => { const i = s.indexOf(':'); return [s.slice(0, i).trim(), s.slice(i + 1).trim()]; });
       if (entries.length !== 5) throw new Error(`game ${gameId}: ${tag} n'a pas 5 picks`);
       for (const [player, champName] of entries) {
@@ -59,9 +63,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // Play-In : équipes éliminées comptées pour les stats seulement (région PLAYIN, non jouables)
   const playinRosters = opt('data/raw/playin-rosters.csv').trim().split(/\r?\n/).slice(1).join('\n');
   const teamsCsv = readFileSync(new URL('data/raw/teams.csv', root), 'utf8').trim() + (playinRosters ? '\n' + playinRosters : '');
-  const gamesTxt = readFileSync(new URL('data/raw/games.txt', root), 'utf8').trim() + '\n' + opt('data/raw/playin.txt').trim();
-  const d = buildData(teamsCsv, gamesTxt, process.argv[2] || new Date().toISOString().slice(0, 10));
+  const d = buildData(teamsCsv, readFileSync(new URL('data/raw/games.txt', root), 'utf8'), process.argv[2] || new Date().toISOString().slice(0, 10), opt('data/raw/playin.txt'));
   writeFileSync(new URL('data/worlds.json', root), JSON.stringify(d));
-  const games = Object.values(d.teams).reduce((n, t) => n + t.wins + t.losses, 0) / 2;
+  const games = Object.values(d.teams).reduce((n, t) => n + t.wins + t.losses, 0) / 2 + opt('data/raw/playin.txt').trim().split(/\r?\n/).filter(Boolean).length;
   console.log(`worlds.json : ${Object.keys(d.teams).length} équipes, ${games} games, ${Object.keys(d.champions).length} champions`);
 }
