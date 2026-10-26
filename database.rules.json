@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "games": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && $code.matches(/^[A-Z2-9]{4}$/) && (!data.exists() ? newData.child('hostId').val() === auth.uid : (data.child('hostId').val() === auth.uid || data.child('guestId').val() === auth.uid || (!data.child('guestId').exists() && newData.child('guestId').val() === auth.uid)))"
+      }
+    }
+  }
+}
