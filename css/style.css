@@ -88,7 +88,7 @@ input:focus, select:focus, button:focus-visible { outline: 2px solid var(--gold)
 .pick { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px; min-height: 64px; position: relative; overflow: hidden; }
 .picks.blue .pick { border-left: 3px solid var(--blue); } .picks.red .pick { border-right: 3px solid var(--red); flex-direction: row-reverse; text-align: right; }
 .pick .ph { width: 56px; height: 56px; flex: none; }
-.pick .label { font-weight: 700; } .pick .sub { color: var(--muted); font-size: 12px; }
+.pick .label { font-weight: 700; } .pick .sub { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
 .pick.preview .ph { opacity: .55; }
 .pool { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-height: 0; }
 .filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }

@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610261835';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610261835';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610261835';
-import { ROLES } from '../logic/winrate.js?v=202610261835';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610261923';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610261923';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610261923';
+import { ROLES } from '../logic/winrate.js?v=202610261923';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
@@ -28,7 +28,7 @@ export function renderDraft(s, data, me, ui) {
     if (type === 'ban') return `<div class="ban ${list[i] ? 'filled' : ''} ${active ? 'active' : ''}" title="${esc(id ? champName(data, id) : '')}">${id ? champIcon(data, id) : ''}</div>`;
     return `<div class="pick ${active ? 'active' : ''} ${!list[i] && preview ? 'preview' : ''}">
       <div class="ph">${champIcon(data, id)}</div>
-      <div><div class="label">${id ? esc(champName(data, id)) : (active ? 'En cours…' : '')}</div><div class="sub">${side === 'blue' ? 'B' : 'R'}${i + 1}</div></div></div>`;
+      <div><div class="label">${id ? esc(champName(data, id)) : (active ? 'En cours…' : '')}</div><div class="sub">${esc((side === 'blue' ? teamB : teamR).players[ROLES[i]])}</div></div></div>`;
   };
   const q = ui.search.trim().toLowerCase();
   const list = data.champList.filter(c => (!q || c.name.toLowerCase().includes(q))
