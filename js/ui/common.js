@@ -30,3 +30,7 @@ export function toast(msg) {
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
+
+// Bouton « Reset » de l'hôte (en haut à droite), confirmation par un second clic.
+export const resetButton = (s, me) => (me === s.hostId && s.phase !== 'lobby'
+  ? '<button class="btn btn-ghost btn-reset" data-act="reset" title="Revenir au lobby">Reset</button>' : '');

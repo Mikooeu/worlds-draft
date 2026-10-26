@@ -1,15 +1,15 @@
-import { loadData } from './data.js?v=202610262005';
-import { openStore } from './store/store.js?v=202610262005';
-import { createGame, normalize } from './logic/game.js?v=202610262005';
-import { autoAssignRoles } from './logic/roles.js?v=202610262005';
-import { ROLES } from './logic/winrate.js?v=202610262005';
-import { toast } from './ui/common.js?v=202610262005';
-import { createTimeoutGate } from './timeouts.js?v=202610262005';
-import { renderHome } from './ui/home.js?v=202610262005';
-import { renderLobby } from './ui/lobby.js?v=202610262005';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262005';
-import { renderRoles } from './ui/roles.js?v=202610262005';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610262005';
+import { loadData } from './data.js?v=202610262033';
+import { openStore } from './store/store.js?v=202610262033';
+import { createGame, normalize } from './logic/game.js?v=202610262033';
+import { autoAssignRoles } from './logic/roles.js?v=202610262033';
+import { ROLES } from './logic/winrate.js?v=202610262033';
+import { toast, resetButton } from './ui/common.js?v=202610262033';
+import { createTimeoutGate } from './timeouts.js?v=202610262033';
+import { renderHome } from './ui/home.js?v=202610262033';
+import { renderLobby } from './ui/lobby.js?v=202610262033';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262033';
+import { renderRoles } from './ui/roles.js?v=202610262033';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610262033';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -56,6 +56,7 @@ function render() {
     case 'result': case 'seriesEnd': app.innerHTML = renderResult(state, data, me()); break;
     case 'sideChoice': app.innerHTML = renderSideChoice(state, data, me()); break;
   }
+  app.insertAdjacentHTML('beforeend', resetButton(state, me()));
   if (state.phase === 'draft') applyDraftFilters(app, ui);
   if (focused) { const i = app.querySelector('[data-input="search"]'); i?.focus(); i?.setSelectionRange(caret, caret); }
   if (scroll != null) { const gr = app.querySelector('.grid'); if (gr) gr.scrollTop = scroll; }
@@ -120,6 +121,11 @@ app.addEventListener('click', async (e) => {
     case 'nextGame': dispatch({ type: 'nextGame' }); break;
     case 'chooseSide': dispatch({ type: 'chooseSide', side: v }); break;
     case 'rematch': dispatch({ type: 'rematch' }); break;
+    case 'reset':
+      if (b.dataset.confirm) { dispatch({ type: 'reset' }); break; }
+      b.dataset.confirm = '1'; b.textContent = 'Confirmer le reset ?';
+      setTimeout(() => { if (b.isConnected) { delete b.dataset.confirm; b.textContent = 'Reset'; } }, 3000);
+      break;
     case 'home': unsub?.(); unsub = null; code = null; state = null; history.replaceState(null, '', location.pathname + (store.mode === 'local' ? '?local=1' : '')); render(); break;
   }
 });

@@ -1,9 +1,9 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610262005';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610262005';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610262005';
-import { computeResult, ROLES } from './winrate.js?v=202610262005';
-import { autoAssignRoles } from './roles.js?v=202610262005';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610262033';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610262033';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610262033';
+import { computeResult, ROLES } from './winrate.js?v=202610262033';
+import { autoAssignRoles } from './roles.js?v=202610262033';
 
 export const ACTION_MS = 30000;
 const SIDES = ['blue', 'red'];
@@ -172,6 +172,12 @@ function reduce(s, a, pid, ctx) {
       s.seats[pid] = { ...s.seats[pid], side: a.side };
       s.seats[o] = { ...s.seats[o], side: a.side === 'blue' ? 'red' : 'blue' };
       return beginGame(s, ctx.now);
+    }
+    case 'reset': {
+      if (s.phase === 'lobby' || pid !== s.hostId) return null;
+      s.phase = 'lobby'; s.games = []; s.wins = {}; s.step = 0; s.deadline = null; s.sideChooser = null;
+      s.series = (s.series || 0) + 1;
+      return s;
     }
     case 'rematch': {
       if (s.phase !== 'seriesEnd' || pid !== s.hostId) return null;

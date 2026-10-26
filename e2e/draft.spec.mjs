@@ -109,6 +109,12 @@ await D.waitForTimeout(500); await D.clock.runFor(500);
 // les deux horloges simulées avancent séparément : au moins une action aléatoire a été jouée
 assert.ok(await D.$$eval('.ban.filled', e => e.length) >= 1, 'ban aléatoire après expiration');
 console.log('Chrono OK');
+// Reset de l'hôte : retour au lobby pour les deux joueurs, l'invité n'a pas le bouton
+assert.equal(await E.$('[data-act=reset]'), null);
+await D.click('[data-act=reset]'); await D.click('[data-act=reset]');
+await D.waitForTimeout(300); await D.clock.runFor(500); await E.clock.runFor(500);
+assert.ok(await D.$('.lobby-head'), 'hôte revenu au lobby'); assert.ok(await E.$('.lobby-head'), 'invité revenu au lobby');
+console.log('Reset OK');
 
 assert.deepEqual(errors, [], 'erreurs JS: ' + errors.join(' | '));
 await browser.close();

@@ -142,3 +142,13 @@ test('clicking your own side or team again releases it for the opponent', () => 
   s = act(s, { type: 'setTeam', playerId: 'G', team: 'AAA' });
   assert.equal(s.seats.G.team, 'AAA');
 });
+test('host can reset to the lobby from any phase after start; guest cannot', () => {
+  const s = lobby('bo3');
+  assert.equal(s.phase, 'draft');
+  assert.equal(act(s, { type: 'reset', playerId: 'G' }), s);
+  const r = act(s, { type: 'reset', playerId: 'H' });
+  assert.equal(r.phase, 'lobby'); assert.equal(r.games.length, 0); assert.equal(r.step, 0);
+  assert.equal(r.deadline, null); assert.deepEqual(r.wins, {}); assert.equal(r.series, (s.series || 0) + 1);
+  assert.equal(r.seats.H.team, 'AAA'); assert.equal(r.guestId, 'G');
+  assert.equal(act(r, { type: 'reset', playerId: 'H' }), r); // déjà au lobby
+});
