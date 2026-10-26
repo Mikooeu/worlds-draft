@@ -47,6 +47,24 @@ function duo(data, adc, sup) {
   return { games: 0, wr: 0.5, source: null };
 }
 
+// Synergie de composition : moyenne (en logit) des 9 paires de champions hors duo bot.
+// Paire triée ; Worlds d'abord, sinon split, sinon neutre (50 %).
+function teamSynergy(data, roles) {
+  const champs = ROLES.map(r => roles[r]);
+  let sum = 0, n = 0, worlds = 0, season = 0;
+  for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) {
+    if (i === 3 && j === 4) continue; // adc + support : déjà compté comme duo bot
+    const key = [champs[i], champs[j]].sort().join('|');
+    let wr = 0.5;
+    const w = data.pairs?.[key], s = data.season?.pairs?.[key];
+    if (w && w.games) { wr = smooth(w.wins, w.games, 0.5); worlds++; }
+    else if (s && s.games) { wr = smooth(s.wins, s.games, 0.5); season++; }
+    sum += logit(wr); n++;
+  }
+  const avg = sum / n;
+  return { wr: 1 / (1 + Math.exp(-avg)), logit: avg, known: worlds + season, worlds, season };
+}
+
 export function computeResult(data, blue, red) {
   let S = 0;
   const lanes = ROLES.map((role) => {
@@ -59,6 +77,8 @@ export function computeResult(data, blue, red) {
   });
   const duoB = duo(data, blue.roles.adc, blue.roles.support), duoR = duo(data, red.roles.adc, red.roles.support);
   S += logit(duoB.wr) - logit(duoR.wr);
+  const synB = teamSynergy(data, blue.roles), synR = teamSynergy(data, red.roles);
+  S += synB.logit - synR.logit;
   const eqB = teamWr(data, blue.team), eqR = teamWr(data, red.team);
   S += logit(eqB) - logit(eqR);
   const pBlue = 1 / (1 + Math.exp(-C * S));
@@ -67,5 +87,5 @@ export function computeResult(data, blue, red) {
   let winner;
   if (pBlue !== pRed) winner = pBlue > pRed ? 'blue' : 'red';
   else winner = eqR > eqB ? 'red' : 'blue';
-  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, duo: { blue: duoB, red: duoR }, teamWr: { blue: eqB, red: eqR } };
+  return { pBlue, pRed, displayBlue, displayRed: 100 - displayBlue, winner, lanes, duo: { blue: duoB, red: duoR }, synergy: { blue: { wr: synB.wr, known: synB.known, worlds: synB.worlds, season: synB.season }, red: { wr: synR.wr, known: synR.known, worlds: synR.worlds, season: synR.season } }, teamWr: { blue: eqB, red: eqR } };
 }

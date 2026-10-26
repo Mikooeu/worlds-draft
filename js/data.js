@@ -1,6 +1,6 @@
 // Charge les stats du tournoi et la liste des champions Data Dragon, puis les relie.
-import { champKey } from './champKey.js?v=202610261926';
-import { CHAMP_POSITIONS } from './champPositions.js?v=202610261926';
+import { champKey } from './champKey.js?v=202610261939';
+import { CHAMP_POSITIONS } from './champPositions.js?v=202610261939';
 const ROLE_ORDER = ['top', 'jungle', 'mid', 'adc', 'support'];
 
 export function resolveData(raw, ddragon, rawSeason = null) {
@@ -34,15 +34,17 @@ export function resolveData(raw, ddragon, rawSeason = null) {
     const [a, b] = key.split('|'); return [`${idOf(a)}|${idOf(b)}`, v];
   }));
   const duos = mapPairs(raw.duos);
+  const pairs = mapPairs(raw.pairs);
   const season = {
     label: rawSeason?.label || null,
     matchups: Object.fromEntries(Object.entries(rawSeason?.matchups || {}).map(([r, m]) => [r, mapPairs(m)])),
     duos: mapPairs(rawSeason?.duos),
+    pairs: mapPairs(rawSeason?.pairs),
   };
   const champList = Object.values(champions)
     .map(c => ({ id: c.id, name: c.name, known: byKey.has(champKey(c.id)) }))
     .sort((x, y) => x.name.localeCompare(y.name));
-  return { updatedAt: raw.updatedAt, teams: raw.teams, players, champions, matchups, duos, season, champList, unknown };
+  return { updatedAt: raw.updatedAt, teams: raw.teams, players, champions, matchups, duos, pairs, season, champList, unknown };
 }
 
 export async function loadData() {

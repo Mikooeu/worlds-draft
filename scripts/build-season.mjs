@@ -8,7 +8,7 @@ import { champKey } from '../js/champKey.js';
 const ROLES = ['top', 'jungle', 'mid', 'adc', 'support'];
 
 export function buildSeason(filesByRegion, label) {
-  const matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {};
+  const matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {}, pairs = {};
   const bump = (o, k, win) => { o[k] ??= { games: 0, wins: 0 }; o[k].games++; if (win) o[k].wins++; };
   const seen = new Set(); let games = 0;
   for (const text of Object.values(filesByRegion)) {
@@ -20,9 +20,10 @@ export function buildSeason(filesByRegion, label) {
       seen.add(id); games++;
       ROLES.forEach((r, i) => { const [a, b] = [W[i], L[i]].sort(); bump(matchups[r], `${a}|${b}`, a === W[i]); });
       bump(duos, `${W[3]}|${W[4]}`, true); bump(duos, `${L[3]}|${L[4]}`, false);
+      for (const [T, win] of [[W, true], [L, false]]) for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) bump(pairs, [T[i], T[j]].sort().join('|'), win);
     }
   }
-  return { label, games, matchups, duos };
+  return { label, games, matchups, duos, pairs };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

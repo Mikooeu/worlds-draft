@@ -16,7 +16,7 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
     teams[v.tag] = { tag: v.tag, name: v.name, region: v.region, playable: v.region !== 'PLAYIN', wins: 0, losses: 0, players: Object.fromEntries(ROLES.map(r => [r, v[r]])) };
     for (const r of ROLES) players[v[r]] = { team: v.tag, role: r, champs: {} };
   }
-  const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {};
+  const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {}, pairs = {};
   const bump = (o, k, win) => { o[k] ??= { games: 0, wins: 0 }; o[k].games++; if (win) o[k].wins++; };
 
   for (const line of gamesTxt.trim().split(/\r?\n/).filter(Boolean)) {
@@ -40,6 +40,8 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
       const side = win ? 'w' : 'l';
       const adc = byRole.adc?.[side], sup = byRole.support?.[side];
       if (adc && sup) bump(duos, `${adc}|${sup}`, win);
+      const picks = ROLES.map(r => byRole[r]?.[side]).filter(Boolean);
+      for (let i = 0; i < picks.length; i++) for (let j = i + 1; j < picks.length; j++) bump(pairs, [picks[i], picks[j]].sort().join('|'), win);
     }
     for (const r of ROLES) {
       const { w, l } = byRole[r] || {};
@@ -48,7 +50,7 @@ export function buildData(teamsCsv, gamesTxt, updatedAt) {
       bump(matchups[r], `${a}|${b}`, a === w);
     }
   }
-  return { updatedAt, teams, players, champions, matchups, duos };
+  return { updatedAt, teams, players, champions, matchups, duos, pairs };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
