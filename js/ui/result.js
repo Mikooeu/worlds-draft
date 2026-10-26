@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610262039';
-import { seriesLine } from './draft.js?v=202610262039';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610262114';
+import { seriesLine } from './draft.js?v=202610262114';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -29,9 +29,9 @@ export function renderResult(s, data, me) {
       ${r.lanes.map(l => `<tr>
         <td class="role">${ROLE_FR[l.role]}</td>
         <td><div class="lc">${champIcon(data, l.blue.champ)}<div><b>${esc(l.blue.player)}</b><div class="muted small">${esc(champName(data, l.blue.champ))}</div></div></div></td>
-        <td class="c hide-m"><div class="wr ${wrCls(l.blue.wr)}">${pct(l.blue.wr)}</div><div class="muted small">${games(l.blue.games)}</div></td>
+        <td class="c hide-m"><div class="wr ${wrCls(l.blue.wr)}">${pct(l.blue.wr)}</div></td>
         <td class="c mu">${l.matchupBlue.games ? `<div class="mu-v"><span class="${wrCls(l.matchupBlue.wr)}">${pct(l.matchupBlue.wr)}</span> / <span class="${wrCls(1 - l.matchupBlue.wr)}">${pct(1 - l.matchupBlue.wr)}</span></div><div class="small">${l.matchupBlue.games} face-à-face ${srcTag(l.matchupBlue)}</div>` : 'Jamais joué'}</td>
-        <td class="c hide-m"><div class="wr ${wrCls(l.red.wr)}">${pct(l.red.wr)}</div><div class="muted small">${games(l.red.games)}</div></td>
+        <td class="c hide-m"><div class="wr ${wrCls(l.red.wr)}">${pct(l.red.wr)}</div></td>
         <td class="r"><div class="lc r">${champIcon(data, l.red.champ)}<div><b>${esc(l.red.player)}</b><div class="muted small">${esc(champName(data, l.red.champ))}</div></div></div></td>
       </tr>`).join('')}
       ${r.synergy ? `<tr class="duo-row">
