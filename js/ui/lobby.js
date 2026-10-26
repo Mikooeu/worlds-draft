@@ -1,4 +1,4 @@
-import { esc, teamBadge, shortName } from './common.js?v=202610262114';
+import { esc, teamBadge, shortName } from './common.js?v=202610262322';
 
 function seatCard(s, data, pid, label) {
   const seat = s.seats[pid] || {};
@@ -38,6 +38,7 @@ export function renderLobby(s, data, me) {
       <div class="choice-row">
         <button class="choice blue ${mySeat?.side === 'blue' ? 'on' : ''}" data-act="side" data-v="blue" ${oppSeat?.side === 'blue' ? 'disabled' : ''}>Blue side · first pick</button>
         <button class="choice red ${mySeat?.side === 'red' ? 'on' : ''}" data-act="side" data-v="red" ${oppSeat?.side === 'red' ? 'disabled' : ''}>Red side · first ban</button>
+        <button class="choice" data-act="randomSides" ${opp ? '' : 'disabled'} title="Tire au sort le side des deux joueurs">🎲 Random</button>
       </div>
       <h3 class="section-title">Format ${isHost ? '' : '<span class="muted small">(choisi par l\'hôte)</span>'}</h3>
       <div class="choice-row">${fmt('bo1')}${fmt('bo3')}${fmt('bo5')}</div>

@@ -1,9 +1,9 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610262114';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610262114';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610262114';
-import { computeResult, ROLES } from './winrate.js?v=202610262114';
-import { autoAssignRoles } from './roles.js?v=202610262114';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610262322';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610262322';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610262322';
+import { computeResult, ROLES } from './winrate.js?v=202610262322';
+import { autoAssignRoles } from './roles.js?v=202610262322';
 
 export const ACTION_MS = 30000;
 const SIDES = ['blue', 'red'];
@@ -120,6 +120,13 @@ function reduce(s, a, pid, ctx) {
       if (o && s.seats[o]?.side === a.side) return null;
       // re-cliquer sur son propre side le libère
       s.seats[pid] = { ...s.seats[pid], side: s.seats[pid].side === a.side ? null : a.side };
+      return s;
+    }
+    case 'randomSides': {
+      if (s.phase !== 'lobby' || !isPlayer(s, pid) || !s.guestId) return null;
+      const hostBlue = ctx.rng() < 0.5;
+      s.seats[s.hostId] = { ...s.seats[s.hostId], side: hostBlue ? 'blue' : 'red' };
+      s.seats[s.guestId] = { ...s.seats[s.guestId], side: hostBlue ? 'red' : 'blue' };
       return s;
     }
     case 'setFormat': {

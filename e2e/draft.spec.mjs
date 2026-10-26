@@ -19,6 +19,13 @@ const url = A.url();
 assert.match(url, /game=[A-Z2-9]{4}/);
 await B.goto(url);
 await A.waitForSelector('text=Adversaire');
+// Random : chaque joueur reçoit un side différent
+await A.click('[data-act=randomSides]'); await A.waitForTimeout(200);
+{ const sa = await A.$$eval('.choice.on[data-act=side]', e => e.map(x => x.dataset.v)), sb = await B.$$eval('.choice.on[data-act=side]', e => e.map(x => x.dataset.v));
+  assert.equal(sa.length, 1); assert.equal(sb.length, 1); assert.notEqual(sa[0], sb[0]);
+  if (sa[0] === 'blue') { await A.click('[data-act=side][data-v=blue]'); } // libère pour la suite du test
+  else { await A.click('[data-act=side][data-v=red]'); }
+  await B.click(`[data-act=side][data-v=${sb[0]}]`); await A.waitForTimeout(200); }
 await A.click('[data-act=team][data-v=GEN]'); await A.click('[data-act=side][data-v=blue]'); await A.click('[data-act=format][data-v=bo3]');
 await B.waitForSelector('[data-act=team][data-v=GEN][disabled]');
 await B.click('[data-act=team][data-v=T1]'); await B.click('[data-act=side][data-v=red]');
