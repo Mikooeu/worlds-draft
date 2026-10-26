@@ -32,7 +32,7 @@ export function renderDraft(s, data, me, ui) {
   };
   const q = ui.search.trim().toLowerCase();
   const list = data.champList.filter(c => (!q || c.name.toLowerCase().includes(q))
-    && (ui.role === 'all' || (data.champions[c.id]?.roles?.[ui.role] || 0) > 0));
+    && (ui.role === 'all' || (data.champions[c.id]?.positions || []).includes(ui.role)));
   const turnText = !cur ? '' : myTurn ? `À toi : ${cur.type === 'ban' ? 'bannis' : 'choisis'} un champion` : `L'adversaire ${cur.type === 'ban' ? 'bannit' : 'choisit'}…`;
 
   return `<div class="draft" data-step="${s.step}">

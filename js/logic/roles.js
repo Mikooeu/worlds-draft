@@ -3,9 +3,12 @@ import { ROLES } from './winrate.js';
 export function autoAssignRoles(champIds, data) {
   const cands = [];
   champIds.forEach((id, idx) => {
-    for (const [role, games] of Object.entries(data.champions[id]?.roles || {})) {
+    const c = data.champions[id] || {};
+    for (const [role, games] of Object.entries(c.roles || {})) {
       if (games > 0 && ROLES.includes(role)) cands.push({ id, role, games, idx });
     }
+    // postes habituels : poids faible, servent quand le champion n'a pas (ou peu) été joué aux Worlds
+    (c.positions || []).forEach((role, k) => cands.push({ id, role, games: 0.5 - k * 0.01, idx }));
   });
   cands.sort((a, b) => b.games - a.games || a.idx - b.idx);
   const out = {}, used = new Set();

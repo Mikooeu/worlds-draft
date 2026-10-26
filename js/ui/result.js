@@ -1,6 +1,7 @@
 import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js';
 import { seriesLine } from './draft.js';
 
+const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const wrCls = (p) => (p >= 0.55 ? 'good' : p <= 0.45 ? 'bad' : '');
 
 export function renderResult(s, data, me) {
@@ -20,17 +21,19 @@ export function renderResult(s, data, me) {
     <div class="winbar"><div class="b" style="width:${r.displayBlue}%"></div><div class="r" style="width:${r.displayRed}%"></div></div>
     <div class="winner">${esc(data.teams[r.winnerTeam].name)} remporte la game · ${won ? 'Victoire !' : 'Défaite'}</div>
     <div class="panel" style="overflow-x:auto">
-      <table class="lanes"><thead><tr><th>Poste</th><th>Blue</th><th class="hide-m">Parties · WR</th><th class="mu">Matchup</th><th class="r hide-m">Parties · WR</th><th class="r">Red</th></tr></thead><tbody>
+      <table class="lanes">
+      <colgroup><col class="c-role"><col class="c-player"><col class="c-wr hide-m"><col class="c-mu"><col class="c-wr hide-m"><col class="c-player"></colgroup>
+      <thead><tr><th>Poste</th><th>Blue</th><th class="c hide-m">Winrate</th><th class="c">Matchup</th><th class="c hide-m">Winrate</th><th class="r">Red</th></tr></thead><tbody>
       ${r.lanes.map(l => `<tr>
-        <td>${ROLE_FR[l.role]}</td>
+        <td class="role">${ROLE_FR[l.role]}</td>
         <td><div class="lc">${champIcon(data, l.blue.champ)}<div><b>${esc(l.blue.player)}</b><div class="muted small">${esc(champName(data, l.blue.champ))}</div></div></div></td>
-        <td class="hide-m">${l.blue.games} · <span class="wr ${wrCls(l.blue.wr)}">${pct(l.blue.wr)}</span></td>
-        <td class="mu">${l.matchupBlue.games ? `${pct(l.matchupBlue.wr)} / ${pct(1 - l.matchupBlue.wr)}<div class="small">${l.matchupBlue.games} face-à-face</div>` : 'Jamais joué'}</td>
-        <td class="r hide-m"><span class="wr ${wrCls(l.red.wr)}">${pct(l.red.wr)}</span> · ${l.red.games}</td>
+        <td class="c hide-m"><div class="wr ${wrCls(l.blue.wr)}">${pct(l.blue.wr)}</div><div class="muted small">${games(l.blue.games)}</div></td>
+        <td class="c mu">${l.matchupBlue.games ? `<div class="mu-v"><span class="${wrCls(l.matchupBlue.wr)}">${pct(l.matchupBlue.wr)}</span> / <span class="${wrCls(1 - l.matchupBlue.wr)}">${pct(1 - l.matchupBlue.wr)}</span></div><div class="small">${l.matchupBlue.games} face-à-face</div>` : 'Jamais joué'}</td>
+        <td class="c hide-m"><div class="wr ${wrCls(l.red.wr)}">${pct(l.red.wr)}</div><div class="muted small">${games(l.red.games)}</div></td>
         <td class="r"><div class="lc r">${champIcon(data, l.red.champ)}<div><b>${esc(l.red.player)}</b><div class="muted small">${esc(champName(data, l.red.champ))}</div></div></div></td>
       </tr>`).join('')}
       </tbody></table>
-      <p class="muted small">« Parties » = games du joueur sur ce champion aux Worlds. Sans partie, on utilise le winrate du champion sur le tournoi, sinon 50 %. Les petits échantillons sont ramenés vers 50 %.</p>
+      <p class="muted small">Winrate du joueur sur ce champion aux Worlds. S'il ne l'a jamais joué, on prend le winrate du champion sur le tournoi, sinon 50 %. Les petits échantillons sont ramenés vers 50 %.</p>
     </div>
     ${end ? `<div class="panel recap"><h3 style="color:var(--gold)">${esc(data.teams[seriesWinnerTag].name)} remporte la série ${Math.max(...Object.values(s.wins))}–${Math.min(...Object.values(s.wins))}</h3>
       ${s.games.map((x, i) => `<div class="g"><span>Game ${i + 1} · ${esc(x.blueTeam)} vs ${esc(x.redTeam)}</span><span>${x.result.displayBlue} % – ${x.result.displayRed} % · <b>${esc(x.result.winnerTeam)}</b></span></div>`).join('')}</div>` : ''}

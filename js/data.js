@@ -1,5 +1,7 @@
 // Charge les stats du tournoi et la liste des champions Data Dragon, puis les relie.
 import { champKey } from './champKey.js';
+import { CHAMP_POSITIONS } from './champPositions.js';
+const ROLE_ORDER = ['top', 'jungle', 'mid', 'adc', 'support'];
 
 export function resolveData(raw, ddragon) {
   const byKey = new Map();
@@ -13,6 +15,10 @@ export function resolveData(raw, ddragon) {
     if (!dd) unknown.push(c.name);
     const id = dd?.id ?? k;
     champions[id] = { id, name: dd?.name ?? c.name, games: c.games, wins: c.wins, roles: { ...c.roles } };
+  }
+  for (const c of Object.values(champions)) {
+    const set = new Set([...(CHAMP_POSITIONS[c.id] || []), ...Object.keys(c.roles).filter(r => c.roles[r] > 0)]);
+    c.positions = ROLE_ORDER.filter(r => set.has(r));
   }
   const players = {};
   for (const [n, p] of Object.entries(raw.players)) {
