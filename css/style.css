@@ -1,6 +1,6 @@
 :root {
   --bg: #0a0e14; --panel: #111823; --panel2: #18212f; --line: #263244;
-  --text: #e8ecf2; --muted: #8a96a8; --gold: #ffffff; --gold2: #ffffff;
+  --text: #e8ecf2; --muted: #9aa5b6; --line-ui: #64748f; --gold: #ffffff; --gold2: #ffffff;
   --blue: #2f8fff; --blue-dim: #12335c; --red: #ff4655; --red-dim: #5c1820;
   --ok: #2ecc71; --radius: 10px;
 }
@@ -10,7 +10,7 @@ body { background: radial-gradient(1200px 600px at 50% -200px, #1b2a44 0%, trans
 h1, h2, h3, .display { font-family: Oswald, Inter, sans-serif; letter-spacing: .03em; text-transform: uppercase; margin: 0; }
 button { font: inherit; cursor: pointer; border: 0; border-radius: 8px; }
 button:disabled { cursor: not-allowed; opacity: .45; }
-input, select { font: inherit; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+input, select { font: inherit; color: var(--text); background: var(--panel2); border: 1px solid var(--line-ui); border-radius: 8px; padding: 10px 12px; }
 input:focus, select:focus, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .loading, .center-msg { display: grid; place-items: center; min-height: 80vh; text-align: center; gap: 16px; color: var(--muted); }
 .wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
@@ -52,14 +52,14 @@ input:focus, select:focus, button:focus-visible { outline: 2px solid var(--gold)
 .seat .who { font-weight: 700; } .seat.me { box-shadow: 0 0 0 1px var(--gold) inset; }
 .section-title { font-size: 14px; color: var(--gold); margin: 18px 0 10px; }
 .teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-.team-btn { display: flex; align-items: center; gap: 10px; padding: 8px; background: var(--panel2); color: var(--text); border: 1px solid var(--line); text-align: left; font-size: 13px; }
+.team-btn { display: flex; align-items: center; gap: 10px; padding: 8px; background: var(--panel2); color: var(--text); border: 1px solid var(--line-ui); text-align: left; font-size: 13px; }
 .team-btn .badge { width: 34px; height: 34px; font-size: 11px; }
 .team-btn.mine { border-color: #ffffff; background: rgba(255,255,255,.1); }
 .team-btn.theirs { opacity: .35; }
 .team-btn .tn { font: 600 22px Oswald, Inter, sans-serif; letter-spacing: .03em; line-height: 1.05; white-space: nowrap; }
 .team-btn .rec { color: var(--muted); font: 500 12px Inter, sans-serif; letter-spacing: 0; display: block; margin-top: 2px; }
 .choice-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.choice { padding: 10px 18px; background: var(--panel2); color: var(--text); border: 1px solid var(--line); font-weight: 600; }
+.choice { padding: 10px 18px; background: var(--panel2); color: var(--text); border: 1px solid var(--line-ui); font-weight: 600; }
 .choice.on { border-color: #ffffff; background: rgba(255,255,255,.1); color: #ffffff; }
 .choice.blue.on { border-color: var(--blue); background: var(--blue-dim); } .choice.red.on { border-color: var(--red); background: var(--red-dim); }
 .lobby-foot { display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 22px; }
@@ -93,7 +93,7 @@ input:focus, select:focus, button:focus-visible { outline: 2px solid var(--gold)
 .pool { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-height: 0; }
 .filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .filters input { flex: 1; min-width: 160px; }
-.rolef { padding: 8px 12px; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); font-size: 13px; font-weight: 600; }
+.rolef { padding: 8px 12px; background: var(--panel2); color: var(--muted); border: 1px solid var(--line-ui); font-size: 13px; font-weight: 600; }
 .rolef.on { color: var(--gold2); border-color: var(--gold); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; overflow-y: auto; align-content: start; padding: 2px 4px 2px 2px; }
 .champ { background: none; padding: 0; color: var(--text); display: grid; gap: 4px; text-align: center; font-size: 11px; position: relative; }
@@ -165,3 +165,6 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
 .grid .champ[hidden] { display: none; }
 .btn-reset { position: fixed; top: 12px; right: 12px; z-index: 5; padding: 6px 14px; font-size: 13px; background: var(--bg); }
 .dcenter .btn-reset { position: static; margin-top: 6px; padding: 4px 12px; font-size: 12px; min-width: 110px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 900px) { .rolef, .choice, .team-btn { min-height: 44px; } }

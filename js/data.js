@@ -1,6 +1,6 @@
 // Charge les stats du tournoi et la liste des champions Data Dragon, puis les relie.
-import { champKey } from './champKey.js?v=202610262322';
-import { CHAMP_POSITIONS } from './champPositions.js?v=202610262322';
+import { champKey } from './champKey.js?v=202610270138';
+import { CHAMP_POSITIONS } from './champPositions.js?v=202610270138';
 const ROLE_ORDER = ['top', 'jungle', 'mid', 'adc', 'support'];
 
 export function resolveData(raw, ddragon, rawSeason = null) {

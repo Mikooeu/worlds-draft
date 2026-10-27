@@ -1,15 +1,15 @@
-import { loadData } from './data.js?v=202610262322';
-import { openStore } from './store/store.js?v=202610262322';
-import { createGame, normalize } from './logic/game.js?v=202610262322';
-import { autoAssignRoles } from './logic/roles.js?v=202610262322';
-import { ROLES } from './logic/winrate.js?v=202610262322';
-import { toast, resetButton } from './ui/common.js?v=202610262322';
-import { createTimeoutGate } from './timeouts.js?v=202610262322';
-import { renderHome } from './ui/home.js?v=202610262322';
-import { renderLobby } from './ui/lobby.js?v=202610262322';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610262322';
-import { renderRoles } from './ui/roles.js?v=202610262322';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610262322';
+import { loadData } from './data.js?v=202610270138';
+import { openStore } from './store/store.js?v=202610270138';
+import { createGame, normalize } from './logic/game.js?v=202610270138';
+import { autoAssignRoles } from './logic/roles.js?v=202610270138';
+import { ROLES } from './logic/winrate.js?v=202610270138';
+import { toast, resetButton } from './ui/common.js?v=202610270138';
+import { createTimeoutGate } from './timeouts.js?v=202610270138';
+import { renderHome } from './ui/home.js?v=202610270138';
+import { renderLobby } from './ui/lobby.js?v=202610270138';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610270138';
+import { renderRoles } from './ui/roles.js?v=202610270138';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610270138';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

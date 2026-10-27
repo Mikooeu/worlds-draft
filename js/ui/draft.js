@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610262322';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610262322';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610262322';
-import { ROLES } from '../logic/winrate.js?v=202610262322';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610270138';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610270138';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610270138';
+import { ROLES } from '../logic/winrate.js?v=202610270138';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
@@ -36,7 +36,7 @@ export function renderDraft(s, data, me, ui) {
   return `<div class="draft" data-step="${s.step}">
     <div class="dhead">
       <div class="dteam blue">${teamBadge(teamB, 'lg')}<div><div class="name">${esc(teamB.name)}</div><div class="muted small">${mySide === 'blue' ? 'Toi' : 'Adversaire'} · Blue</div></div></div>
-      <div class="dcenter"><div class="turn ${myTurn ? 'mine' : ''}">${esc(turnText)}</div><div class="timer" data-timer>30</div><div class="series-score">${esc(seriesLine(s, data))} · ${s.step < 6 ? 'Bans 1' : s.step < 12 ? 'Picks 1' : s.step < 16 ? 'Bans 2' : 'Picks 2'}</div></div>
+      <div class="dcenter"><div class="turn ${myTurn ? 'mine' : ''}" role="status" aria-live="polite">${esc(turnText)}</div><div class="timer" data-timer>30</div><div class="series-score">${esc(seriesLine(s, data))} · ${s.step < 6 ? 'Bans 1' : s.step < 12 ? 'Picks 1' : s.step < 16 ? 'Bans 2' : 'Picks 2'}</div></div>
       <div class="dteam red"><div style="text-align:right"><div class="name">${esc(teamR.name)}</div><div class="muted small">Red · ${mySide === 'red' ? 'Toi' : 'Adversaire'}</div></div>${teamBadge(teamR, 'lg')}</div>
     </div>
     <div class="bans">
@@ -53,7 +53,7 @@ export function renderDraft(s, data, me, ui) {
         <div class="grid">${list.map(c => {
           const ok = avail.has(c.id);
           return `<button class="champ ${ui.sel === c.id ? 'sel' : ''}" data-act="sel" data-v="${esc(c.id)}" data-name="${esc(c.name.toLowerCase())}" data-pos="${esc((data.champions[c.id]?.positions || []).join(' '))}" ${ok && myTurn ? '' : 'disabled'} title="${esc(c.name)}">
-            ${champIcon(data, c.id)}${locked.has(c.id) ? '<span class="lock" title="Fearless">🔒</span>' : ''}<span class="nm">${esc(c.name)}</span></button>`;
+            ${champIcon(data, c.id, '', true)}${locked.has(c.id) ? '<span class="lock" title="Fearless" aria-hidden="true">🔒</span><span class="sr-only">(verrouillé, fearless)</span>' : ''}<span class="nm">${esc(c.name)}</span></button>`;
         }).join('') || '<p class="muted">Aucun champion.</p>'}</div>
       </div>
       <div class="picks red">${[0, 1, 2, 3, 4].map(i => slot('red', 'pick', i)).join('')}</div>

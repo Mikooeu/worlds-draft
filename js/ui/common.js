@@ -14,11 +14,12 @@ export function teamBadge(team, size = '') {
   const fallback = `<span class=\\'badge ${size}\\' style=\\'background:${c}\\'>${esc(team.tag)}</span>`;
   return `<span class="logo ${size}" title="${esc(team.name)}"><img src="img/teams/${esc(team.tag)}.webp" alt="${esc(team.tag)}" onerror="this.parentElement.outerHTML='${fallback}'"></span>`;
 }
-export function champIcon(data, id, extra = '') {
+// decorative = true : le nom est déjà écrit à côté, l'image n'est pas annoncée deux fois
+export function champIcon(data, id, extra = '', decorative = false) {
   if (!id) return `<div class="champ-icon ${extra}"></div>`;
   const url = data.iconUrl(id), name = data.champions[id]?.name || id;
   return url
-    ? `<img class="champ-icon ${extra}" src="${url}" alt="${esc(name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'champ-icon',textContent:this.alt}))">`
+    ? `<img class="champ-icon ${extra}" src="${url}" alt="${decorative ? '' : esc(name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'champ-icon',textContent:this.alt}))">`
     : `<div class="champ-icon ${extra}">${esc(name)}</div>`;
 }
 export const champName = (data, id) => data.champions[id]?.name || id;
