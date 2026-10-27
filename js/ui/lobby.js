@@ -1,4 +1,4 @@
-import { esc, teamBadge, shortName } from './common.js?v=202610270138';
+import { esc, teamBadge, shortName } from './common.js?v=202610270145';
 
 function seatCard(s, data, pid, label) {
   const seat = s.seats[pid] || {};
@@ -42,7 +42,7 @@ export function renderLobby(s, data, me) {
       </div>
       <h3 class="section-title">Format ${isHost ? '' : '<span class="muted small">(choisi par l\'hôte)</span>'}</h3>
       <div class="choice-row">${fmt('bo1')}${fmt('bo3')}${fmt('bo5')}</div>
-      ${s.format !== 'bo1' ? '<p class="muted small">Fearless : un champion pické dans une game précédente ne peut plus être pické dans la série.</p>' : ''}
+      ${s.format !== 'bo1' ? '<p class="muted small">Fearless : un champion pick dans une partie précédente ne peut plus être pick durant la suite du BO.</p>' : ''}
     </div>
     <div class="lobby-foot">
       <span class="muted small">${ready ? (isHost ? 'Tout est prêt !' : 'En attente du lancement par l\'hôte…') : 'Chaque joueur choisit une équipe et un side différents. Reclique sur ton choix pour le libérer.'}</span>
