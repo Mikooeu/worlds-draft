@@ -169,9 +169,13 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (max-width: 900px) { .rolef, .choice, .team-btn { min-height: 44px; } }
 
-#tip { position: fixed; z-index: 20; min-width: 170px; max-width: 240px; padding: 10px 12px; background: #0f1520; border: 1px solid var(--line-ui); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.5); font-size: 13px; pointer-events: none; opacity: 0; transition: opacity .12s; }
+#tip { position: fixed; z-index: 20; min-width: 190px; max-width: 280px; padding: 10px 12px; background: #0f1520; border: 1px solid var(--line-ui); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.5); font-size: 13px; pointer-events: none; opacity: 0; transition: opacity .12s; }
 #tip.show { opacity: 1; }
-#tip .tip-name { font: 600 15px Oswald, Inter, sans-serif; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+#tip .tip-name { font: 600 15px Oswald, Inter, sans-serif; text-transform: uppercase; letter-spacing: .03em; }
+#tip .tip-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+#tip .tip-count { font-size: 12px; white-space: nowrap; }
+#tip .tip-stats { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 3px; align-items: baseline; }
+#tip .tip-stats b { font-size: 14px; text-align: right; }
 #tip .tip-row { display: flex; gap: 8px; align-items: baseline; margin-top: 3px; }
 #tip .tip-row b { margin-left: auto; font-size: 14px; }
 #tip .tip-player { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); display: block; }

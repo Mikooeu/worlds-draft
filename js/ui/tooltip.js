@@ -1,17 +1,17 @@
-import { esc } from './common.js?v=202610271626';
-import { ROLES } from '../logic/winrate.js?v=202610271626';
+import { esc } from './common.js?v=202610271645';
+import { ROLES } from '../logic/winrate.js?v=202610271645';
 
 const pctRaw = (w, n) => `${Math.round((w / n) * 100)} %`;
 
 // Contenu de la petite case affichée au survol (ou appui long) d'un champion pendant la draft.
 export function champTooltip(data, id, myTeamTag) {
   const c = data.champions[id] || { name: id, games: 0, wins: 0, positions: [] };
-  const lines = [`<div class="tip-name">${esc(c.name)}</div>`];
+  const count = c.games ? `<span class="tip-count muted">${c.games} game${c.games > 1 ? 's' : ''}</span>` : '';
+  const lines = [`<div class="tip-head"><span class="tip-name">${esc(c.name)}</span>${count}</div>`];
   if (!c.games) {
     lines.push('<div class="tip-row muted">Pas encore joué aux Worlds</div>');
   } else {
-    lines.push(`<div class="tip-row"><span>Winrate</span><b>${pctRaw(c.wins, c.games)}</b><span class="muted">${c.games} game${c.games > 1 ? 's' : ''}</span></div>`);
-    if (data.totalGames) lines.push(`<div class="tip-row"><span>Pick rate</span><b>${pctRaw(c.games, data.totalGames)}</b></div>`);
+    lines.push(`<div class="tip-stats"><span>Winrate</span><b>${pctRaw(c.wins, c.games)}</b>${data.totalGames ? `<span>Pick rate</span><b>${pctRaw(c.games, data.totalGames)}</b>` : ''}</div>`);
   }
   const team = myTeamTag && data.teams[myTeamTag];
   if (team) {
