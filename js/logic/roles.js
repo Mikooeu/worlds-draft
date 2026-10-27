@@ -1,4 +1,4 @@
-import { ROLES } from './winrate.js?v=202610270145';
+import { ROLES } from './winrate.js?v=202610271053';
 // Affectation gloutonne : les couples (champion, rôle) les plus joués d'abord.
 export function autoAssignRoles(champIds, data) {
   const cands = [];

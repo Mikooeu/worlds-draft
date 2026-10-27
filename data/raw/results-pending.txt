@@ -1,0 +1,6 @@
+# Résultats confirmés dont gol.gg n'a pas encore publié les picks (bilan des équipes seulement).
+# date|vainqueur|perdant|nombre de games gagnées — à retirer quand les games sont ajoutées à games.txt
+2026-10-26|T1|CFO|1
+2026-10-26|BLG|KC|1
+2026-10-26|LOS|TSW|2
+2026-10-26|TL|AL|2
