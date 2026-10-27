@@ -25,3 +25,7 @@ test('tooltip: champion never played at Worlds', () => {
   const t = champTooltip(d, 'Teemo', 'AAA');
   assert.match(t, /Pas encore joué aux Worlds/); assert.doesNotMatch(t, /0 %/);
 });
+test('tooltip during bans can show the opponent player, labelled', () => {
+  const t = champTooltip(d, 'Ahri', 'BBB', { opponent: true });
+  assert.match(t, /Adversaire/); assert.match(t, /b3 : 1V \/ 1/);
+});

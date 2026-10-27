@@ -192,3 +192,4 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
   .draft.urgent .timer { animation: none; color: var(--red); }
   .draft.urgent .pick.active, .draft.urgent .ban.active { animation: none; box-shadow: 0 0 0 2px var(--red); }
 }
+#tip .tip-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #ff8a93; border: 1px solid rgba(255,70,85,.5); border-radius: 4px; padding: 0 5px; margin-right: 4px; }

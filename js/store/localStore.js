@@ -1,6 +1,6 @@
 // Transport local (même navigateur) : état dans un stockage partagé + BroadcastChannel.
 // Sert aux tests bout en bout et au mode ?local=1, sans réseau.
-import { applyAction } from '../logic/game.js?v=202610271650';
+import { applyAction } from '../logic/game.js?v=202610271659';
 
 export function memoryStorage() {
   const m = new Map();
