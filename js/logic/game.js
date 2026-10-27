@@ -1,9 +1,9 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610271621';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610271621';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610271621';
-import { computeResult, ROLES } from './winrate.js?v=202610271621';
-import { autoAssignRoles } from './roles.js?v=202610271621';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610271626';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610271626';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610271626';
+import { computeResult, ROLES } from './winrate.js?v=202610271626';
+import { autoAssignRoles } from './roles.js?v=202610271626';
 
 export const ACTION_MS = 30000;
 const SIDES = ['blue', 'red'];
@@ -25,6 +25,7 @@ export function normalize(raw) {
   for (const k of [s.hostId, s.guestId]) if (k && !s.seats[k]) s.seats[k] = {};
   for (const k of Object.keys(s.seats)) s.seats[k] = { team: null, side: null, ...s.seats[k] };
   s.series = s.series ?? 0;
+  s.presel = s.presel ?? null;
   s.wins = { ...(s.wins || {}) };
   s.step = s.step ?? 0; s.deadline = s.deadline ?? null; s.sideChooser = s.sideChooser ?? null;
   s.format = s.format || 'bo1';
@@ -50,7 +51,7 @@ function beginGame(s, now) {
     bans: { blue: [], red: [] }, picks: { blue: [], red: [] },
     roles: { blue: null, red: null }, result: null,
   }];
-  s.phase = 'draft'; s.step = 0; s.deadline = now + ACTION_MS; s.sideChooser = null;
+  s.phase = 'draft'; s.step = 0; s.deadline = now + ACTION_MS; s.sideChooser = null; s.presel = null;
   return s;
 }
 
@@ -62,7 +63,7 @@ function doDraft(s, champ, ctx) {
   const key = type === 'ban' ? 'bans' : 'picks';
   const ng = { ...g, [key]: { ...g[key], [side]: [...g[key][side], champ] } };
   s.games = [...s.games.slice(0, -1), ng];
-  s.step += 1;
+  s.step += 1; s.presel = null;
   if (s.step === DRAFT_ORDER.length) { s.phase = 'roles'; }
   s.deadline = ctx.now + ACTION_MS;
   return s;
@@ -145,13 +146,23 @@ function reduce(s, a, pid, ctx) {
       if (pid !== playerOnSide(s, DRAFT_ORDER[s.step].side)) return null;
       return doDraft(s, a.champ, ctx);
     }
+    case 'preselect': {
+      if (s.phase !== 'draft' || a.step !== s.step) return null;
+      if (pid !== playerOnSide(s, DRAFT_ORDER[s.step].side)) return null;
+      const g = currentGame(s);
+      if (!availableChampions(ctx.champIds, g, fearlessLocked(s.games.slice(0, -1))).includes(a.champ)) return null;
+      if (s.presel?.step === a.step && s.presel?.champ === a.champ) return null;
+      s.presel = { step: a.step, champ: a.champ };
+      return s;
+    }
     case 'timeout': {
       if (!isPlayer(s, pid) || a.step !== s.step || s.deadline == null || ctx.now < s.deadline) return null;
       if (s.phase === 'draft') {
         const g = currentGame(s);
         const avail = availableChampions(ctx.champIds, g, fearlessLocked(s.games.slice(0, -1)));
         if (!avail.length) return null;
-        return doDraft(s, avail[Math.floor(ctx.rng() * avail.length)], ctx);
+        const pre = s.presel?.step === s.step && avail.includes(s.presel.champ) ? s.presel.champ : null;
+        return doDraft(s, pre || avail[Math.floor(ctx.rng() * avail.length)], ctx);
       }
       if (s.phase === 'roles') return finishGame(s, ctx);
       return null;

@@ -1,16 +1,17 @@
-import { loadData } from './data.js?v=202610271621';
-import { openStore } from './store/store.js?v=202610271621';
-import { createGame, normalize } from './logic/game.js?v=202610271621';
-import { autoAssignRoles } from './logic/roles.js?v=202610271621';
-import { ROLES } from './logic/winrate.js?v=202610271621';
-import { toast, resetButton } from './ui/common.js?v=202610271621';
-import { champTooltip } from './ui/tooltip.js?v=202610271621';
-import { createTimeoutGate } from './timeouts.js?v=202610271621';
-import { renderHome } from './ui/home.js?v=202610271621';
-import { renderLobby } from './ui/lobby.js?v=202610271621';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271621';
-import { renderRoles } from './ui/roles.js?v=202610271621';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610271621';
+import { loadData } from './data.js?v=202610271626';
+import { openStore } from './store/store.js?v=202610271626';
+import { createGame, normalize } from './logic/game.js?v=202610271626';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271626';
+import { autoAssignRoles } from './logic/roles.js?v=202610271626';
+import { ROLES } from './logic/winrate.js?v=202610271626';
+import { toast, resetButton } from './ui/common.js?v=202610271626';
+import { champTooltip } from './ui/tooltip.js?v=202610271626';
+import { createTimeoutGate } from './timeouts.js?v=202610271626';
+import { renderHome } from './ui/home.js?v=202610271626';
+import { renderLobby } from './ui/lobby.js?v=202610271626';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271626';
+import { renderRoles } from './ui/roles.js?v=202610271626';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610271626';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -42,6 +43,7 @@ function render() {
   // réinitialise l'état local de l'UI à chaque nouvelle étape
   const key = `${state.phase}:${state.games.length}:${state.step}`;
   if (key !== ui.key) {
+    if (ui.wasMyTurn) ui.search = ''; // mon ban/pick vient d'être joué : on vide la recherche
     ui.key = key; ui.sel = null;
     if (state.phase === 'roles') {
       const g = state.games[state.games.length - 1];
@@ -51,6 +53,7 @@ function render() {
   const focused = document.activeElement?.dataset?.input === 'search';
   const caret = focused ? document.activeElement.selectionStart : null;
   const scroll = app.querySelector('.grid')?.scrollTop;
+  ui.wasMyTurn = state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === state.seats[me()]?.side;
   switch (state.phase) {
     case 'lobby': app.innerHTML = renderLobby(state, data, me()); break;
     case 'draft': app.innerHTML = renderDraft(state, data, me(), ui); break;
@@ -70,8 +73,13 @@ function openGame(c) {
   code = c; state = undefined; joinTried = false;
   history.replaceState(null, '', gameUrl(c));
   unsub?.();
+  let lastSig = null;
   unsub = store.subscribe(c, (raw) => {
     state = raw ? normalize(raw) : null;
+    // un changement de pré-sélection seul ne redessine pas l'écran (pas de clignotement)
+    const sig = state ? JSON.stringify({ ...state, presel: null }) : 'null';
+    if (sig === lastSig) return;
+    lastSig = sig;
     if (state && !state.seats[me()] && !state.guestId && state.phase === 'lobby' && !joinTried) {
       joinTried = true; dispatch({ type: 'join' });
     }
@@ -119,7 +127,7 @@ app.addEventListener('click', async (e) => {
     case 'format': dispatch({ type: 'setFormat', format: v }); break;
     case 'start': dispatch({ type: 'start' }); break;
     case 'role': ui.role = v; applyDraftFilters(app, ui); break;
-    case 'sel': ui.sel = v; showSelection(app, data, ui); break;
+    case 'sel': ui.sel = v; showSelection(app, data, ui); dispatch({ type: 'preselect', step: state.step, champ: v }); break;
     case 'lock': if (ui.sel) dispatch({ type: 'draft', step: state.step, champ: ui.sel }).then(ok => { if (!ok) toast('Action refusée'); }); break;
     case 'setRoles': dispatch({ type: 'setRoles', roles: ui.roles }); break;
     case 'nextGame': dispatch({ type: 'nextGame' }); break;

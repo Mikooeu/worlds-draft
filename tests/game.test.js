@@ -163,3 +163,21 @@ test('random sides: assigns blue/red to the two players, lobby only, needs a gue
   const started = lobby();
   assert.equal(act(started, { type: 'randomSides', playerId: 'H' }), started);
 });
+test('timeout locks the pre-selected champion instead of a random one', () => {
+  let s = lobby();
+  // étape 0 : ban red (G). L'autre joueur ne peut pas pré-sélectionner.
+  assert.equal(act(s, { type: 'preselect', playerId: 'H', step: 0, champ: 'C7' }), s);
+  s = act(s, { type: 'preselect', playerId: 'G', step: 0, champ: 'C7' });
+  assert.deepEqual(s.presel, { step: 0, champ: 'C7' });
+  assert.equal(s.step, 0);                       // pré-sélection ≠ validation
+  clock += 30000;
+  s = act(s, { type: 'timeout', playerId: 'H', step: 0 });
+  assert.deepEqual(s.games[0].bans.red, ['C7']); // le pré-lock est banni
+  assert.equal(s.presel ?? null, null);
+  // sans pré-sélection : aléatoire (rng 0 => premier disponible)
+  clock += 30000;
+  const s2 = act(s, { type: 'timeout', playerId: 'H', step: 1 });
+  assert.equal(s2.games[0].bans.blue.length, 1);
+  // pré-sélection d'un champion indisponible : refusée
+  assert.equal(act(s2, { type: 'preselect', playerId: 'G', step: 2, champ: 'C7' }), s2);
+});

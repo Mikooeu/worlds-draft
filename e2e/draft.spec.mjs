@@ -119,10 +119,14 @@ await D.click('[data-act=team][data-v=HLE]'); await D.click('[data-act=side][dat
 await E.click('[data-act=team][data-v=DK]'); await E.click('[data-act=side][data-v=red]');
 await D.click('[data-act=start]'); await D.waitForSelector('.draft');
 assert.equal(await D.$$eval('.ban.filled', e => e.length), 0);
+// E (red) ban en premier : il tape une recherche et pré-sélectionne Syndra sans valider
+await E.fill('[data-input=search]', 'syn'); await E.click('.champ[data-v=syndra]'); await E.waitForTimeout(200);
 await D.clock.runFor(31000); await E.clock.runFor(31000);
 await D.waitForTimeout(500); await D.clock.runFor(500);
 // les deux horloges simulées avancent séparément : au moins une action aléatoire a été jouée
 assert.ok(await D.$$eval('.ban.filled', e => e.length) >= 1, 'ban aléatoire après expiration');
+assert.match(await D.textContent('.ban-row.red .ban.filled'), /Syndra/, 'le champion pré-sélectionné est banni à la fin du chrono');
+assert.equal(await E.inputValue('[data-input=search]'), '', 'recherche vidée après le ban');
 console.log('Chrono OK');
 // Reset de l'hôte : retour au lobby pour les deux joueurs, l'invité n'a pas le bouton
 assert.equal(await E.$('[data-act=reset]'), null);
