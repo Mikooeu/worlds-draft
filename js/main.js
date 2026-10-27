@@ -1,15 +1,16 @@
-import { loadData } from './data.js?v=202610271053';
-import { openStore } from './store/store.js?v=202610271053';
-import { createGame, normalize } from './logic/game.js?v=202610271053';
-import { autoAssignRoles } from './logic/roles.js?v=202610271053';
-import { ROLES } from './logic/winrate.js?v=202610271053';
-import { toast, resetButton } from './ui/common.js?v=202610271053';
-import { createTimeoutGate } from './timeouts.js?v=202610271053';
-import { renderHome } from './ui/home.js?v=202610271053';
-import { renderLobby } from './ui/lobby.js?v=202610271053';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271053';
-import { renderRoles } from './ui/roles.js?v=202610271053';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610271053';
+import { loadData } from './data.js?v=202610271621';
+import { openStore } from './store/store.js?v=202610271621';
+import { createGame, normalize } from './logic/game.js?v=202610271621';
+import { autoAssignRoles } from './logic/roles.js?v=202610271621';
+import { ROLES } from './logic/winrate.js?v=202610271621';
+import { toast, resetButton } from './ui/common.js?v=202610271621';
+import { champTooltip } from './ui/tooltip.js?v=202610271621';
+import { createTimeoutGate } from './timeouts.js?v=202610271621';
+import { renderHome } from './ui/home.js?v=202610271621';
+import { renderLobby } from './ui/lobby.js?v=202610271621';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271621';
+import { renderRoles } from './ui/roles.js?v=202610271621';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610271621';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -30,6 +31,7 @@ function gameUrl(c) {
 }
 
 function render() {
+  if (typeof hideTip === 'function') hideTip();
   if (!code) { app.innerHTML = renderHome(data); return; }
   if (state === undefined) { app.innerHTML = '<div class="loading">Connexion à la partie…</div>'; return; }
   if (state === null) { app.innerHTML = renderHome(data, `La partie ${code} n'existe pas (ou plus).`); return; }
@@ -103,7 +105,7 @@ setInterval(tick, 250);
 
 app.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]');
-  if (!b || b.disabled) return;
+  if (!b || b.disabled || b.getAttribute('aria-disabled') === 'true') return;
   const v = b.dataset.v;
   switch (b.dataset.act) {
     case 'create': b.disabled = true; createNew().catch(err => { console.error(err); toast('Impossible de créer la partie'); b.disabled = false; }); break;
@@ -133,8 +135,43 @@ app.addEventListener('click', async (e) => {
 });
 app.addEventListener('dblclick', (e) => {
   const b = e.target.closest('[data-act="sel"]');
-  if (b && !b.disabled && state?.phase === 'draft') dispatch({ type: 'draft', step: state.step, champ: b.dataset.v });
+  if (b && b.getAttribute('aria-disabled') !== 'true' && state?.phase === 'draft') dispatch({ type: 'draft', step: state.step, champ: b.dataset.v });
 });
+// Infobulle champion : survol 1 s (souris) ou appui long (tactile)
+const tip = Object.assign(document.createElement('div'), { id: 'tip', role: 'tooltip' });
+document.body.appendChild(tip);
+let tipTimer = null, tipFor = null, longPressed = false;
+function showTip(btn) {
+  if (!state || state.phase !== 'draft') return;
+  tip.innerHTML = champTooltip(data, btn.dataset.v, state.seats[me()]?.team);
+  tip.classList.add('show');
+  const r = btn.getBoundingClientRect(), t = tip.getBoundingClientRect();
+  let x = r.right + 8, y = r.top;
+  if (x + t.width > innerWidth - 8) x = r.left - t.width - 8;
+  if (x < 8) { x = Math.min(Math.max(8, r.left), innerWidth - t.width - 8); y = r.bottom + 8; }
+  if (y + t.height > innerHeight - 8) y = innerHeight - t.height - 8;
+  tip.style.left = `${x}px`; tip.style.top = `${Math.max(8, y)}px`;
+}
+function hideTip() { clearTimeout(tipTimer); tipTimer = null; tipFor = null; tip.classList.remove('show'); }
+app.addEventListener('mouseover', (e) => {
+  const b = e.target.closest('.grid .champ');
+  if (!b || b === tipFor) return;
+  hideTip(); tipFor = b; tipTimer = setTimeout(() => showTip(b), 1000);
+});
+app.addEventListener('mouseout', (e) => {
+  const b = e.target.closest('.grid .champ');
+  if (b && !b.contains(e.relatedTarget)) hideTip();
+});
+app.addEventListener('touchstart', (e) => {
+  const b = e.target.closest('.grid .champ');
+  if (!b) return;
+  longPressed = false; hideTip(); tipFor = b;
+  tipTimer = setTimeout(() => { longPressed = true; showTip(b); }, 500);
+}, { passive: true });
+for (const ev of ['touchend', 'touchmove', 'touchcancel']) app.addEventListener(ev, () => { if (!longPressed) hideTip(); else setTimeout(hideTip, 1500); }, { passive: true });
+app.addEventListener('click', (e) => { if (longPressed && e.target.closest('.grid .champ')) { e.stopImmediatePropagation(); longPressed = false; } }, true);
+app.addEventListener('scroll', hideTip, true);
+
 // Retour arrière dans la recherche : efface tout le mot d'un coup
 app.addEventListener('keydown', (e) => {
   if (e.target.dataset?.input !== 'search' || e.key !== 'Backspace' || !e.target.value) return;

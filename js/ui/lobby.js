@@ -1,4 +1,4 @@
-import { esc, teamBadge, shortName } from './common.js?v=202610271053';
+import { esc, teamBadge, shortName } from './common.js?v=202610271621';
 
 function seatCard(s, data, pid, label) {
   const seat = s.seats[pid] || {};

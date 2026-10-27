@@ -98,9 +98,9 @@ input:focus, select:focus, button:focus-visible { outline: 2px solid var(--gold)
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; overflow-y: auto; align-content: start; padding: 2px 4px 2px 2px; }
 .champ { background: none; padding: 0; color: var(--text); display: grid; gap: 4px; text-align: center; font-size: 11px; position: relative; }
 .champ .champ-icon { border: 2px solid transparent; }
-.champ:hover:not(:disabled) .champ-icon { border-color: var(--gold); }
+.champ:hover:not([aria-disabled=true]) .champ-icon { border-color: var(--gold); }
 .champ.sel .champ-icon { border-color: var(--gold2); box-shadow: 0 0 14px rgba(255,255,255,.45); }
-.champ:disabled { opacity: .25; } .champ:disabled .champ-icon { filter: grayscale(1); }
+.champ[aria-disabled=true] { opacity: .25; cursor: not-allowed; } .champ[aria-disabled=true] .champ-icon { filter: grayscale(1); }
 .champ .lock { position: absolute; top: 2px; right: 2px; font-size: 13px; }
 .champ .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dfoot { display: flex; justify-content: center; align-items: center; gap: 16px; }
@@ -168,3 +168,10 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (max-width: 900px) { .rolef, .choice, .team-btn { min-height: 44px; } }
+
+#tip { position: fixed; z-index: 20; min-width: 170px; max-width: 240px; padding: 10px 12px; background: #0f1520; border: 1px solid var(--line-ui); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.5); font-size: 13px; pointer-events: none; opacity: 0; transition: opacity .12s; }
+#tip.show { opacity: 1; }
+#tip .tip-name { font: 600 15px Oswald, Inter, sans-serif; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+#tip .tip-row { display: flex; gap: 8px; align-items: baseline; margin-top: 3px; }
+#tip .tip-row b { margin-left: auto; font-size: 14px; }
+#tip .tip-player { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); display: block; }

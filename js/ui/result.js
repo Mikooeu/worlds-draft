@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610271053';
-import { seriesLine } from './draft.js?v=202610271053';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610271621';
+import { seriesLine } from './draft.js?v=202610271621';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };

@@ -60,7 +60,8 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
     if (!teams[w] || !teams[l]) throw new Error(`résultat sans picks : équipe inconnue dans « ${line} »`);
     teams[w].wins += +n; teams[l].losses += +n;
   }
-  return { updatedAt, teams, players, champions, matchups, duos, pairs };
+  const totalGames = lines.length; // games avec picks (Main Event + Play-In)
+  return { updatedAt, totalGames, teams, players, champions, matchups, duos, pairs };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

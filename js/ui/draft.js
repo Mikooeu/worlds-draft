@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610271053';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610271053';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610271053';
-import { ROLES } from '../logic/winrate.js?v=202610271053';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610271621';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610271621';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610271621';
+import { ROLES } from '../logic/winrate.js?v=202610271621';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
@@ -52,7 +52,7 @@ export function renderDraft(s, data, me, ui) {
         </div>
         <div class="grid">${list.map(c => {
           const ok = avail.has(c.id);
-          return `<button class="champ ${ui.sel === c.id ? 'sel' : ''}" data-act="sel" data-v="${esc(c.id)}" data-name="${esc(c.name.toLowerCase())}" data-pos="${esc((data.champions[c.id]?.positions || []).join(' '))}" ${ok && myTurn ? '' : 'disabled'} title="${esc(c.name)}">
+          return `<button class="champ ${ui.sel === c.id ? 'sel' : ''}" data-act="sel" data-v="${esc(c.id)}" data-name="${esc(c.name.toLowerCase())}" data-pos="${esc((data.champions[c.id]?.positions || []).join(' '))}" aria-disabled="${!(ok && myTurn)}" title="${esc(c.name)}">
             ${champIcon(data, c.id, '', true)}${locked.has(c.id) ? '<span class="lock" title="Fearless" aria-hidden="true">🔒</span><span class="sr-only">(verrouillé, fearless)</span>' : ''}<span class="nm">${esc(c.name)}</span></button>`;
         }).join('') || '<p class="muted">Aucun champion.</p>'}</div>
       </div>
@@ -81,7 +81,7 @@ export function showSelection(root, data, ui) {
   const btn = ui.sel && root.querySelector(`.grid .champ[data-v="${CSS.escape(ui.sel)}"]`);
   if (btn) btn.classList.add('sel');
   const lock = root.querySelector('[data-act=lock]');
-  if (lock) lock.disabled = !(btn && !btn.disabled);
+  if (lock) lock.disabled = !(btn && btn.getAttribute('aria-disabled') !== 'true');
   const slot = root.querySelector('.pick.active, .ban.active');
   if (!slot || !ui.sel) return;
   if (slot.classList.contains('ban')) { slot.innerHTML = champIcon(data, ui.sel); return; }

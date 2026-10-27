@@ -42,13 +42,21 @@ await A.click('[data-act=start]');
   await A.waitForSelector('.draft'); await B.waitForSelector('.draft');
   const P = (await A.$('[data-act=lock]')) ? A : B;
   await P.evaluate(() => { document.querySelector('.grid').dataset.mark = '1'; });
-  await P.click('.champ:not([disabled])');
+  await P.click('.champ:not([aria-disabled=true])');
   assert.equal(await P.evaluate(() => document.querySelector('.grid').dataset.mark), '1', 'la grille a été redessinée au clic');
   assert.ok(await P.$('.champ.sel'), 'champion sélectionné');
   assert.ok(await P.$('[data-act=lock]:not([disabled])'), 'bouton actif');
   await P.fill('[data-input=search]', 'zz-aucun');
   assert.equal(await P.evaluate(() => document.querySelector('.grid').dataset.mark), '1', 'la grille a été redessinée à la recherche');
   assert.equal(await P.$$eval('.grid .champ:not([hidden])', e => e.length), 0);
+  // Infobulle : rien avant 1 s, visible après, cachée en sortant
+  await P.fill('[data-input=search]', '');
+  await P.hover('.grid .champ:not([hidden]) >> nth=5');
+  await P.waitForTimeout(400); assert.equal(await P.$('#tip.show'), null, 'infobulle trop tôt');
+  await P.waitForTimeout(900); assert.ok(await P.$('#tip.show'), 'infobulle après 1 s');
+  assert.match(await P.textContent('#tip'), /Winrate|Pas encore joué/);
+  await P.hover('[data-input=search]'); await P.waitForTimeout(200);
+  assert.equal(await P.$('#tip.show'), null, 'infobulle cachée en sortant');
   await P.fill('[data-input=search]', 'ahri');
   await P.focus('[data-input=search]'); await P.keyboard.press('Backspace');
   assert.equal(await P.inputValue('[data-input=search]'), '', 'retour arrière efface tout');
@@ -63,7 +71,7 @@ async function playGame(n) {
       const p = (await A.$(`.draft[data-step="${i}"] [data-act=lock]`)) ? A : (await B.$(`.draft[data-step="${i}"] [data-act=lock]`)) ? B : null;
       if (!p) { await A.waitForTimeout(50); continue; }
       try {
-        await p.click(`.draft[data-step="${i}"] .champ:not([disabled])`, { timeout: 2000 });
+        await p.click(`.draft[data-step="${i}"] .champ:not([aria-disabled=true])`, { timeout: 2000 });
         await p.click(`.draft[data-step="${i}"] [data-act=lock]:not([disabled])`, { timeout: 2000 });
       } catch { continue; }
       break;
@@ -88,7 +96,7 @@ const chooser = await Promise.race([A.waitForSelector('[data-act=chooseSide]').t
 await chooser.click('[data-act=chooseSide][data-v=red]');
 await A.waitForSelector('.draft');
 // fearless : un champion pické en game 1 est désactivé avec un cadenas
-const lockedNames = await A.$$eval('.champ[disabled] .lock', els => els.map(e => e.parentElement.querySelector('.nm').textContent));
+const lockedNames = await A.$$eval('.champ[aria-disabled=true] .lock', els => els.map(e => e.parentElement.querySelector('.nm').textContent));
 assert.ok(g1Picks.every(n => lockedNames.includes(n)), 'tous les picks de la game 1 doivent être verrouillés');
 await playGame(2);
 let games = 2;
