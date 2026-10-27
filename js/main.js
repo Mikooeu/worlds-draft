@@ -1,17 +1,17 @@
-import { loadData } from './data.js?v=202610271647';
-import { openStore } from './store/store.js?v=202610271647';
-import { createGame, normalize } from './logic/game.js?v=202610271647';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271647';
-import { autoAssignRoles } from './logic/roles.js?v=202610271647';
-import { ROLES } from './logic/winrate.js?v=202610271647';
-import { toast, resetButton } from './ui/common.js?v=202610271647';
-import { champTooltip } from './ui/tooltip.js?v=202610271647';
-import { createTimeoutGate } from './timeouts.js?v=202610271647';
-import { renderHome } from './ui/home.js?v=202610271647';
-import { renderLobby } from './ui/lobby.js?v=202610271647';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271647';
-import { renderRoles } from './ui/roles.js?v=202610271647';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610271647';
+import { loadData } from './data.js?v=202610271650';
+import { openStore } from './store/store.js?v=202610271650';
+import { createGame, normalize } from './logic/game.js?v=202610271650';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271650';
+import { autoAssignRoles } from './logic/roles.js?v=202610271650';
+import { ROLES } from './logic/winrate.js?v=202610271650';
+import { toast, resetButton } from './ui/common.js?v=202610271650';
+import { champTooltip } from './ui/tooltip.js?v=202610271650';
+import { createTimeoutGate } from './timeouts.js?v=202610271650';
+import { renderHome } from './ui/home.js?v=202610271650';
+import { renderLobby } from './ui/lobby.js?v=202610271650';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271650';
+import { renderRoles } from './ui/roles.js?v=202610271650';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610271650';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -104,6 +104,12 @@ function tick() {
   if (!state || state.deadline == null) { if (el) el.textContent = ''; return; }
   const left = Math.max(0, Math.ceil((state.deadline - store.now()) / 1000));
   if (el) { el.textContent = left; el.classList.toggle('low', left <= 10); }
+  // 5 dernières secondes de MON ban/pick : léger clignotement rouge (chrono + case en cours)
+  const draftEl = app.querySelector('.draft');
+  if (draftEl) {
+    const mine = state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === state.seats[me()]?.side;
+    draftEl.classList.toggle('urgent', mine && left > 0 && left <= 5);
+  }
   if (store.now() > state.deadline + 300 && (state.phase === 'draft' || state.phase === 'roles')) {
     const k = timeouts.take(state);
     if (k) dispatch({ type: 'timeout', step: state.step }).then(ok => { if (!ok) setTimeout(() => timeouts.release(k), 1000); });

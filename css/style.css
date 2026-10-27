@@ -182,3 +182,13 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
 /* Appui long sur mobile : pas d'aperçu d'image ni de menu iOS, seulement l'infobulle */
 .grid .champ, .grid .champ img { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
 .grid .champ img { pointer-events: none; }
+
+/* Fin de chrono (5 s) pour le joueur qui doit jouer */
+@keyframes urgentText { 0%, 100% { color: var(--red); } 50% { color: #ff9aa2; } }
+@keyframes urgentSlot { 0%, 100% { box-shadow: 0 0 0 2px var(--red), 0 0 14px rgba(255,70,85,.35); } 50% { box-shadow: 0 0 0 2px rgba(255,70,85,.35), 0 0 0 rgba(255,70,85,0); } }
+.draft.urgent .timer { animation: urgentText 1s ease-in-out infinite; }
+.draft.urgent .pick.active, .draft.urgent .ban.active { animation: urgentSlot 1s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .draft.urgent .timer { animation: none; color: var(--red); }
+  .draft.urgent .pick.active, .draft.urgent .ban.active { animation: none; box-shadow: 0 0 0 2px var(--red); }
+}

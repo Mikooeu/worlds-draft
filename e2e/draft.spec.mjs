@@ -120,13 +120,23 @@ await E.click('[data-act=team][data-v=DK]'); await E.click('[data-act=side][data
 await D.click('[data-act=start]'); await D.waitForSelector('.draft');
 assert.equal(await D.$$eval('.ban.filled', e => e.length), 0);
 // E (red) ban en premier : il tape une recherche et pré-sélectionne Syndra sans valider
-await E.fill('[data-input=search]', 'syn'); await E.click('.champ[data-v=syndra]'); await E.waitForTimeout(200);
-await D.clock.runFor(31000); await E.clock.runFor(31000);
+{ // clignotement des 5 dernières secondes : seulement chez le joueur qui doit jouer
+  const [P, O] = (await D.$('.turn.mine')) ? [D, E] : [E, D];
+  for (let k = 0; k < 40 && +(await P.textContent('[data-timer]')) > 5; k++) { await P.clock.runFor(1000); await O.clock.runFor(1000); }
+  await P.waitForTimeout(300);
+  assert.ok(await P.$('.draft.urgent'), 'clignotement chez le joueur qui doit jouer (5 dernières s)');
+  assert.equal(await O.$('.draft.urgent'), null, 'pas de clignotement chez l\'adversaire');
+  // pré-sélection sans valider : c'est elle qui est jouée à la fin du chrono, et la recherche se vide
+  await P.fill('[data-input=search]', 'syn'); await P.click('.champ[data-v=syndra]'); await P.waitForTimeout(200);
+  await D.clock.runFor(6000); await E.clock.runFor(6000);
+  await P.waitForTimeout(500); await P.clock.runFor(500);
+  assert.match(await P.textContent('.bans'), /Syndra/, 'le champion pré-sélectionné est banni à la fin du chrono');
+  assert.equal(await P.inputValue('[data-input=search]'), '', 'recherche vidée après le ban');
+}
 await D.waitForTimeout(500); await D.clock.runFor(500);
 // les deux horloges simulées avancent séparément : au moins une action aléatoire a été jouée
 assert.ok(await D.$$eval('.ban.filled', e => e.length) >= 1, 'ban aléatoire après expiration');
-assert.match(await D.textContent('.ban-row.red .ban.filled'), /Syndra/, 'le champion pré-sélectionné est banni à la fin du chrono');
-assert.equal(await E.inputValue('[data-input=search]'), '', 'recherche vidée après le ban');
+
 console.log('Chrono OK');
 // Reset de l'hôte : retour au lobby pour les deux joueurs, l'invité n'a pas le bouton
 assert.equal(await E.$('[data-act=reset]'), null);
