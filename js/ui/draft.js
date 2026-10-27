@@ -1,7 +1,7 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610271659';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610271659';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610271659';
-import { ROLES } from '../logic/winrate.js?v=202610271659';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610271858';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610271858';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610271858';
+import { ROLES } from '../logic/winrate.js?v=202610271858';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
@@ -31,7 +31,7 @@ export function renderDraft(s, data, me, ui) {
       <div><div class="label">${id ? esc(champName(data, id)) : (active ? 'En cours…' : '')}</div><div class="sub">${esc((side === 'blue' ? teamB : teamR).players[ROLES[i]])}</div></div></div>`;
   };
   const list = data.champList;
-  const turnText = !cur ? '' : myTurn ? `À toi : ${cur.type === 'ban' ? 'bannis' : 'choisis'} un champion` : `L'adversaire ${cur.type === 'ban' ? 'bannit' : 'choisit'}…`;
+  const turnText = ui.reveal ? 'Compositions finales' : !cur ? '' : myTurn ? `À toi : ${cur.type === 'ban' ? 'bannis' : 'choisis'} un champion` : `L'adversaire ${cur.type === 'ban' ? 'bannit' : 'choisit'}…`;
 
   return `<div class="draft" data-step="${s.step}">
     <div class="dhead">

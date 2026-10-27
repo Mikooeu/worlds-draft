@@ -1,23 +1,25 @@
-import { loadData } from './data.js?v=202610271659';
-import { openStore } from './store/store.js?v=202610271659';
-import { createGame, normalize } from './logic/game.js?v=202610271659';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271659';
-import { autoAssignRoles } from './logic/roles.js?v=202610271659';
-import { ROLES } from './logic/winrate.js?v=202610271659';
-import { toast, resetButton } from './ui/common.js?v=202610271659';
-import { champTooltip } from './ui/tooltip.js?v=202610271659';
-import { createTimeoutGate } from './timeouts.js?v=202610271659';
-import { renderHome } from './ui/home.js?v=202610271659';
-import { renderLobby } from './ui/lobby.js?v=202610271659';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271659';
-import { renderRoles } from './ui/roles.js?v=202610271659';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610271659';
+import { generateNarrative } from './logic/narrative.js?v=202610271858';
+import { loadData } from './data.js?v=202610271858';
+import { openStore } from './store/store.js?v=202610271858';
+import { createGame, normalize } from './logic/game.js?v=202610271858';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271858';
+import { autoAssignRoles } from './logic/roles.js?v=202610271858';
+import { ROLES } from './logic/winrate.js?v=202610271858';
+import { toast, resetButton } from './ui/common.js?v=202610271858';
+import { champTooltip } from './ui/tooltip.js?v=202610271858';
+import { createTimeoutGate } from './timeouts.js?v=202610271858';
+import { renderHome } from './ui/home.js?v=202610271858';
+import { renderLobby } from './ui/lobby.js?v=202610271858';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271858';
+import { renderRoles } from './ui/roles.js?v=202610271858';
+import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610271858';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 let data, store, state = null, code = null, unsub = null, joinTried = false;
 const ui = { sel: null, search: '', role: 'all', roles: null, key: '' };
 const timeouts = createTimeoutGate();
+const narr = { key: null, shown: 0, events: [], timer: null, done: new Set() };
 
 const me = () => store.playerId;
 const ctx = () => ({ data, champIds: data.champList.map(c => c.id), now: store.now(), rng: Math.random });
@@ -57,8 +59,27 @@ function render() {
   switch (state.phase) {
     case 'lobby': app.innerHTML = renderLobby(state, data, me()); break;
     case 'draft': app.innerHTML = renderDraft(state, data, me(), ui); break;
-    case 'roles': app.innerHTML = renderRoles(state, data, me(), ui); break;
-    case 'result': case 'seriesEnd': app.innerHTML = renderResult(state, data, me()); break;
+    case 'roles':
+      // 5 s : les deux compositions face à face avant l'attribution des rôles
+      if (state.revealUntil && store.now() < state.revealUntil) { app.innerHTML = renderDraft(state, data, me(), { ...ui, reveal: true }); ui.revealing = true; }
+      else { app.innerHTML = renderRoles(state, data, me(), ui); ui.revealing = false; }
+      break;
+    case 'result': case 'seriesEnd': {
+      const nk = `${state.code}:${state.series}:${state.games.length}`;
+      if (narr.done.has(nk)) { app.innerHTML = renderResult(state, data, me()); break; }
+      if (narr.key !== nk) {
+        const g = state.games[state.games.length - 1];
+        narr.key = nk; narr.shown = 0; narr.events = generateNarrative(data, g, g.result, nk);
+        clearInterval(narr.timer);
+        narr.timer = setInterval(() => {
+          if (narr.shown < narr.events.length) { narr.shown++; document.getElementById('feed')?.insertAdjacentHTML('beforeend', feedItem(narr.events[narr.shown - 1])); }
+          else { clearInterval(narr.timer); setTimeout(() => { narr.done.add(nk); render(); }, 1800); }
+        }, 1700);
+      }
+      app.innerHTML = renderNarrative(state, data);
+      document.getElementById('feed').innerHTML = narr.events.slice(0, narr.shown).map(feedItem).join('');
+      break;
+    }
     case 'sideChoice': app.innerHTML = renderSideChoice(state, data, me()); break;
   }
   const rb = resetButton(state, me());
@@ -102,7 +123,9 @@ async function createNew() {
 function tick() {
   const el = app.querySelector('[data-timer]');
   if (!state || state.deadline == null) { if (el) el.textContent = ''; return; }
-  const left = Math.max(0, Math.ceil((state.deadline - store.now()) / 1000));
+  if (ui.revealing && store.now() >= state.revealUntil) { render(); return; }
+  const target = ui.revealing ? state.revealUntil : state.deadline;
+  const left = Math.max(0, Math.ceil((target - store.now()) / 1000));
   if (el) { el.textContent = left; el.classList.toggle('low', left <= 10); }
   // 5 dernières secondes de MON ban/pick : léger clignotement rouge (chrono + case en cours)
   const draftEl = app.querySelector('.draft');
@@ -139,6 +162,7 @@ app.addEventListener('click', async (e) => {
     case 'nextGame': dispatch({ type: 'nextGame' }); break;
     case 'chooseSide': dispatch({ type: 'chooseSide', side: v }); break;
     case 'rematch': dispatch({ type: 'rematch' }); break;
+    case 'skipNarr': clearInterval(narr.timer); narr.done.add(narr.key); render(); break;
     case 'reset':
       if (b.dataset.confirm) { dispatch({ type: 'reset' }); break; }
       b.dataset.confirm = '1'; b.textContent = 'Confirmer ?';

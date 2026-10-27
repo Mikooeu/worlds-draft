@@ -76,14 +76,14 @@ test('timeout: refused before deadline, random valid action after, only once', (
 });
 test('full draft -> roles -> result (bo1 ends series)', () => {
   let s = draftAll(lobby());
-  assert.equal(s.phase, 'roles'); assert.equal(s.deadline, clock + 30000);
+  assert.equal(s.phase, 'roles'); assert.equal(s.revealUntil, clock + 5000); assert.equal(s.deadline, clock + 35000);
   const g = s.games[0];
   const bad = { top: g.picks.blue[0], jungle: g.picks.blue[0], mid: g.picks.blue[2], adc: g.picks.blue[3], support: g.picks.blue[4] };
   assert.equal(act(s, { type: 'setRoles', playerId: playerFor(s, 'blue'), roles: bad }), s);
   const good = { top: g.picks.blue[0], jungle: g.picks.blue[1], mid: g.picks.blue[2], adc: g.picks.blue[3], support: g.picks.blue[4] };
   s = act(s, { type: 'setRoles', playerId: playerFor(s, 'blue'), roles: good });
   assert.equal(s.phase, 'roles');
-  clock += 30000;
+  clock += 35000;
   s = act(s, { type: 'timeout', playerId: 'H', step: 20 });
   assert.equal(s.phase, 'seriesEnd');
   const res = s.games[0].result;
@@ -93,7 +93,7 @@ test('full draft -> roles -> result (bo1 ends series)', () => {
 });
 test('bo3: loser chooses side, fearless locks previous picks, rematch resets', () => {
   let s = draftAll(lobby('bo3'));
-  clock += 30000; s = act(s, { type: 'timeout', playerId: 'H', step: 20 });
+  clock += 35000; s = act(s, { type: 'timeout', playerId: 'H', step: 20 });
   assert.equal(s.phase, 'result');
   const loserTeam = s.games[0].result.winnerTeam === 'AAA' ? 'BBB' : 'AAA';
   const loser = Object.entries(s.seats).find(([, v]) => v.team === loserTeam)[0];
@@ -112,7 +112,7 @@ test('bo3: loser chooses side, fearless locks previous picks, rematch resets', (
   // finir la série
   while (s.phase !== 'seriesEnd') {
     if (s.phase === 'draft') s = draftAll(s);
-    if (s.phase === 'roles') { clock += 30000; s = act(s, { type: 'timeout', playerId: 'H', step: 20 }); }
+    if (s.phase === 'roles') { clock += 35000; s = act(s, { type: 'timeout', playerId: 'H', step: 20 }); }
     if (s.phase === 'result') s = act(s, { type: 'nextGame', playerId: 'G' });
     if (s.phase === 'sideChoice') s = act(s, { type: 'chooseSide', playerId: s.sideChooser, side: 'red' });
   }

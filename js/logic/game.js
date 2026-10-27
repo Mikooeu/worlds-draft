@@ -1,11 +1,12 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610271659';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610271659';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610271659';
-import { computeResult, ROLES } from './winrate.js?v=202610271659';
-import { autoAssignRoles } from './roles.js?v=202610271659';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610271858';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610271858';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610271858';
+import { computeResult, ROLES } from './winrate.js?v=202610271858';
+import { autoAssignRoles } from './roles.js?v=202610271858';
 
 export const ACTION_MS = 30000;
+export const REVEAL_MS = 5000;
 const SIDES = ['blue', 'red'];
 
 export function createGame(code, hostId, now) {
@@ -64,8 +65,11 @@ function doDraft(s, champ, ctx) {
   const ng = { ...g, [key]: { ...g[key], [side]: [...g[key][side], champ] } };
   s.games = [...s.games.slice(0, -1), ng];
   s.step += 1; s.presel = null;
-  if (s.step === DRAFT_ORDER.length) { s.phase = 'roles'; }
   s.deadline = ctx.now + ACTION_MS;
+  if (s.step === DRAFT_ORDER.length) {
+    // 5 s pour voir les deux compositions avant l'attribution des rôles
+    s.phase = 'roles'; s.revealUntil = ctx.now + REVEAL_MS; s.deadline = ctx.now + REVEAL_MS + ACTION_MS;
+  }
   return s;
 }
 

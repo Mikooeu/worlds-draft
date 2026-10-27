@@ -79,10 +79,20 @@ async function playGame(n) {
     for (const p of [A, B]) await p.waitForFunction((k) => { const d = document.querySelector('.draft'); return !d || +d.dataset.step > k; }, i);
     if (n === 1 && i === 9 && shots) await A.screenshot({ path: shots + '/draft.png' });
   }
+  // 5 s de pause : compositions finales visibles avant l'écran des rôles
+  await A.waitForSelector('.draft'); assert.match(await A.textContent('.turn'), /Compositions finales/);
   await A.waitForSelector('[data-act=setRoles]'); await B.waitForSelector('[data-act=setRoles]');
   if (n === 1 && shots) await A.screenshot({ path: shots + '/roles.png' });
   await A.click('[data-act=setRoles]'); await B.click('[data-act=setRoles]');
-  await A.waitForSelector('.result'); await B.waitForSelector('.result');
+  // récit accéléré : identique chez les deux joueurs, puis « Passer »
+  await A.waitForSelector('.narr'); await B.waitForSelector('.narr');
+  await A.waitForFunction(() => document.querySelectorAll('#feed li').length >= 2, null, { timeout: 8000 });
+  await B.waitForFunction(() => document.querySelectorAll('#feed li').length >= 2, null, { timeout: 8000 });
+  const fa = await A.$$eval('#feed li', e => e.slice(0, 2).map(x => x.textContent)), fb = await B.$$eval('#feed li', e => e.slice(0, 2).map(x => x.textContent));
+  assert.deepEqual(fa, fb, 'même récit chez les deux joueurs');
+  if (n === 1 && shots) { await A.waitForFunction(() => document.querySelectorAll('#feed li').length >= 6, null, { timeout: 15000 }); await A.screenshot({ path: shots + '/narr.png' }); }
+  await A.click('[data-act=skipNarr]'); await B.click('[data-act=skipNarr]');
+  await A.waitForSelector('.pct'); await B.waitForSelector('.pct');
   const pa = await A.$$eval('.pct', els => els.map(e => parseInt(e.textContent)));
   assert.equal(pa[0] + pa[1], 100);
   assert.equal(await A.textContent('.winner').then(t => t.split('·')[0]), await B.textContent('.winner').then(t => t.split('·')[0]));

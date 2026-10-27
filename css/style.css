@@ -193,3 +193,11 @@ table.lanes tr.duo-row td { background: rgba(255,255,255,.025); }
   .draft.urgent .pick.active, .draft.urgent .ban.active { animation: none; box-shadow: 0 0 0 2px var(--red); }
 }
 #tip .tip-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #ff8a93; border: 1px solid rgba(255,70,85,.5); border-radius: 4px; padding: 0 5px; margin-right: 4px; }
+
+/* Récit accéléré */
+.feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; min-height: 320px; }
+.feed-item { display: flex; gap: 14px; align-items: baseline; padding: 8px 12px; border-radius: 8px; background: var(--panel2); border-left: 3px solid var(--line-ui); animation: feedIn .35s ease-out; }
+.feed-item.blue { border-left-color: var(--blue); } .feed-item.red { border-left-color: var(--red); }
+.feed-time { font: 600 13px Oswald, Inter, sans-serif; color: var(--muted); min-width: 44px; }
+@keyframes feedIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .feed-item { animation: none; } }

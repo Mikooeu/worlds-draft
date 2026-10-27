@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610271659';
-import { seriesLine } from './draft.js?v=202610271659';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610271858';
+import { seriesLine } from './draft.js?v=202610271858';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -66,3 +66,20 @@ export function renderSideChoice(s, data, me) {
     ${chooser ? `<div class="choice-row"><button class="btn btn-blue" data-act="chooseSide" data-v="blue">Blue side · first pick</button><button class="btn btn-red" data-act="chooseSide" data-v="red">Red side · first ban</button></div>` : ''}
   </div></div>`;
 }
+
+// Récit accéléré de la game (avant le tableau des résultats)
+export function renderNarrative(s, data) {
+  const g = s.games[s.games.length - 1];
+  const tb = data.teams[g.blueTeam], tr = data.teams[g.redTeam];
+  return `<div class="result narr">
+    <div class="muted small" style="text-align:center">${s.format.toUpperCase()} · Game ${s.games.length} · La game se joue…</div>
+    <div class="score-head">
+      <div class="side blue">${teamBadge(tb, 'lg')}<div class="muted">${esc(tb.name)}</div></div>
+      <div class="vs">VS</div>
+      <div class="side red"><div class="muted">${esc(tr.name)}</div>${teamBadge(tr, 'lg')}</div>
+    </div>
+    <div class="panel"><ol class="feed" id="feed" aria-live="polite"></ol></div>
+    <div class="result-foot"><button class="btn btn-ghost" data-act="skipNarr">Passer</button></div>
+  </div>`;
+}
+export const feedItem = (e) => `<li class="feed-item ${e.side}"><span class="feed-time">${e.time}</span><span>${esc(e.text)}</span></li>`;
