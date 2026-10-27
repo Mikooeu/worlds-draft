@@ -1,17 +1,17 @@
-import { loadData } from './data.js?v=202610271645';
-import { openStore } from './store/store.js?v=202610271645';
-import { createGame, normalize } from './logic/game.js?v=202610271645';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271645';
-import { autoAssignRoles } from './logic/roles.js?v=202610271645';
-import { ROLES } from './logic/winrate.js?v=202610271645';
-import { toast, resetButton } from './ui/common.js?v=202610271645';
-import { champTooltip } from './ui/tooltip.js?v=202610271645';
-import { createTimeoutGate } from './timeouts.js?v=202610271645';
-import { renderHome } from './ui/home.js?v=202610271645';
-import { renderLobby } from './ui/lobby.js?v=202610271645';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271645';
-import { renderRoles } from './ui/roles.js?v=202610271645';
-import { renderResult, renderSideChoice } from './ui/result.js?v=202610271645';
+import { loadData } from './data.js?v=202610271647';
+import { openStore } from './store/store.js?v=202610271647';
+import { createGame, normalize } from './logic/game.js?v=202610271647';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610271647';
+import { autoAssignRoles } from './logic/roles.js?v=202610271647';
+import { ROLES } from './logic/winrate.js?v=202610271647';
+import { toast, resetButton } from './ui/common.js?v=202610271647';
+import { champTooltip } from './ui/tooltip.js?v=202610271647';
+import { createTimeoutGate } from './timeouts.js?v=202610271647';
+import { renderHome } from './ui/home.js?v=202610271647';
+import { renderLobby } from './ui/lobby.js?v=202610271647';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610271647';
+import { renderRoles } from './ui/roles.js?v=202610271647';
+import { renderResult, renderSideChoice } from './ui/result.js?v=202610271647';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -179,6 +179,7 @@ app.addEventListener('touchstart', (e) => {
 for (const ev of ['touchend', 'touchmove', 'touchcancel']) app.addEventListener(ev, () => { if (!longPressed) hideTip(); else setTimeout(hideTip, 1500); }, { passive: true });
 app.addEventListener('click', (e) => { if (longPressed && e.target.closest('.grid .champ')) { e.stopImmediatePropagation(); longPressed = false; } }, true);
 app.addEventListener('scroll', hideTip, true);
+app.addEventListener('contextmenu', (e) => { if (e.target.closest('.grid .champ')) e.preventDefault(); });
 
 // Retour arrière dans la recherche : efface tout le mot d'un coup
 app.addEventListener('keydown', (e) => {
