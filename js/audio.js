@@ -1,4 +1,4 @@
-// Effets sonores originaux générés en direct (Web Audio) + musique de fond libre de droits — aucun asset Riot.
+// Musique et effets de sélection/validation : fichiers libres de droits fournis par l'auteur ; autres effets générés en direct (Web Audio). Aucun asset Riot.
 // Le son ne démarre qu'après une première interaction (règle des navigateurs).
 const PREF = 'wd.audio';
 let ctx = null, master = null, musicBus = null, sfxBus = null, bar = 0;
@@ -13,6 +13,7 @@ function ensure() {
   master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
   musicBus = ctx.createGain(); musicBus.gain.value = prefs.music ? MUSIC_GAIN : 0; musicBus.connect(master);
   sfxBus = ctx.createGain(); sfxBus.gain.value = prefs.sfx ? 0.35 : 0; sfxBus.connect(master);
+  loadSfx();
   return true;
 }
 
@@ -34,6 +35,25 @@ function tone({ freq, type = 'sine', start = 0, dur = 0.2, gain = 0.5, to = null
 const MUSIC_SRC = new URL('../audio/draft-music.mp3?q=192', import.meta.url).href;
 const MUSIC_GAIN = 0.22;
 let musicEl = null, inGame = false;
+// Effets fournis par l'auteur du site (normalisés à -1 dB) : sélection d'un champion, validation d'un pick/ban
+const SFX = { select: { src: '../audio/select.mp3', level: 1.4 }, validate: { src: '../audio/validate.mp3', level: 2 } };
+const buffers = {};
+function loadSfx() {
+  for (const [k, { src }] of Object.entries(SFX)) {
+    if (buffers[k] !== undefined) continue;
+    buffers[k] = null;
+    fetch(new URL(src, import.meta.url)).then(r => r.arrayBuffer())
+      .then(b => new Promise((ok, ko) => ctx.decodeAudioData(b, ok, ko)))
+      .then(buf => { buffers[k] = buf; }).catch(() => { delete buffers[k]; });
+  }
+}
+function sample(k) {
+  if (!ensure() || !prefs.sfx) return false;
+  const buf = buffers[k]; if (!buf) { loadSfx(); return false; }
+  const s = ctx.createBufferSource(), g = ctx.createGain();
+  s.buffer = buf; g.gain.value = SFX[k].level; s.connect(g); g.connect(sfxBus); s.start();
+  return true;
+}
 function musicElement() {
   if (!musicEl) {
     musicEl = new Audio(MUSIC_SRC);
@@ -70,9 +90,9 @@ export const sound = {
     return prefs[kind];
   },
   // Effets
-  select() { if (!ensure() || !prefs.sfx) return; tone({ freq: 880, type: 'triangle', dur: 0.08, gain: 0.25 }); },
-  lock() { if (!ensure() || !prefs.sfx) return; tone({ freq: 110, to: 55, type: 'sine', dur: 0.35, gain: 0.9 }); tone({ freq: 523, type: 'triangle', start: 0.03, dur: 0.5, gain: 0.35 }); tone({ freq: 784, type: 'triangle', start: 0.09, dur: 0.6, gain: 0.25 }); },
-  ban() { if (!ensure() || !prefs.sfx) return; tone({ freq: 330, to: 110, type: 'sawtooth', dur: 0.45, gain: 0.3, filter: 1400 }); tone({ freq: 70, type: 'sine', dur: 0.3, gain: 0.7 }); },
+  select() { if (!sample('select') && ctx && prefs.sfx) tone({ freq: 880, type: 'triangle', dur: 0.08, gain: 0.25 }); },
+  lock() { sample('validate'); },
+  ban() { sample('validate'); },
   yourTurn() { if (!ensure() || !prefs.sfx) return; tone({ freq: 660, type: 'sine', dur: 0.18, gain: 0.3 }); tone({ freq: 990, type: 'sine', start: 0.12, dur: 0.3, gain: 0.25 }); },
   tick() { if (!ensure() || !prefs.sfx) return; tone({ freq: 1500, type: 'square', dur: 0.04, gain: 0.12, filter: 3000 }); },
   win() { if (!ensure() || !prefs.sfx) return; [523, 659, 784, 1047].forEach((f, i) => tone({ freq: f, type: 'triangle', start: i * 0.12, dur: 0.7, gain: 0.3 })); },
