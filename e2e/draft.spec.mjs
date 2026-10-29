@@ -5,8 +5,11 @@ import assert from 'node:assert/strict';
 
 const BASE = process.argv[2] || 'http://localhost:8080/';
 const shots = process.env.SHOTS || '';
-const browser = await chromium.launch();
+const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+// espionne l'élément de musique pour vérifier quand il joue
+await context.addInitScript(() => { const P = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { window.__music = this; return P.call(this); }; });
+const musicOn = (p) => p.evaluate(() => !!window.__music && !window.__music.paused && !window.__music.muted);
 await context.route(/ddragon|fonts\.(googleapis|gstatic)/, r => r.abort());
 const errors = [];
 const newPage = async () => { const p = await context.newPage(); p.setDefaultTimeout(8000); p.on('pageerror', e => errors.push(e.message)); return p; };
@@ -31,6 +34,8 @@ await B.waitForSelector('[data-act=team][data-v=GEN][disabled]');
 await B.click('[data-act=team][data-v=T1]'); await B.click('[data-act=side][data-v=red]');
 await A.waitForSelector('[data-act=start]:not([disabled])');
 if (shots) await A.screenshot({ path: shots + '/lobby.png' });
+await A.mouse.click(2, 2); await A.waitForTimeout(300);
+assert.equal(await musicOn(A), false, 'pas de musique dans le lobby');
 
 // 3e joueur
 const C = await newPage(); await C.goto(url);
@@ -40,6 +45,7 @@ await A.click('[data-act=start]');
 // Sélectionner un champion ne doit pas redessiner l'écran (pas de rechargement des images)
 {
   await A.waitForSelector('.draft'); await B.waitForSelector('.draft');
+  await A.waitForTimeout(300); assert.equal(await musicOn(A), true, 'musique pendant la draft');
   const P = (await A.$('[data-act=lock]')) ? A : B;
   await P.evaluate(() => { document.querySelector('.grid').dataset.mark = '1'; });
   await P.click('.champ:not([aria-disabled=true])');

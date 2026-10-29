@@ -33,28 +33,40 @@ function tone({ freq, type = 'sine', start = 0, dur = 0.2, gain = 0.5, to = null
 // Musique de fond : fichier libre de droits fourni par l'auteur du site, lu en boucle (streaming).
 const MUSIC_SRC = new URL('../audio/draft-music.mp3?q=192', import.meta.url).href;
 const MUSIC_GAIN = 0.22;
-let musicEl = null;
-function startMusic() {
-  if (!ensure()) return;
+let musicEl = null, inGame = false;
+function musicElement() {
   if (!musicEl) {
     musicEl = new Audio(MUSIC_SRC);
     musicEl.loop = true; musicEl.preload = 'auto';
     try { ctx.createMediaElementSource(musicEl).connect(musicBus); } catch { musicEl.volume = MUSIC_GAIN; }
   }
-  if (musicEl.paused) musicEl.play().catch(() => {});
+  return musicEl;
 }
-function stopMusic() { if (musicEl && !musicEl.paused) musicEl.pause(); }
+// La musique ne joue que pendant une partie lancée (draft → résultats), jamais sur l'accueil ni le lobby.
+function syncMusic() {
+  if (!ctx) return;
+  const el = musicElement();
+  if (inGame && prefs.music) { if (el.paused) el.play().catch(() => {}); }
+  else if (!el.paused) el.pause();
+}
 
 export const sound = {
   // à appeler sur la première interaction de l'utilisateur
-  unlock() { if (ensure() && prefs.music) startMusic(); },
+  unlock() {
+    if (!ensure()) return;
+    // iOS : on « amorce » l'élément audio pendant le geste pour pouvoir le lancer plus tard sans clic
+    const el = musicElement();
+    if (!inGame && el.paused) { el.muted = true; el.play().then(() => { if (!inGame) el.pause(); el.muted = false; }).catch(() => { el.muted = false; }); }
+    syncMusic();
+  },
+  setInGame(v) { if (inGame === v) return; inGame = v; syncMusic(); },
   get prefs() { return { ...prefs }; },
   toggle(kind) {
     prefs[kind] = !prefs[kind]; save(); ensure();
     if (!ctx) return prefs[kind];
     const bus = kind === 'music' ? musicBus : sfxBus;
     bus.gain.setTargetAtTime(prefs[kind] ? (kind === 'music' ? MUSIC_GAIN : 0.35) : 0, ctx.currentTime, 0.1);
-    if (kind === 'music') prefs.music ? startMusic() : stopMusic();
+    if (kind === 'music') syncMusic();
     return prefs[kind];
   },
   // Effets

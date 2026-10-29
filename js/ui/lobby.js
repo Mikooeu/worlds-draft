@@ -1,4 +1,4 @@
-import { esc, teamBadge, shortName } from './common.js?v=202610291600';
+import { esc, teamBadge, shortName } from './common.js?v=202610291601';
 
 const SIDE_LABEL = { blue: 'Blue side', red: 'Red side' };
 

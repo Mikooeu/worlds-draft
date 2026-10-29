@@ -1,19 +1,19 @@
-import { sound } from './audio.js?v=202610291600';
-import { generateNarrative } from './logic/narrative.js?v=202610291600';
-import { loadData } from './data.js?v=202610291600';
-import { openStore } from './store/store.js?v=202610291600';
-import { createGame, normalize } from './logic/game.js?v=202610291600';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610291600';
-import { autoAssignRoles } from './logic/roles.js?v=202610291600';
-import { ROLES } from './logic/winrate.js?v=202610291600';
-import { toast, resetButton } from './ui/common.js?v=202610291600';
-import { champTooltip } from './ui/tooltip.js?v=202610291600';
-import { createTimeoutGate } from './timeouts.js?v=202610291600';
-import { renderHome } from './ui/home.js?v=202610291600';
-import { renderLobby } from './ui/lobby.js?v=202610291600';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610291600';
-import { renderRoles } from './ui/roles.js?v=202610291600';
-import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610291600';
+import { sound } from './audio.js?v=202610291601';
+import { generateNarrative } from './logic/narrative.js?v=202610291601';
+import { loadData } from './data.js?v=202610291601';
+import { openStore } from './store/store.js?v=202610291601';
+import { createGame, normalize } from './logic/game.js?v=202610291601';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610291601';
+import { autoAssignRoles } from './logic/roles.js?v=202610291601';
+import { ROLES } from './logic/winrate.js?v=202610291601';
+import { toast, resetButton } from './ui/common.js?v=202610291601';
+import { champTooltip } from './ui/tooltip.js?v=202610291601';
+import { createTimeoutGate } from './timeouts.js?v=202610291601';
+import { renderHome } from './ui/home.js?v=202610291601';
+import { renderLobby } from './ui/lobby.js?v=202610291601';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610291601';
+import { renderRoles } from './ui/roles.js?v=202610291601';
+import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610291601';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -56,6 +56,7 @@ function gameUrl(c) {
 
 function render() {
   if (typeof hideTip === 'function') hideTip();
+  sound.setInGame(!!code && !!state && !!state.seats?.[me()] && state.phase !== 'lobby');
   if (!code) { app.innerHTML = renderHome(data); return; }
   if (state === undefined) { app.innerHTML = '<div class="loading">Connexion à la partie…</div>'; return; }
   if (state === null) { app.innerHTML = renderHome(data, `La partie ${code} n'existe pas (ou plus).`); return; }
