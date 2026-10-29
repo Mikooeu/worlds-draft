@@ -31,7 +31,7 @@ function tone({ freq, type = 'sine', start = 0, dur = 0.2, gain = 0.5, to = null
 }
 
 // Musique de fond : fichier libre de droits fourni par l'auteur du site, lu en boucle (streaming).
-const MUSIC_SRC = new URL('../audio/draft-music.mp3', import.meta.url).href;
+const MUSIC_SRC = new URL('../audio/draft-music.mp3?q=192', import.meta.url).href;
 const MUSIC_GAIN = 0.22;
 let musicEl = null;
 function startMusic() {

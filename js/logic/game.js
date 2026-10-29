@@ -1,9 +1,9 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610291550';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610291550';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610291550';
-import { computeResult, ROLES } from './winrate.js?v=202610291550';
-import { autoAssignRoles } from './roles.js?v=202610291550';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610291600';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610291600';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610291600';
+import { computeResult, ROLES } from './winrate.js?v=202610291600';
+import { autoAssignRoles } from './roles.js?v=202610291600';
 
 export const ACTION_MS = 30000;
 export const REVEAL_MS = 5000;
