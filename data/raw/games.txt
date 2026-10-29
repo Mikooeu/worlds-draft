@@ -22,3 +22,4 @@
 83660|GEN|LYON|Kiin:Ambessa;Canyon:Nocturne;Chovy:Lissandra;Ruler:Ashe;Duro:Seraphine|Dhokla:Shen;Inspired:Vi;Saint:Akali;Berserker:Yunara;Isles:Lulu
 83661|GEN|LYON|Kiin:Camille;Canyon:Jayce;Chovy:Galio;Ruler:Ezreal;Duro:Nautilus|Dhokla:KSante;Inspired:Maokai;Saint:Tristana;Berserker:Lucian;Isles:Milio
 83668|TL|AL|Morgan:Kled;Josedeodo:Pantheon;Quid:Akali;Yeon:Xayah;CoreJJ:Rakan|Breathe:Olaf;Tarzan:Nocturne;Shanks:Annie;Hope:Jinx;Kael:Tahm Kench
+83662|T1|CFO|Doran:Ambessa;Oner:Vi;Faker:Galio;Peyz:Jhin;Keria:Rakan|Rest:Rumble;Shad0w:Qiyana;Pout:Ryze;Doggo:Kaisa;Kino:Alistar
