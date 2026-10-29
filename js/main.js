@@ -1,24 +1,45 @@
-import { generateNarrative } from './logic/narrative.js?v=202610280003';
-import { loadData } from './data.js?v=202610280003';
-import { openStore } from './store/store.js?v=202610280003';
-import { createGame, normalize } from './logic/game.js?v=202610280003';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610280003';
-import { autoAssignRoles } from './logic/roles.js?v=202610280003';
-import { ROLES } from './logic/winrate.js?v=202610280003';
-import { toast, resetButton } from './ui/common.js?v=202610280003';
-import { champTooltip } from './ui/tooltip.js?v=202610280003';
-import { createTimeoutGate } from './timeouts.js?v=202610280003';
-import { renderHome } from './ui/home.js?v=202610280003';
-import { renderLobby } from './ui/lobby.js?v=202610280003';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610280003';
-import { renderRoles } from './ui/roles.js?v=202610280003';
-import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610280003';
+import { sound } from './audio.js?v=202610291516';
+import { generateNarrative } from './logic/narrative.js?v=202610291516';
+import { loadData } from './data.js?v=202610291516';
+import { openStore } from './store/store.js?v=202610291516';
+import { createGame, normalize } from './logic/game.js?v=202610291516';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610291516';
+import { autoAssignRoles } from './logic/roles.js?v=202610291516';
+import { ROLES } from './logic/winrate.js?v=202610291516';
+import { toast, resetButton } from './ui/common.js?v=202610291516';
+import { champTooltip } from './ui/tooltip.js?v=202610291516';
+import { createTimeoutGate } from './timeouts.js?v=202610291516';
+import { renderHome } from './ui/home.js?v=202610291516';
+import { renderLobby } from './ui/lobby.js?v=202610291516';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610291516';
+import { renderRoles } from './ui/roles.js?v=202610291516';
+import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610291516';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 let data, store, state = null, code = null, unsub = null, joinTried = false;
 const ui = { sel: null, search: '', role: 'all', roles: null, key: '' };
 const timeouts = createTimeoutGate();
+// Contrôles du son (en bas à gauche), et déblocage de l'audio à la première interaction
+const audioUi = document.createElement('div');
+audioUi.className = 'audio-ctl';
+const audioBtn = (kind, on, label) => `<button data-audio="${kind}" aria-pressed="${on}" title="${label}">${kind === 'music' ? '🎵' : (on ? '🔊' : '🔇')}</button>`;
+const drawAudio = () => { const p = sound.prefs; audioUi.innerHTML = audioBtn('music', p.music, p.music ? 'Couper la musique' : 'Activer la musique') + audioBtn('sfx', p.sfx, p.sfx ? 'Couper les effets' : 'Activer les effets'); };
+drawAudio(); document.body.appendChild(audioUi);
+audioUi.addEventListener('click', (e) => { const b = e.target.closest('[data-audio]'); if (b) { sound.toggle(b.dataset.audio); drawAudio(); } });
+const unlockAudio = () => { sound.unlock(); removeEventListener('pointerdown', unlockAudio); removeEventListener('keydown', unlockAudio); };
+addEventListener('pointerdown', unlockAudio); addEventListener('keydown', unlockAudio);
+let prevSnap = null, lastTickSec = null;
+function playTransitions(st) {
+  const prev = prevSnap;
+  prevSnap = st ? { phase: st.phase, step: st.step, games: st.games.length, series: st.series } : null;
+  if (!st || !prev || prev.games !== st.games.length || prev.series !== st.series) return;
+  if (prev.phase === 'draft' && st.step > prev.step) {
+    (DRAFT_ORDER[prev.step]?.type === 'ban' ? sound.ban : sound.lock)();
+    const cur = DRAFT_ORDER[st.step];
+    if (st.phase === 'draft' && cur && cur.side === st.seats[me()]?.side) setTimeout(() => sound.yourTurn(), 350);
+  }
+}
 const narr = { key: null, shown: 0, events: [], timer: null, done: new Set() };
 
 const me = () => store.playerId;
@@ -73,7 +94,7 @@ function render() {
         clearInterval(narr.timer);
         narr.timer = setInterval(() => {
           if (narr.shown < narr.events.length) { narr.shown++; document.getElementById('feed')?.insertAdjacentHTML('beforeend', feedItem(narr.events[narr.shown - 1])); }
-          else { clearInterval(narr.timer); setTimeout(() => { narr.done.add(nk); render(); }, 1800); }
+          else { clearInterval(narr.timer); setTimeout(() => { narr.done.add(nk); render(); (g.result.winnerTeam === state.seats[me()]?.team ? sound.win : sound.lose)(); }, 1800); }
         }, 1700);
       }
       app.innerHTML = renderNarrative(state, data);
@@ -97,6 +118,7 @@ function openGame(c) {
   let lastSig = null;
   unsub = store.subscribe(c, (raw) => {
     state = raw ? normalize(raw) : null;
+    playTransitions(state);
     // un changement de pré-sélection seul ne redessine pas l'écran (pas de clignotement)
     const sig = state ? JSON.stringify({ ...state, presel: null }) : 'null';
     if (sig === lastSig) return;
@@ -132,6 +154,8 @@ function tick() {
   if (draftEl) {
     const mine = state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === state.seats[me()]?.side;
     draftEl.classList.toggle('urgent', mine && left > 0 && left <= 5);
+    if (mine && left > 0 && left <= 5 && left !== lastTickSec) { lastTickSec = left; sound.tick(); }
+    if (left > 5) lastTickSec = null;
   }
   if (store.now() > state.deadline + 300 && (state.phase === 'draft' || state.phase === 'roles')) {
     const k = timeouts.take(state);
@@ -156,13 +180,18 @@ app.addEventListener('click', async (e) => {
     case 'format': dispatch({ type: 'setFormat', format: v }); break;
     case 'start': dispatch({ type: 'start' }); break;
     case 'role': ui.role = v; applyDraftFilters(app, ui); break;
-    case 'sel': ui.sel = v; showSelection(app, data, ui); dispatch({ type: 'preselect', step: state.step, champ: v }); break;
+    case 'sel': ui.sel = v; sound.select(); showSelection(app, data, ui); dispatch({ type: 'preselect', step: state.step, champ: v }); break;
     case 'lock': if (ui.sel) dispatch({ type: 'draft', step: state.step, champ: ui.sel }).then(ok => { if (!ok) toast('Action refusée'); }); break;
     case 'setRoles': dispatch({ type: 'setRoles', roles: ui.roles }); break;
     case 'nextGame': dispatch({ type: 'nextGame' }); break;
     case 'chooseSide': dispatch({ type: 'chooseSide', side: v }); break;
     case 'rematch': dispatch({ type: 'rematch' }); break;
-    case 'skipNarr': clearInterval(narr.timer); narr.done.add(narr.key); render(); break;
+    case 'skipNarr': {
+      clearInterval(narr.timer); narr.done.add(narr.key); render();
+      const g = state.games[state.games.length - 1];
+      (g.result.winnerTeam === state.seats[me()]?.team ? sound.win : sound.lose)();
+      break;
+    }
     case 'reset':
       if (b.dataset.confirm) { dispatch({ type: 'reset' }); break; }
       b.dataset.confirm = '1'; b.textContent = 'Confirmer ?';
@@ -176,7 +205,8 @@ app.addEventListener('dblclick', (e) => {
   if (b && b.getAttribute('aria-disabled') !== 'true' && state?.phase === 'draft') dispatch({ type: 'draft', step: state.step, champ: b.dataset.v });
 });
 // Infobulle champion : survol 1 s (souris) ou appui long (tactile)
-const tip = Object.assign(document.createElement('div'), { id: 'tip', role: 'tooltip' });
+const tip = Object.assign(document.createElement('div'), { id: 'tip' });
+tip.setAttribute('aria-hidden', 'true');
 document.body.appendChild(tip);
 let tipTimer = null, tipFor = null, longPressed = false;
 function showTip(btn) {
@@ -186,7 +216,7 @@ function showTip(btn) {
   const oppTeam = g && (g.blueTeam === myTeam ? g.redTeam : g.blueTeam);
   const isBan = DRAFT_ORDER[state.step]?.type === 'ban';
   tip.innerHTML = champTooltip(data, btn.dataset.v, isBan ? oppTeam : myTeam, { opponent: isBan });
-  tip.classList.add('show');
+  tip.classList.add('show'); tip.setAttribute('role', 'tooltip'); tip.removeAttribute('aria-hidden');
   const r = btn.getBoundingClientRect(), t = tip.getBoundingClientRect();
   let x = r.right + 8, y = r.top;
   if (x + t.width > innerWidth - 8) x = r.left - t.width - 8;
@@ -194,7 +224,7 @@ function showTip(btn) {
   if (y + t.height > innerHeight - 8) y = innerHeight - t.height - 8;
   tip.style.left = `${x}px`; tip.style.top = `${Math.max(8, y)}px`;
 }
-function hideTip() { clearTimeout(tipTimer); tipTimer = null; tipFor = null; tip.classList.remove('show'); }
+function hideTip() { clearTimeout(tipTimer); tipTimer = null; tipFor = null; tip.classList.remove('show'); tip.removeAttribute('role'); tip.setAttribute('aria-hidden', 'true'); }
 app.addEventListener('mouseover', (e) => {
   const b = e.target.closest('.grid .champ');
   if (!b || b === tipFor) return;
