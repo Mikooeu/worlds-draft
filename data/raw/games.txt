@@ -23,3 +23,12 @@
 83661|GEN|LYON|Kiin:Camille;Canyon:Jayce;Chovy:Galio;Ruler:Ezreal;Duro:Nautilus|Dhokla:KSante;Inspired:Maokai;Saint:Tristana;Berserker:Lucian;Isles:Milio
 83668|TL|AL|Morgan:Kled;Josedeodo:Pantheon;Quid:Akali;Yeon:Xayah;CoreJJ:Rakan|Breathe:Olaf;Tarzan:Nocturne;Shanks:Annie;Hope:Jinx;Kael:Tahm Kench
 83662|T1|CFO|Doran:Ambessa;Oner:Vi;Faker:Galio;Peyz:Jhin;Keria:Rakan|Rest:Rumble;Shad0w:Qiyana;Pout:Ryze;Doggo:Kaisa;Kino:Alistar
+83663|BLG|KC|Bin:Ambessa;XUN:Jarvan IV;Knight:Orianna;Viper:Kaisa;ON:Nautilus|Canna:Rumble;Yike:Lee Sin;Kyeahoo:Viktor;Caliste:Jhin;Busio:Alistar
+83664|LOS|TSW|Zest:Gnar;Curse:Wukong;Feisty:Orianna;Duduhh:Kalista;Ackerman:Renata Glasc|Pun:Shen;Hizto:Lee Sin;Dire:Akali;Eddie:Caitlyn;Bie:Elise
+83665|LOS|TSW|Zest:Kennen;Curse:Trundle;Feisty:Galio;Duduhh:Ashe;Ackerman:Seraphine|Pun:Jax;Hizto:Vi;Dire:Locke;Eddie:Miss Fortune;Bie:Nautilus
+83667|TL|AL|Morgan:Camille;Josedeodo:Lee Sin;Quid:Galio;Yeon:Lucian;CoreJJ:Nami|Breathe:Ambessa;Tarzan:Skarner;Shanks:Orianna;Hope:Yunara;Kael:Lulu
+r4-mkoi-t1-1|T1|MKOI|Doran:Ambessa;Oner:Lee Sin;Faker:Syndra;Peyz:Xayah;Keria:Nautilus|Myrwn:Gnar;Elyoya:Qiyana;jojopyun:Akali;Supa:Kaisa;Alvaro:Alistar
+r4-mkoi-t1-2|T1|MKOI|Doran:Gwen;Oner:Jarvan IV;Faker:Orianna;Peyz:Jhin;Keria:Karma|Myrwn:Ornn;Elyoya:Xin Zhao;jojopyun:Viktor;Supa:Ezreal;Alvaro:Seraphine
+r4-lyon-ig-1|IG|LYON|TheShy:Ornn;Wei:Vi;RooKie:Aurora;JiaQi:Yunara;meiko:Lulu|Dhokla:Rumble;Inspired:Nocturne;Saint:Sylas;Berserker:Ezreal;Isles:Karma
+r4-lyon-ig-2|LYON|IG|Dhokla:Olaf;Inspired:Qiyana;Saint:Taliyah;Berserker:Corki;Isles:Alistar|TheShy:Zaahen;Wei:Lee Sin;RooKie:Annie;JiaQi:Jhin;meiko:Nautilus
+r4-lyon-ig-3|IG|LYON|TheShy:Jayce;Wei:Trundle;RooKie:Orianna;JiaQi:Caitlyn;meiko:Lux|Dhokla:KSante;Inspired:Xin Zhao;Saint:LeBlanc;Berserker:Lucian;Isles:Milio

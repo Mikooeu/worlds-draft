@@ -1,5 +1,5 @@
-import { firebaseConfig } from '../config.js?v=202610291516';
-import { createLocalStore } from './localStore.js?v=202610291516';
+import { firebaseConfig } from '../config.js?v=202610291536';
+import { createLocalStore } from './localStore.js?v=202610291536';
 
 function localPlayerId() {
   const k = 'wd.playerId';
@@ -11,6 +11,6 @@ function localPlayerId() {
 export async function openStore() {
   const local = new URLSearchParams(location.search).get('local') === '1' || !firebaseConfig.apiKey;
   if (local) return Object.assign(createLocalStore({ playerId: localPlayerId() }), { mode: 'local' });
-  const { createFirebaseStore } = await import('./firebaseStore.js?v=202610291516');
+  const { createFirebaseStore } = await import('./firebaseStore.js?v=202610291536');
   return Object.assign(await createFirebaseStore(firebaseConfig), { mode: 'online' });
 }
