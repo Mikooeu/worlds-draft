@@ -1,5 +1,5 @@
-import { esc } from './common.js?v=202610291717';
-import { ROLES } from '../logic/winrate.js?v=202610291717';
+import { esc, shortName } from './common.js?v=202610291745';
+import { ROLES } from '../logic/winrate.js?v=202610291745';
 
 const pctRaw = (w, n) => `${Math.round((w / n) * 100)} %`;
 
@@ -16,7 +16,14 @@ export function champTooltip(data, id, myTeamTag, opts = {}) {
   }
   const team = myTeamTag && data.teams[myTeamTag];
   const tag = opts.opponent ? '<span class="tip-tag">Adversaire</span> ' : '';
-  if (team) {
+  if (team && opts.opponent) {
+    // Ban : bilan de toute l'équipe adverse sur ce champion (plusieurs joueurs peuvent le jouer)
+    let games = 0, wins = 0;
+    for (const r of ROLES) { const s = data.players[team.players[r]]?.champs?.[id]; if (s) { games += s.games; wins += s.wins; } }
+    lines.push(games
+      ? `<div class="tip-row tip-player">${tag}${esc(shortName(team))} : ${wins}V / ${games}</div>`
+      : `<div class="tip-row tip-player muted">${tag}${esc(shortName(team))} ne l'a jamais joué aux Worlds</div>`);
+  } else if (team) {
     const played = ROLES.map(r => team.players[r]).find(p => data.players[p]?.champs?.[id]?.games);
     if (played) {
       const s = data.players[played].champs[id];
