@@ -25,7 +25,12 @@ test('tooltip: champion never played at Worlds', () => {
   const t = champTooltip(d, 'Teemo', 'AAA');
   assert.match(t, /Pas encore joué aux Worlds/); assert.doesNotMatch(t, /0 %/);
 });
-test('tooltip during bans can show the opponent player, labelled', () => {
+test('tooltip during bans shows the whole opposing team record, labelled', () => {
   const t = champTooltip(d, 'Ahri', 'BBB', { opponent: true });
-  assert.match(t, /Adversaire/); assert.match(t, /b3 : 1V \/ 1/);
+  assert.match(t, /Adversaire/); assert.match(t, /BBB : 1V \/ 1/); assert.doesNotMatch(t, /b3/);
+  // deux joueurs de la même équipe sur le même champion : bilans additionnés
+  const g3 = `3|BBB|AAA|b1:Ahri;b2:Lee Sin;b3:Syndra;b4:Ezreal;b5:Karma|a1:Gnar;a2:Vi;a3:Teemo;a4:Jhin;a5:Rell`;
+  const d2 = resolveData(buildData(teams, games + '\n' + g3, 'x'), dd);
+  assert.match(champTooltip(d2, 'Ahri', 'BBB', { opponent: true }), /BBB : 2V \/ 2/);
+  assert.match(champTooltip(d, 'Teemo', 'BBB', { opponent: true }), /BBB ne l'a jamais joué/);
 });
