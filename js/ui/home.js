@@ -1,4 +1,4 @@
-import { esc } from './common.js?v=202610291536';
+import { esc } from './common.js?v=202610291550';
 export function renderHome(data, msg = '') {
   return `<div class="home"><div class="home-card">
     <div><h1>Worlds <span>Draft</span> 2026</h1>
