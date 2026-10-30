@@ -1,5 +1,6 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610301516';
-import { seriesLine } from './draft.js?v=202610301516';
+import { ROLES } from '../logic/winrate.js?v=202610301522';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610301522';
+import { seriesLine } from './draft.js?v=202610301522';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -68,18 +69,53 @@ export function renderSideChoice(s, data, me) {
 }
 
 // Récit accéléré de la game (avant le tableau des résultats)
+// Simulation de la game : HUD façon diffusion (kills, horloge, objectifs, avance en or) + fil des actions
 export function renderNarrative(s, data) {
   const g = s.games[s.games.length - 1];
   const tb = data.teams[g.blueTeam], tr = data.teams[g.redTeam];
+  const comp = (side) => `<div class="hud-comp">${ROLES.map(r => champIcon(data, g.roles?.[side]?.[r] || g.picks[side][ROLES.indexOf(r)])).join('')}</div>`;
+  const team = (t, side) => `<div class="hud-team ${side}">
+      <div class="hud-id">${teamBadge(t, 'lg')}<div><div class="hud-name">${esc(t.name)}</div><div class="hud-obj" id="obj-${side}"></div></div></div>
+      ${comp(side)}
+    </div>`;
   return `<div class="result narr">
-    <div class="muted small" style="text-align:center">${s.format.toUpperCase()} · Game ${s.games.length} · La game se joue…</div>
-    <div class="score-head">
-      <div class="side blue">${teamBadge(tb, 'lg')}<div class="muted">${esc(tb.name)}</div></div>
-      <div class="vs">VS</div>
-      <div class="side red"><div class="muted">${esc(tr.name)}</div>${teamBadge(tr, 'lg')}</div>
+    <h2 class="sr-only">Simulation de la game ${s.games.length}</h2>
+    <div class="hud">
+      ${team(tb, 'blue')}
+      <div class="hud-mid">
+        <div class="hud-kills"><span class="k blue" id="k-blue">0</span><span class="hud-clock" id="hud-clock">00:00</span><span class="k red" id="k-red">0</span></div>
+        <div class="hud-meta">${s.format.toUpperCase()}, game ${s.games.length}</div>
+      </div>
+      ${team(tr, 'red')}
     </div>
-    <div class="panel"><ol class="feed" id="feed" aria-live="polite"></ol></div>
-    <div class="result-foot"><button class="btn btn-ghost" data-act="skipNarr">Passer</button></div>
+    <div class="lead" aria-hidden="true">
+      <div class="lead-track"><div class="lead-fill" id="lead-fill"></div><span class="lead-mid"></span></div>
+      <div class="lead-label" id="lead-label">Or égal</div>
+    </div>
+    <ol class="feed" id="feed" aria-live="polite" aria-label="Actions de la game, la plus récente en haut"></ol>
+    <div class="result-foot"><button class="btn btn-ghost" data-act="skipNarr">Passer à l'analyse</button></div>
   </div>`;
 }
-export const feedItem = (e) => `<li class="feed-item ${e.side}"><span class="feed-time">${e.time}</span><span>${esc(e.text)}</span></li>`;
+const KEY = new Set(['comeback', 'baron', 'ace', 'nexus']);
+export const feedItem = (e) => `<li class="feed-item ${e.side} ${KEY.has(e.kind) ? 'key' : ''} ${e.kind}"><span class="feed-time">${e.time}</span><p class="feed-text">${esc(e.text)}</p></li>`;
+const kGold = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1).replace('.', ',')} k` : `${n}`);
+const plural = (n, w) => `${n} ${w}${n > 1 ? 's' : ''}`;
+// Met à jour le HUD sans redessiner l'écran
+export function updateNarrHud(sc, data, g) {
+  const $ = (id) => document.getElementById(id);
+  if (!$('hud-clock')) return;
+  $('hud-clock').textContent = sc.time;
+  $('k-blue').textContent = sc.blue.kills; $('k-red').textContent = sc.red.kills;
+  for (const side of ['blue', 'red']) {
+    const t = sc[side];
+    $('obj-' + side).textContent = [plural(t.towers, 'tour'), plural(t.dragons, 'dragon'), ...(t.barons ? [plural(t.barons, 'Nashor').replace('Nashors', 'Nashor')] : [])].join(', ');
+  }
+  const max = 8000, w = Math.min(1, Math.abs(sc.lead) / max) * 50;
+  const fill = $('lead-fill');
+  fill.className = 'lead-fill ' + (sc.lead > 0 ? 'blue' : sc.lead < 0 ? 'red' : '');
+  fill.style.left = sc.lead > 0 ? `${50 - w}%` : '50%'; fill.style.width = `${w}%`;
+  const leader = sc.lead > 0 ? data.teams[g.blueTeam] : data.teams[g.redTeam];
+  const lab = $('lead-label');
+  lab.className = 'lead-label ' + (sc.lead > 0 ? 'blue' : sc.lead < 0 ? 'red' : '');
+  lab.textContent = Math.abs(sc.lead) < 300 ? 'Or égal' : `${leader.name} +${kGold(Math.abs(sc.lead))} d'or`;
+}

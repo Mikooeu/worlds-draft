@@ -1,20 +1,20 @@
-import { sound } from './audio.js?v=202610301516';
-import { generateNarrative } from './logic/narrative.js?v=202610301516';
-import { loadData } from './data.js?v=202610301516';
-import { openStore } from './store/store.js?v=202610301516';
-import { createGame, normalize } from './logic/game.js?v=202610301516';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301516';
-import { autoAssignRoles } from './logic/roles.js?v=202610301516';
-import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301516';
-import { ROLES } from './logic/winrate.js?v=202610301516';
-import { toast, resetButton } from './ui/common.js?v=202610301516';
-import { champTooltip } from './ui/tooltip.js?v=202610301516';
-import { createTimeoutGate } from './timeouts.js?v=202610301516';
-import { renderHome } from './ui/home.js?v=202610301516';
-import { renderLobby } from './ui/lobby.js?v=202610301516';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301516';
-import { renderRoles } from './ui/roles.js?v=202610301516';
-import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610301516';
+import { sound } from './audio.js?v=202610301522';
+import { generateNarrative, scoreAt } from './logic/narrative.js?v=202610301522';
+import { loadData } from './data.js?v=202610301522';
+import { openStore } from './store/store.js?v=202610301522';
+import { createGame, normalize } from './logic/game.js?v=202610301522';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301522';
+import { autoAssignRoles } from './logic/roles.js?v=202610301522';
+import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301522';
+import { ROLES } from './logic/winrate.js?v=202610301522';
+import { toast, resetButton } from './ui/common.js?v=202610301522';
+import { champTooltip } from './ui/tooltip.js?v=202610301522';
+import { createTimeoutGate } from './timeouts.js?v=202610301522';
+import { renderHome } from './ui/home.js?v=202610301522';
+import { renderLobby } from './ui/lobby.js?v=202610301522';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301522';
+import { renderRoles } from './ui/roles.js?v=202610301522';
+import { renderResult, renderSideChoice, renderNarrative, feedItem, updateNarrHud } from './ui/result.js?v=202610301522';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -129,12 +129,17 @@ function render() {
         narr.key = nk; narr.shown = 0; narr.events = generateNarrative(data, g, g.result, nk);
         clearInterval(narr.timer);
         narr.timer = setInterval(() => {
-          if (narr.shown < narr.events.length) { narr.shown++; document.getElementById('feed')?.insertAdjacentHTML('beforeend', feedItem(narr.events[narr.shown - 1])); }
+          if (narr.shown < narr.events.length) {
+            narr.shown++;
+            document.getElementById('feed')?.insertAdjacentHTML('afterbegin', feedItem(narr.events[narr.shown - 1]));
+            updateNarrHud(scoreAt(narr.events, narr.shown), data, g);
+          }
           else { clearInterval(narr.timer); setTimeout(() => { narr.done.add(nk); render(); (g.result.winnerTeam === state.seats[me()]?.team ? sound.win : sound.lose)(); }, 1800); }
         }, 1700);
       }
       app.innerHTML = renderNarrative(state, data);
-      document.getElementById('feed').innerHTML = narr.events.slice(0, narr.shown).map(feedItem).join('');
+      document.getElementById('feed').innerHTML = narr.events.slice(0, narr.shown).reverse().map(feedItem).join('');
+      updateNarrHud(scoreAt(narr.events, narr.shown), data, state.games[state.games.length - 1]);
       break;
     }
     case 'sideChoice': app.innerHTML = renderSideChoice(state, data, me()); break;
