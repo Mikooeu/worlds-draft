@@ -1,5 +1,5 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610291745';
-import { seriesLine } from './draft.js?v=202610291745';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202610301346';
+import { seriesLine } from './draft.js?v=202610301346';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
@@ -59,7 +59,7 @@ export function renderResult(s, data, me) {
 export function renderSideChoice(s, data, me) {
   const chooser = s.sideChooser === me;
   const t = data.teams[s.seats[s.sideChooser].team];
-  return `<div class="center-msg"><div style="display:grid;gap:18px;justify-items:center">
+  return `<div class="center-msg"><div style="display:grid;gap:1.125rem;justify-items:center">
     <div class="muted small">${esc(seriesLine(s, data))}</div>
     ${teamBadge(t, 'lg')}
     <h2>${chooser ? 'Tu as perdu la game : choisis ton side' : `${esc(t.name)} choisit son side…`}</h2>
