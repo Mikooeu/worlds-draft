@@ -5,17 +5,17 @@ export const C = 0.5;    // coefficient d'échelle
 export function smooth(wins, games, prior, k = K) {
   return (wins + k * prior) / (games + k);
 }
-const logit = (p) => Math.log(p / (1 - p));
+export const logit = (p) => Math.log(p / (1 - p));
 
 function teamWr(data, tag) {
   const t = data.teams[tag];
   return smooth(t.wins, t.wins + t.losses, 0.5);
 }
-function champWr(data, id) {
+export function champWr(data, id) {
   const c = data.champions[id];
   return c && c.games > 0 ? smooth(c.wins, c.games, 0.5) : 0.5;
 }
-function playerChamp(data, playerName, id) {
+export function playerChamp(data, playerName, id) {
   const pc = data.players[playerName]?.champs?.[id];
   const prior = champWr(data, id);
   if (!pc || !pc.games) return { games: 0, wr: prior };
@@ -37,7 +37,7 @@ function pairStat(worldsTable, seasonTable, a, b) {
   }
   return { games: 0, wr: 0.5, source: null };
 }
-const matchup = (data, role, a, b) => pairStat(data.matchups?.[role], data.season?.matchups?.[role], a, b);
+export const matchup = (data, role, a, b) => pairStat(data.matchups?.[role], data.season?.matchups?.[role], a, b);
 
 // Synergie de composition : moyenne (en logit) des 10 paires de champions (duo bot compris).
 // Paire triée ; Worlds d'abord, sinon split, sinon neutre (50 %).

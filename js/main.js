@@ -1,24 +1,25 @@
-import { sound } from './audio.js?v=202610301346';
-import { generateNarrative } from './logic/narrative.js?v=202610301346';
-import { loadData } from './data.js?v=202610301346';
-import { openStore } from './store/store.js?v=202610301346';
-import { createGame, normalize } from './logic/game.js?v=202610301346';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301346';
-import { autoAssignRoles } from './logic/roles.js?v=202610301346';
-import { ROLES } from './logic/winrate.js?v=202610301346';
-import { toast, resetButton } from './ui/common.js?v=202610301346';
-import { champTooltip } from './ui/tooltip.js?v=202610301346';
-import { createTimeoutGate } from './timeouts.js?v=202610301346';
-import { renderHome } from './ui/home.js?v=202610301346';
-import { renderLobby } from './ui/lobby.js?v=202610301346';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301346';
-import { renderRoles } from './ui/roles.js?v=202610301346';
-import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610301346';
+import { sound } from './audio.js?v=202610301425';
+import { generateNarrative } from './logic/narrative.js?v=202610301425';
+import { loadData } from './data.js?v=202610301425';
+import { openStore } from './store/store.js?v=202610301425';
+import { createGame, normalize } from './logic/game.js?v=202610301425';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301425';
+import { autoAssignRoles } from './logic/roles.js?v=202610301425';
+import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301425';
+import { ROLES } from './logic/winrate.js?v=202610301425';
+import { toast, resetButton } from './ui/common.js?v=202610301425';
+import { champTooltip } from './ui/tooltip.js?v=202610301425';
+import { createTimeoutGate } from './timeouts.js?v=202610301425';
+import { renderHome } from './ui/home.js?v=202610301425';
+import { renderLobby } from './ui/lobby.js?v=202610301425';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301425';
+import { renderRoles } from './ui/roles.js?v=202610301425';
+import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610301425';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 let data, store, state = null, code = null, unsub = null, joinTried = false;
-const ui = { sel: null, search: '', role: 'all', roles: null, key: '' };
+const ui = { sel: null, search: '', role: 'all', roles: null, key: '', teamFor: 'me' };
 const timeouts = createTimeoutGate();
 // Contrôles du son (en bas à gauche), et déblocage de l'audio à la première interaction
 const audioUi = document.createElement('div');
@@ -44,8 +45,42 @@ const narr = { key: null, shown: 0, events: [], timer: null, done: new Set() };
 
 const me = () => store.playerId;
 const ctx = () => ({ data, champIds: data.champList.map(c => c.id), now: store.now(), rng: Math.random });
-const dispatch = (action) => store.dispatch(code, { ...action, playerId: me() }, ctx())
+const dispatchAs = (action, playerId) => store.dispatch(code, { ...action, playerId }, ctx())
   .catch((err) => { console.error(err); toast('Connexion perdue, réessaie'); return false; });
+const dispatch = (action) => dispatchAs(action, me());
+
+// IA : c'est le navigateur de l'hôte qui joue pour elle
+let aiPending = null;
+const aiKey = (st) => `${st.series}:${st.games.length}:${st.phase}:${st.step}`;
+function driveAi() {
+  if (!state || !state.ai || me() !== state.hostId || state.guestId !== AI_ID) return;
+  const seat = state.seats[AI_ID], level = state.ai.level, g = state.games[state.games.length - 1];
+  let delay = null, act = null;
+  if (state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === seat.side) {
+    delay = 1200 + Math.random() * 2300;
+    act = () => { const champ = aiChoose(state, data, ctx().champIds, level); return champ && { type: 'draft', step: state.step, champ }; };
+  } else if (state.phase === 'roles' && g && !g.roles[seat.side]) {
+    delay = Math.max(0, (state.revealUntil || 0) - store.now()) + 900;
+    act = () => {
+      const picks = g.picks[seat.side];
+      const roles = level === 'easy' ? autoAssignRoles(picks, data) : aiRoles(data, seat.team, picks);
+      return { type: 'setRoles', roles };
+    };
+  } else if (state.phase === 'sideChoice' && state.sideChooser === AI_ID) {
+    delay = 1200;
+    act = () => ({ type: 'chooseSide', side: level === 'easy' && Math.random() < 0.5 ? 'red' : 'blue' });
+  }
+  if (delay == null) return;
+  const key = aiKey(state);
+  if (aiPending === key) return;
+  aiPending = key;
+  setTimeout(() => {
+    if (!state || aiKey(state) !== key) return;
+    const a = act();
+    if (!a) { aiPending = null; return; }
+    dispatchAs(a, AI_ID).then(ok => { if (!ok && aiPending === key) { aiPending = null; setTimeout(driveAi, 500); } });
+  }, delay);
+}
 
 function gameUrl(c) {
   const u = new URL(location.href);
@@ -79,7 +114,7 @@ function render() {
   const scroll = app.querySelector('.grid')?.scrollTop;
   ui.wasMyTurn = state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === state.seats[me()]?.side;
   switch (state.phase) {
-    case 'lobby': app.innerHTML = renderLobby(state, data, me()); break;
+    case 'lobby': if (!state.ai) ui.teamFor = 'me'; app.innerHTML = renderLobby(state, data, me(), { teamFor: ui.teamFor }); break;
     case 'draft': app.innerHTML = renderDraft(state, data, me(), ui); break;
     case 'roles':
       // 5 s : les deux compositions face à face avant l'attribution des rôles
@@ -110,6 +145,7 @@ function render() {
   if (focused) { const i = app.querySelector('[data-input="search"]'); i?.focus(); i?.setSelectionRange(caret, caret); }
   if (scroll != null) { const gr = app.querySelector('.grid'); if (gr) gr.scrollTop = scroll; }
   tick();
+  driveAi();
 }
 
 function openGame(c) {
@@ -175,7 +211,15 @@ app.addEventListener('click', async (e) => {
       try { await navigator.clipboard.writeText(gameUrl(code)); toast('Lien copié !'); }
       catch { prompt('Copie ce lien :', gameUrl(code)); }
       break;
-    case 'team': dispatch({ type: 'setTeam', team: v }); break;
+    case 'team': {
+      const forAi = state.ai && ui.teamFor === 'ai';
+      // contre l'IA : après avoir pris ton équipe, on passe directement au choix de celle de l'IA
+      const autoNext = state.ai && !forAi && state.seats[me()].team !== v && !state.seats[AI_ID]?.team;
+      dispatch(forAi ? { type: 'setAiTeam', team: v } : { type: 'setTeam', team: v }).then(ok => { if (ok && autoNext) { ui.teamFor = 'ai'; render(); } });
+      break;
+    }
+    case 'teamFor': ui.teamFor = v; render(); break;
+    case 'opponent': dispatch(v === 'human' ? { type: 'setOpponent', mode: 'human' } : { type: 'setOpponent', mode: 'ai', level: v }); break;
     case 'side': dispatch({ type: 'setSide', side: v }); break;
     case 'randomSides': dispatch({ type: 'randomSides' }); break;
     case 'format': dispatch({ type: 'setFormat', format: v }); break;

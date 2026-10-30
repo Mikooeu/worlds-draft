@@ -275,3 +275,12 @@ body:has(.lobby) .audio-ctl { bottom: 5.25rem; }
   body:has(.lobby) .audio-ctl { bottom: 5.75rem; }
   .foot-status { font-size: 0.8125rem; line-height: 1.35; }
 }
+
+/* Adversaire : ami ou IA */
+.opp-modes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.opp-modes .choice { display: grid; gap: 0.125rem; text-align: center; padding: 0.75rem 0.5rem; }
+.opp-modes .choice span { color: var(--muted); font-size: 0.75rem; font-weight: 500; }
+.opp-step .step-n { font-size: 0.625rem; }
+.team-for { margin-left: auto; display: flex; gap: 0.375rem; }
+.team-for .choice { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
+@media (max-width: 700px) { .opp-modes { grid-template-columns: 1fr 1fr; } .step-head { flex-wrap: wrap; } }

@@ -1,9 +1,10 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610301346';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610301346';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301346';
-import { computeResult, ROLES } from './winrate.js?v=202610301346';
-import { autoAssignRoles } from './roles.js?v=202610301346';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610301425';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610301425';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301425';
+import { computeResult, ROLES } from './winrate.js?v=202610301425';
+import { autoAssignRoles } from './roles.js?v=202610301425';
+import { AI_ID, AI_LEVELS } from './ai.js?v=202610301425';
 
 export const ACTION_MS = 30000;
 export const REVEAL_MS = 5000;
@@ -30,6 +31,7 @@ export function normalize(raw) {
   s.wins = { ...(s.wins || {}) };
   s.step = s.step ?? 0; s.deadline = s.deadline ?? null; s.sideChooser = s.sideChooser ?? null;
   s.format = s.format || 'bo1';
+  s.ai = s.ai ?? null;
   s.games = (Array.isArray(s.games) ? s.games : Object.values(s.games || {})).map(g => ({
     ...g,
     bans: { blue: [...(g.bans?.blue || [])], red: [...(g.bans?.red || [])] },
@@ -122,9 +124,41 @@ function reduce(s, a, pid, ctx) {
     case 'setSide': {
       if (s.phase !== 'lobby' || !isPlayer(s, pid) || !SIDES.includes(a.side)) return null;
       const o = other(s, pid);
+      // contre l'IA : l'IA prend toujours le side restant
+      if (s.ai && pid === s.hostId) {
+        const side = s.seats[pid].side === a.side ? null : a.side;
+        s.seats[pid] = { ...s.seats[pid], side };
+        s.seats[o] = { ...s.seats[o], side: side ? SIDES.find(x => x !== side) : null };
+        return s;
+      }
       if (o && s.seats[o]?.side === a.side) return null;
       // re-cliquer sur son propre side le libère
       s.seats[pid] = { ...s.seats[pid], side: s.seats[pid].side === a.side ? null : a.side };
+      return s;
+    }
+    case 'setOpponent': {
+      if (s.phase !== 'lobby' || pid !== s.hostId) return null;
+      if (a.mode === 'ai') {
+        if (!AI_LEVELS.includes(a.level)) return null;
+        if (s.guestId && s.guestId !== AI_ID) return null; // un ami a déjà rejoint
+        if (s.ai?.level === a.level) return null;
+        const hs = s.seats[s.hostId].side;
+        s.guestId = AI_ID; s.ai = { level: a.level };
+        s.seats[AI_ID] = { team: s.seats[AI_ID]?.team ?? null, side: hs ? SIDES.find(x => x !== hs) : null };
+        return s;
+      }
+      if (a.mode === 'human') {
+        if (!s.ai) return null;
+        delete s.seats[AI_ID]; s.guestId = null; s.ai = null;
+        return s;
+      }
+      return null;
+    }
+    case 'setAiTeam': {
+      if (s.phase !== 'lobby' || pid !== s.hostId || !s.ai) return null;
+      const t = ctx.data.teams[a.team];
+      if (!t || t.playable === false || s.seats[s.hostId].team === a.team) return null;
+      s.seats[AI_ID] = { ...s.seats[AI_ID], team: s.seats[AI_ID].team === a.team ? null : a.team };
       return s;
     }
     case 'randomSides': {
