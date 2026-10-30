@@ -1,20 +1,20 @@
-import { sound } from './audio.js?v=202610301425';
-import { generateNarrative } from './logic/narrative.js?v=202610301425';
-import { loadData } from './data.js?v=202610301425';
-import { openStore } from './store/store.js?v=202610301425';
-import { createGame, normalize } from './logic/game.js?v=202610301425';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301425';
-import { autoAssignRoles } from './logic/roles.js?v=202610301425';
-import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301425';
-import { ROLES } from './logic/winrate.js?v=202610301425';
-import { toast, resetButton } from './ui/common.js?v=202610301425';
-import { champTooltip } from './ui/tooltip.js?v=202610301425';
-import { createTimeoutGate } from './timeouts.js?v=202610301425';
-import { renderHome } from './ui/home.js?v=202610301425';
-import { renderLobby } from './ui/lobby.js?v=202610301425';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301425';
-import { renderRoles } from './ui/roles.js?v=202610301425';
-import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610301425';
+import { sound } from './audio.js?v=202610301503';
+import { generateNarrative } from './logic/narrative.js?v=202610301503';
+import { loadData } from './data.js?v=202610301503';
+import { openStore } from './store/store.js?v=202610301503';
+import { createGame, normalize } from './logic/game.js?v=202610301503';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301503';
+import { autoAssignRoles } from './logic/roles.js?v=202610301503';
+import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301503';
+import { ROLES } from './logic/winrate.js?v=202610301503';
+import { toast, resetButton } from './ui/common.js?v=202610301503';
+import { champTooltip } from './ui/tooltip.js?v=202610301503';
+import { createTimeoutGate } from './timeouts.js?v=202610301503';
+import { renderHome } from './ui/home.js?v=202610301503';
+import { renderLobby } from './ui/lobby.js?v=202610301503';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301503';
+import { renderRoles } from './ui/roles.js?v=202610301503';
+import { renderResult, renderSideChoice, renderNarrative, feedItem } from './ui/result.js?v=202610301503';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -53,7 +53,7 @@ const dispatch = (action) => dispatchAs(action, me());
 let aiPending = null;
 const aiKey = (st) => `${st.series}:${st.games.length}:${st.phase}:${st.step}`;
 function driveAi() {
-  if (!state || !state.ai || me() !== state.hostId || state.guestId !== AI_ID) return;
+  if (!state || !state.ai || me() !== state.hostId || state.guestId) return;
   const seat = state.seats[AI_ID], level = state.ai.level, g = state.games[state.games.length - 1];
   let delay = null, act = null;
   if (state.phase === 'draft' && DRAFT_ORDER[state.step]?.side === seat.side) {
@@ -96,7 +96,7 @@ function render() {
   if (state === undefined) { app.innerHTML = '<div class="loading">Connexion à la partie…</div>'; return; }
   if (state === null) { app.innerHTML = renderHome(data, `La partie ${code} n'existe pas (ou plus).`); return; }
   if (!state.seats[me()]) {
-    app.innerHTML = renderHome(data, state.guestId ? 'Partie complète : deux joueurs y sont déjà.' : 'Connexion…');
+    app.innerHTML = renderHome(data, state.guestId ? 'Partie complète : deux joueurs y sont déjà.' : state.phase !== 'lobby' ? 'Partie déjà lancée contre l\'IA.' : 'Connexion…');
     return;
   }
   // réinitialise l'état local de l'UI à chaque nouvelle étape
@@ -201,6 +201,9 @@ function tick() {
 }
 setInterval(tick, 250);
 
+app.addEventListener('change', (e) => {
+  if (e.target.dataset?.input === 'aiLevel') dispatch({ type: 'setOpponent', mode: 'ai', level: e.target.value });
+});
 app.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]');
   if (!b || b.disabled || b.getAttribute('aria-disabled') === 'true') return;
@@ -219,7 +222,6 @@ app.addEventListener('click', async (e) => {
       break;
     }
     case 'teamFor': ui.teamFor = v; render(); break;
-    case 'opponent': dispatch(v === 'human' ? { type: 'setOpponent', mode: 'human' } : { type: 'setOpponent', mode: 'ai', level: v }); break;
     case 'side': dispatch({ type: 'setSide', side: v }); break;
     case 'randomSides': dispatch({ type: 'randomSides' }); break;
     case 'format': dispatch({ type: 'setFormat', format: v }); break;

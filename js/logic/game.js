@@ -1,10 +1,10 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610301425';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610301425';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301425';
-import { computeResult, ROLES } from './winrate.js?v=202610301425';
-import { autoAssignRoles } from './roles.js?v=202610301425';
-import { AI_ID, AI_LEVELS } from './ai.js?v=202610301425';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610301503';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610301503';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301503';
+import { computeResult, ROLES } from './winrate.js?v=202610301503';
+import { autoAssignRoles } from './roles.js?v=202610301503';
+import { AI_ID, AI_LEVELS } from './ai.js?v=202610301503';
 
 export const ACTION_MS = 30000;
 export const REVEAL_MS = 5000;
@@ -13,7 +13,8 @@ const SIDES = ['blue', 'red'];
 export function createGame(code, hostId, now) {
   return {
     code, phase: 'lobby', format: 'bo1', hostId, guestId: null,
-    seats: { [hostId]: { team: null, side: null } },
+    seats: { [hostId]: { team: null, side: null }, [AI_ID]: { team: null, side: null } },
+    ai: { level: 'medium' }, // l'IA occupe la place de l'adversaire tant qu'aucun ami n'a rejoint
     games: [], wins: {}, step: 0, deadline: null, sideChooser: null, createdAt: now, series: 0,
   };
 }
@@ -24,14 +25,14 @@ export function normalize(raw) {
   const s = { ...raw };
   s.guestId = s.guestId ?? null;
   s.seats = { ...(s.seats || {}) };
-  for (const k of [s.hostId, s.guestId]) if (k && !s.seats[k]) s.seats[k] = {};
+  s.ai = s.ai ?? null;
+  for (const k of [s.hostId, s.guestId, s.ai && AI_ID]) if (k && !s.seats[k]) s.seats[k] = {};
   for (const k of Object.keys(s.seats)) s.seats[k] = { team: null, side: null, ...s.seats[k] };
   s.series = s.series ?? 0;
   s.presel = s.presel ?? null;
   s.wins = { ...(s.wins || {}) };
   s.step = s.step ?? 0; s.deadline = s.deadline ?? null; s.sideChooser = s.sideChooser ?? null;
   s.format = s.format || 'bo1';
-  s.ai = s.ai ?? null;
   s.games = (Array.isArray(s.games) ? s.games : Object.values(s.games || {})).map(g => ({
     ...g,
     bans: { blue: [...(g.bans?.blue || [])], red: [...(g.bans?.red || [])] },
@@ -42,8 +43,10 @@ export function normalize(raw) {
   return s;
 }
 
-const other = (s, pid) => (pid === s.hostId ? s.guestId : s.hostId);
-const isPlayer = (s, pid) => pid === s.hostId || (pid && pid === s.guestId);
+// adversaire de l'hôte : l'ami qui a rejoint, sinon l'IA
+export const opponentId = (s) => s.guestId || (s.ai ? AI_ID : null);
+const other = (s, pid) => (pid === s.hostId ? opponentId(s) : s.hostId);
+const isPlayer = (s, pid) => !!pid && (pid === s.hostId || pid === opponentId(s));
 const currentGame = (s) => s.games[s.games.length - 1];
 const playerOnSide = (s, side) => Object.keys(s.seats).find(k => s.seats[k].side === side);
 
@@ -109,7 +112,9 @@ export function applyAction(state, action, ctx) {
 function reduce(s, a, pid, ctx) {
   switch (a.type) {
     case 'join': {
-      if (isPlayer(s, pid) || s.guestId || s.phase !== 'lobby' || !pid) return null;
+      if (!pid || pid === AI_ID || isPlayer(s, pid) || s.guestId || s.phase !== 'lobby') return null;
+      // l'ami prend la place de l'IA
+      if (s.ai) { delete s.seats[AI_ID]; s.ai = null; }
       s.guestId = pid; s.seats[pid] = { team: null, side: null };
       return s;
     }
@@ -140,16 +145,16 @@ function reduce(s, a, pid, ctx) {
       if (s.phase !== 'lobby' || pid !== s.hostId) return null;
       if (a.mode === 'ai') {
         if (!AI_LEVELS.includes(a.level)) return null;
-        if (s.guestId && s.guestId !== AI_ID) return null; // un ami a déjà rejoint
+        if (s.guestId) return null; // un ami a déjà rejoint
         if (s.ai?.level === a.level) return null;
         const hs = s.seats[s.hostId].side;
-        s.guestId = AI_ID; s.ai = { level: a.level };
+        s.ai = { level: a.level };
         s.seats[AI_ID] = { team: s.seats[AI_ID]?.team ?? null, side: hs ? SIDES.find(x => x !== hs) : null };
         return s;
       }
       if (a.mode === 'human') {
         if (!s.ai) return null;
-        delete s.seats[AI_ID]; s.guestId = null; s.ai = null;
+        delete s.seats[AI_ID]; s.ai = null;
         return s;
       }
       return null;
@@ -162,10 +167,11 @@ function reduce(s, a, pid, ctx) {
       return s;
     }
     case 'randomSides': {
-      if (s.phase !== 'lobby' || !isPlayer(s, pid) || !s.guestId) return null;
+      const o = opponentId(s);
+      if (s.phase !== 'lobby' || !isPlayer(s, pid) || !o) return null;
       const hostBlue = ctx.rng() < 0.5;
       s.seats[s.hostId] = { ...s.seats[s.hostId], side: hostBlue ? 'blue' : 'red' };
-      s.seats[s.guestId] = { ...s.seats[s.guestId], side: hostBlue ? 'red' : 'blue' };
+      s.seats[o] = { ...s.seats[o], side: hostBlue ? 'red' : 'blue' };
       return s;
     }
     case 'setFormat': {
@@ -173,10 +179,11 @@ function reduce(s, a, pid, ctx) {
       s.format = a.format; return s;
     }
     case 'start': {
-      if (s.phase !== 'lobby' || pid !== s.hostId || !s.guestId) return null;
-      const ok = [s.hostId, s.guestId].every(p => s.seats[p]?.team && s.seats[p]?.side);
+      const o = opponentId(s);
+      if (s.phase !== 'lobby' || pid !== s.hostId || !o) return null;
+      const ok = [s.hostId, o].every(p => s.seats[p]?.team && s.seats[p]?.side);
       if (!ok) return null;
-      s.wins = { [s.seats[s.hostId].team]: 0, [s.seats[s.guestId].team]: 0 };
+      s.wins = { [s.seats[s.hostId].team]: 0, [s.seats[o].team]: 0 };
       return beginGame(s, ctx.now);
     }
     case 'draft': {

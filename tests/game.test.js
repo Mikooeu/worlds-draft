@@ -152,9 +152,9 @@ test('host can reset to the lobby from any phase after start; guest cannot', () 
   assert.equal(r.seats.H.team, 'AAA'); assert.equal(r.guestId, 'G');
   assert.equal(act(r, { type: 'reset', playerId: 'H' }), r); // déjà au lobby
 });
-test('random sides: assigns blue/red to the two players, lobby only, needs a guest', () => {
-  let s = createGame('ABCD', 'H', clock);
-  assert.equal(act(s, { type: 'randomSides', playerId: 'H' }), s); // pas d'invité
+test('random sides: assigns blue/red to the two players, lobby only, needs an opponent', () => {
+  let s = act(createGame('ABCD', 'H', clock), { type: 'setOpponent', playerId: 'H', mode: 'human' });
+  assert.equal(act(s, { type: 'randomSides', playerId: 'H' }), s); // ni invité ni IA
   s = act(s, { type: 'join', playerId: 'G' });
   const r0 = applyAction(s, { type: 'randomSides', playerId: 'G' }, { ...ctx(), rng: () => 0.2 });
   assert.equal(r0.seats.H.side, 'blue'); assert.equal(r0.seats.G.side, 'red');

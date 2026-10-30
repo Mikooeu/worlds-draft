@@ -12,10 +12,10 @@ const errors = [];
 const A = await context.newPage(); A.setDefaultTimeout(10000); A.on('pageerror', e => errors.push(e.message));
 await A.goto(BASE + '?local=1');
 await A.click('[data-act=create]');
-await A.waitForSelector('[data-act=opponent][data-v=hard]');
-await A.click('[data-act=opponent][data-v=hard]');
-await A.waitForSelector('text=IA · Difficile');
-assert.equal(await A.$('[data-act=copy]'), null, 'pas de lien à partager contre l\'IA');
+await A.waitForSelector('[data-input=aiLevel]');
+assert.equal(await A.$eval('[data-input=aiLevel]', e => e.value), 'medium', 'IA moyenne par défaut');
+await A.selectOption('[data-input=aiLevel]', 'hard');
+await A.waitForFunction(() => document.querySelector('[data-input=aiLevel]')?.value === 'hard');
 await A.click('[data-act=team][data-v=GEN]');
 await A.waitForSelector('[data-act=teamFor][data-v=ai][aria-pressed=true]'); // bascule auto sur l'équipe de l'IA
 await A.click('[data-act=team][data-v=T1]');

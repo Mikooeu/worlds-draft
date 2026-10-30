@@ -276,11 +276,10 @@ body:has(.lobby) .audio-ctl { bottom: 5.25rem; }
   .foot-status { font-size: 0.8125rem; line-height: 1.35; }
 }
 
-/* Adversaire : ami ou IA */
-.opp-modes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
-.opp-modes .choice { display: grid; gap: 0.125rem; text-align: center; padding: 0.75rem 0.5rem; }
-.opp-modes .choice span { color: var(--muted); font-size: 0.75rem; font-weight: 500; }
-.opp-step .step-n { font-size: 0.625rem; }
+/* Adversaire IA : difficulté dans la carte du bandeau VS */
+.ai-level { display: inline-flex; align-items: center; gap: 0.375rem; }
+.ai-level select { background: var(--panel2); color: var(--text); border: 1px solid var(--line-ui); border-radius: 0.375rem; padding: 0.25rem 0.5rem; font: inherit; font-weight: 600; text-transform: none; letter-spacing: 0; cursor: pointer; }
+.ai-level select:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .team-for { margin-left: auto; display: flex; gap: 0.375rem; }
 .team-for .choice { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
-@media (max-width: 700px) { .opp-modes { grid-template-columns: 1fr 1fr; } .step-head { flex-wrap: wrap; } }
+@media (max-width: 700px) { .step-head { flex-wrap: wrap; } }

@@ -1,5 +1,5 @@
-import { esc, shortName } from './common.js?v=202610301425';
-import { ROLES } from '../logic/winrate.js?v=202610301425';
+import { esc, shortName } from './common.js?v=202610301503';
+import { ROLES } from '../logic/winrate.js?v=202610301503';
 
 const pctRaw = (w, n) => `${Math.round((w / n) * 100)} %`;
 

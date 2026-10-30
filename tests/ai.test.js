@@ -26,16 +26,24 @@ function aiLobby(level = 'hard') {
 
 test('lobby vs IA : siège IA, side opposé automatique, équipe choisie par l\'hôte', () => {
   const s = aiLobby();
-  assert.equal(s.guestId, AI_ID); assert.deepEqual(s.ai, { level: 'hard' });
+  assert.equal(s.guestId, null); assert.deepEqual(s.ai, { level: 'hard' });
   assert.equal(s.seats[AI_ID].team, 'T1'); assert.equal(s.seats[AI_ID].side, 'red');
   const s2 = act(s, { type: 'setSide', playerId: 'H', side: 'red' });
   assert.equal(s2.seats[AI_ID].side, 'blue');
   assert.equal(act(s, { type: 'setAiTeam', playerId: 'H', team: 'GEN' }), s, 'pas la même équipe que l\'hôte');
-  assert.equal(act(s, { type: 'join', playerId: 'X' }), s, 'personne ne peut rejoindre');
-  const back = act(s, { type: 'setOpponent', playerId: 'H', mode: 'human' });
-  assert.equal(back.guestId, null); assert.equal(back.seats[AI_ID], undefined);
-  let h = createGame('ABCD', 'H', 1000); h = act(h, { type: 'join', playerId: 'G' });
-  assert.equal(act(h, { type: 'setOpponent', playerId: 'H', mode: 'ai', level: 'easy' }), h, 'un ami a déjà rejoint');
+  // un ami qui rejoint remplace l'IA
+  const j = act(s, { type: 'join', playerId: 'X' });
+  assert.equal(j.guestId, 'X'); assert.equal(j.ai, null); assert.equal(j.seats[AI_ID], undefined);
+  assert.deepEqual(j.seats.X, { team: null, side: null }); assert.equal(j.seats.H.team, 'GEN');
+  assert.equal(act(j, { type: 'setOpponent', playerId: 'H', mode: 'ai', level: 'easy' }), j, 'un ami a déjà rejoint');
+  assert.equal(act(s, { type: 'join', playerId: AI_ID }), s);
+  // personne ne rejoint une partie déjà lancée contre l'IA
+  const started = act(s, { type: 'start', playerId: 'H' });
+  assert.equal(act(started, { type: 'join', playerId: 'X' }), started);
+});
+test('l\'IA est l\'adversaire par défaut, niveau moyen', () => {
+  const s = createGame('ABCD', 'H', 1000);
+  assert.deepEqual(s.ai, { level: 'medium' }); assert.ok(s.seats[AI_ID]);
 });
 
 for (const level of ['easy', 'medium', 'hard']) {
