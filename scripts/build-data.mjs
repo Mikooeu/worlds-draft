@@ -18,6 +18,9 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
     for (const r of ROLES) players[v[r]] = { team: v.tag, role: r, champs: {} };
   }
   const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {}, pairs = {};
+  // bilan des équipes en séries (un Bo3 gagné = 1 victoire) : games gagnées par paire d'équipes
+  const series = {};
+  const addGame = (w, l, n = 1) => { const k = [w, l].sort().join('|'); series[k] ??= {}; series[k][w] = (series[k][w] || 0) + n; };
   const bump = (o, k, win) => { o[k] ??= { games: 0, wins: 0 }; o[k].games++; if (win) o[k].wins++; };
 
   const lines = [
@@ -27,9 +30,9 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
   for (const [line, isMain] of lines) {
     const [gameId, wTag, lTag, wPicks, lPicks] = line.split('|');
     const byRole = {};
+    if (isMain && teams[wTag] && teams[lTag]) addGame(wTag, lTag); // bilan : Main Event seulement
     for (const [tag, list, win] of [[wTag, wPicks, true], [lTag, lPicks, false]]) {
       if (!teams[tag]) throw new Error(`game ${gameId}: équipe inconnue ${tag}`);
-      if (isMain) teams[tag][win ? 'wins' : 'losses']++; // bilan : Main Event seulement
       const entries = list.split(';').map(s => { const i = s.indexOf(':'); return [s.slice(0, i).trim(), s.slice(i + 1).trim()]; });
       if (entries.length !== 5) throw new Error(`game ${gameId}: ${tag} n'a pas 5 picks`);
       for (const [player, champName] of entries) {
@@ -58,7 +61,14 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
   for (const line of resultsTxt.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))) {
     const [, w, l, n = '1'] = line.split('|');
     if (!teams[w] || !teams[l]) throw new Error(`résultat sans picks : équipe inconnue dans « ${line} »`);
-    teams[w].wins += +n; teams[l].losses += +n;
+    addGame(w, l, +n);
+  }
+  // une série par paire d'équipes (pas de revanche en phase suisse) ; égalité = série pas encore finie
+  for (const [k, score] of Object.entries(series)) {
+    const [a, b] = k.split('|'), sa = score[a] || 0, sb = score[b] || 0;
+    if (sa === sb) continue;
+    const [w, l] = sa > sb ? [a, b] : [b, a];
+    teams[w].wins++; teams[l].losses++;
   }
   const totalGames = lines.length; // games avec picks (Main Event + Play-In)
   return { updatedAt, totalGames, teams, players, champions, matchups, duos, pairs };
@@ -72,6 +82,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const teamsCsv = readFileSync(new URL('data/raw/teams.csv', root), 'utf8').trim() + (playinRosters ? '\n' + playinRosters : '');
   const d = buildData(teamsCsv, readFileSync(new URL('data/raw/games.txt', root), 'utf8'), process.argv[2] || new Date().toISOString().slice(0, 10), opt('data/raw/playin.txt'), opt('data/raw/results-pending.txt'));
   writeFileSync(new URL('data/worlds.json', root), JSON.stringify(d));
-  const games = Object.values(d.teams).reduce((n, t) => n + t.wins + t.losses, 0) / 2 + opt('data/raw/playin.txt').trim().split(/\r?\n/).filter(Boolean).length;
+  const games = d.totalGames;
   console.log(`worlds.json : ${Object.keys(d.teams).length} équipes, ${games} games, ${Object.keys(d.champions).length} champions`);
 }

@@ -17,7 +17,7 @@ test('champKey normalizes names and aliases', () => {
 });
 test('buildData aggregates teams, players, champions and lane matchups', () => {
   const d = buildData(teams, games, '2026-10-25');
-  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses], [1, 1]);
+  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses], [0, 0]); // série 1-1 pas encore finie
   assert.deepEqual(d.teams.BBB.players, { top: 'b1', jungle: 'b2', mid: 'b3', adc: 'b4', support: 'b5' });
   assert.deepEqual(d.players.a3.champs, { ahri: { games: 1, wins: 1 }, syndra: { games: 1, wins: 0 } });
   assert.deepEqual(d.champions.ahri, { name: 'Ahri', games: 2, wins: 2, roles: { mid: 2 } });
@@ -27,8 +27,14 @@ test('buildData aggregates teams, players, champions and lane matchups', () => {
   assert.deepEqual(d.matchups.mid['ahri|syndra'], { games: 2, wins: 2 });
   assert.deepEqual(d.matchups.top['gnar|monkeyking'], { games: 1, wins: 1 });
   assert.deepEqual(d.matchups.top['gnar|ksante'], { games: 1, wins: 1 });
-  const total = Object.values(d.teams).reduce((n, t) => n + t.wins + t.losses, 0);
-  assert.equal(total, 4);
+});
+test('bilan des équipes en séries : un Bo3 gagné compte 1 victoire, un Bo1 aussi', () => {
+  const g3 = `3|AAA|BBB|a1:Gnar;a2:Vi;a3:Ahri;a4:Jhin;a5:Rell|b1:Wukong;b2:Lee Sin;b3:Syndra;b4:Kai'Sa;b5:Renata Glasc`;
+  const d = buildData(teams, games + '\n' + g3, 'x');
+  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses, d.teams.BBB.wins, d.teams.BBB.losses], [1, 0, 0, 1]);
+  assert.equal(d.totalGames, 3);
+  const r = buildData(teams, '', 'x', '', '2026-10-28|BBB|AAA|2');
+  assert.deepEqual([r.teams.BBB.wins, r.teams.AAA.losses], [1, 1]);
 });
 test('buildData throws on player not in the team roster', () => {
   assert.throws(() => buildData(teams, `3|AAA|BBB|b1:Gnar;a2:Vi;a3:Ahri;a4:Jhin;a5:Rell|b1:Sion;b2:Vi;b3:Ahri;b4:Jhin;b5:Rell`, 'x'), /b1/);

@@ -28,6 +28,6 @@ test('Play-In games feed champion/player stats but not team records', () => {
 
 test('results-only lines (no picks yet) update team records only', () => {
   const d = buildData(teams, `1|AAA|PPP|a1:Gnar;a2:Vi;a3:Ahri;a4:Jhin;a5:Rell|p1:Sion;p2:Lee Sin;p3:Syndra;p4:Kaisa;p5:Alistar`, 'x', '', `2026-10-26|AAA|PPP|2\n2026-10-26|PPP|AAA`);
-  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses], [3, 1]);
+  assert.deepEqual([d.teams.AAA.wins, d.teams.AAA.losses], [1, 0]); // une seule série AAA–PPP, gagnée 3-1
   assert.equal(d.champions.gnar.games, 1);
 });

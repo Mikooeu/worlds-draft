@@ -1,2 +1,2 @@
 # Résultats confirmés dont gol.gg n'a pas encore publié les picks (bilan des équipes seulement).
-# date|vainqueur|perdant|nombre de games gagnées — à retirer quand les games sont ajoutées à games.txt
+# date|vainqueur|perdant|nombre de games gagnées (le bilan compte la série : 2-0 en Bo3 = 1 victoire) — à retirer quand les games sont ajoutées à games.txt
