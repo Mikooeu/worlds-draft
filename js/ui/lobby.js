@@ -1,5 +1,5 @@
-import { opponentId } from '../logic/game.js?v=202610301535';
-import { esc, teamBadge, shortName } from './common.js?v=202610301535';
+import { opponentId } from '../logic/game.js?v=202610301604';
+import { esc, teamBadge, shortName } from './common.js?v=202610301604';
 
 const SIDE_LABEL = { blue: 'Blue side', red: 'Red side' };
 
@@ -33,7 +33,8 @@ export function renderLobby(s, data, me, opts = {}) {
   const regions = [...new Set(playable.map(t => t.region))];
   const ready = opp && [s.hostId, opp].every(p => s.seats[p]?.team && s.seats[p]?.side);
   const vsAi = !!s.ai;
-  const forAi = vsAi && isHost && opts.teamFor === 'ai';
+  // contre l'IA : 1) tu choisis et valides ton équipe, 2) tu choisis celle de l'IA (« Modifier » pour revenir)
+  const forAi = vsAi && isHost && opts.teamFor === 'ai' && !!mySeat.team;
   const pickSeat = forAi ? oppSeat : mySeat, otherSeat = forAi ? mySeat : oppSeat;
 
   const sideCard = (side, title, desc) => {
@@ -63,8 +64,10 @@ export function renderLobby(s, data, me, opts = {}) {
 
 
     <section class="panel step">
-      ${step(1, vsAi && isHost ? 'Choisis les équipes' : 'Choisis ton équipe', !!mySeat.team && (!vsAi || !!oppSeat.team), vsAi && isHost
-        ? `<div class="team-for" role="group" aria-label="Équipe à choisir"><button class="choice ${!forAi ? 'on' : ''}" data-act="teamFor" data-v="me" aria-pressed="${!forAi}">Ton équipe</button><button class="choice ${forAi ? 'on' : ''}" data-act="teamFor" data-v="ai" aria-pressed="${forAi}">Équipe de l'IA</button></div>`
+      ${step(1, vsAi && isHost ? (forAi ? 'Choisis l\'équipe de l\'IA' : 'Choisis ton équipe') : 'Choisis ton équipe', !!mySeat.team && (!vsAi || !!oppSeat.team), vsAi && isHost
+        ? (forAi
+          ? `<div class="team-for"><span class="muted small">Toi : <b>${esc(shortName(data.teams[mySeat.team]))}</b></span><button class="choice" data-act="teamFor" data-v="me">Modifier mon équipe</button></div>`
+          : `<div class="team-for"><button class="btn btn-gold btn-sm" data-act="teamFor" data-v="ai" ${mySeat.team ? '' : 'disabled'}>Valider mon équipe</button></div>`)
         : '<span class="muted small hint">Reclique sur ton choix pour le libérer</span>')}
       <div class="regions">${regions.map(r => `<div class="region"><div class="region-name">${esc(r)}</div><div class="teams">${
         playable.filter(t => t.region === r).map(t => {

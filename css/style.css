@@ -277,7 +277,8 @@ body:has(.lobby) .legal { padding-bottom: 5.625rem; }
 .ai-level { display: inline-flex; align-items: center; gap: 0.375rem; }
 .ai-level select { background: var(--panel2); color: var(--text); border: 1px solid var(--line-ui); border-radius: 0.375rem; padding: 0.25rem 0.5rem; font: inherit; font-weight: 600; text-transform: none; letter-spacing: 0; cursor: pointer; }
 .ai-level select:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.team-for { margin-left: auto; display: flex; gap: 0.375rem; }
+.team-for { margin-left: auto; display: flex; gap: 0.625rem; align-items: center; }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 .team-for .choice { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
 @media (max-width: 700px) { .step-head { flex-wrap: wrap; } }
 

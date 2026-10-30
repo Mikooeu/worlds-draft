@@ -17,8 +17,13 @@ assert.equal(await A.$eval('[data-input=aiLevel]', e => e.value), 'medium', 'IA 
 await A.selectOption('[data-input=aiLevel]', 'hard');
 await A.waitForFunction(() => document.querySelector('[data-input=aiLevel]')?.value === 'hard');
 await A.click('[data-act=team][data-v=GEN]');
-await A.waitForSelector('[data-act=teamFor][data-v=ai][aria-pressed=true]'); // bascule auto sur l'équipe de l'IA
+await A.click('[data-act=team][data-v=HLE]'); // on peut changer tant que ce n'est pas validé
+await A.click('[data-act=teamFor][data-v=ai]:not([disabled])'); // « Valider mon équipe »
 await A.click('[data-act=team][data-v=T1]');
+await A.click('[data-act=teamFor][data-v=me]'); // « Modifier mon équipe »
+await A.click('[data-act=team][data-v=GEN]');
+await A.click('[data-act=teamFor][data-v=ai]');
+await A.waitForSelector('text=Toi : GEN');
 await A.click('[data-act=side][data-v=red]');
 await A.waitForSelector('.side-card.blue >> text=IA');
 if (shots) await A.screenshot({ path: shots + '/ai-lobby.png' });

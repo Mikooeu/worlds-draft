@@ -1,20 +1,20 @@
-import { sound } from './audio.js?v=202610301535';
-import { generateNarrative, scoreAt } from './logic/narrative.js?v=202610301535';
-import { loadData } from './data.js?v=202610301535';
-import { openStore } from './store/store.js?v=202610301535';
-import { createGame, normalize } from './logic/game.js?v=202610301535';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301535';
-import { autoAssignRoles } from './logic/roles.js?v=202610301535';
-import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301535';
-import { ROLES, computeResult } from './logic/winrate.js?v=202610301535';
-import { toast, resetButton } from './ui/common.js?v=202610301535';
-import { champTooltip } from './ui/tooltip.js?v=202610301535';
-import { createTimeoutGate } from './timeouts.js?v=202610301535';
-import { renderHome } from './ui/home.js?v=202610301535';
-import { renderLobby } from './ui/lobby.js?v=202610301535';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301535';
-import { renderRoles } from './ui/roles.js?v=202610301535';
-import { renderResult, renderSideChoice, renderNarrative, feedItem, updateNarrHud } from './ui/result.js?v=202610301535';
+import { sound } from './audio.js?v=202610301604';
+import { generateNarrative, scoreAt } from './logic/narrative.js?v=202610301604';
+import { loadData } from './data.js?v=202610301604';
+import { openStore } from './store/store.js?v=202610301604';
+import { createGame, normalize } from './logic/game.js?v=202610301604';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301604';
+import { autoAssignRoles } from './logic/roles.js?v=202610301604';
+import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301604';
+import { ROLES, computeResult } from './logic/winrate.js?v=202610301604';
+import { toast, resetButton } from './ui/common.js?v=202610301604';
+import { champTooltip } from './ui/tooltip.js?v=202610301604';
+import { createTimeoutGate } from './timeouts.js?v=202610301604';
+import { renderHome } from './ui/home.js?v=202610301604';
+import { renderLobby } from './ui/lobby.js?v=202610301604';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301604';
+import { renderRoles } from './ui/roles.js?v=202610301604';
+import { renderResult, renderSideChoice, renderNarrative, feedItem, updateNarrHud } from './ui/result.js?v=202610301604';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -240,10 +240,8 @@ app.addEventListener('click', async (e) => {
       catch { prompt('Copie ce lien :', gameUrl(code)); }
       break;
     case 'team': {
-      const forAi = state.ai && ui.teamFor === 'ai';
-      // contre l'IA : après avoir pris ton équipe, on passe directement au choix de celle de l'IA
-      const autoNext = state.ai && !forAi && state.seats[me()].team !== v && !state.seats[AI_ID]?.team;
-      dispatch(forAi ? { type: 'setAiTeam', team: v } : { type: 'setTeam', team: v }).then(ok => { if (ok && autoNext) { ui.teamFor = 'ai'; render(); } });
+      const forAi = state.ai && ui.teamFor === 'ai' && state.seats[me()].team;
+      dispatch(forAi ? { type: 'setAiTeam', team: v } : { type: 'setTeam', team: v });
       break;
     }
     case 'teamFor': ui.teamFor = v; render(); break;

@@ -1,9 +1,9 @@
 // IA de draft : choisit un ban ou un pick pour le side de l'IA. Pur (rng injecté), testable.
 // Facile : choix plausible mais aléatoire. Moyen : parmi les meilleurs, avec du hasard. Difficile : le meilleur choix.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610301535';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610301535';
-import { ROLES, smooth, logit, playerChamp, matchup } from './winrate.js?v=202610301535';
-import { autoAssignRoles } from './roles.js?v=202610301535';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610301604';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610301604';
+import { ROLES, smooth, logit, playerChamp, matchup } from './winrate.js?v=202610301604';
+import { autoAssignRoles } from './roles.js?v=202610301604';
 
 export const AI_ID = 'ai';
 export const AI_LEVELS = ['easy', 'medium', 'hard'];

@@ -1,4 +1,4 @@
-import { esc, teamBadge } from './common.js?v=202610301535';
+import { esc, teamBadge } from './common.js?v=202610301604';
 const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 const frDate = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${+m[3]} ${MONTHS[+m[2] - 1]}` : iso; };
 export function renderHome(data, msg = '') {
