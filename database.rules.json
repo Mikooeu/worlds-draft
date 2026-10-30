@@ -3,7 +3,8 @@
     "games": {
       "$code": {
         ".read": "auth != null",
-        ".write": "auth != null && $code.matches(/^[A-Z2-9]{4}$/) && (!data.exists() ? newData.child('hostId').val() === auth.uid : (data.child('hostId').val() === auth.uid || data.child('guestId').val() === auth.uid || (!data.child('guestId').exists() && newData.child('guestId').val() === auth.uid)))"
+        ".write": "auth != null && $code.matches(/^[A-Z2-9]{4}$/) && (!data.exists() ? newData.child('hostId').val() === auth.uid : (data.child('hostId').val() === auth.uid || (data.child('guestId').val() === auth.uid && newData.child('hostId').val() === data.child('hostId').val()) || (!data.child('guestId').exists() && data.child('phase').val() === 'lobby' && newData.child('guestId').val() === auth.uid && newData.child('hostId').val() === data.child('hostId').val())))",
+        ".validate": "newData.hasChildren(['code', 'hostId', 'phase']) && newData.child('code').val() === $code && newData.child('hostId').isString() && newData.child('phase').isString() && newData.child('phase').val().length <= 12"
       }
     }
   }

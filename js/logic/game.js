@@ -1,10 +1,10 @@
 // Réducteur pur de la partie. applyAction renvoie LA MÊME référence si l'action est invalide.
-import { DRAFT_ORDER } from './draftOrder.js?v=202610301531';
-import { availableChampions, fearlessLocked } from './availability.js?v=202610301531';
-import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301531';
-import { computeResult, ROLES } from './winrate.js?v=202610301531';
-import { autoAssignRoles } from './roles.js?v=202610301531';
-import { AI_ID, AI_LEVELS } from './ai.js?v=202610301531';
+import { DRAFT_ORDER } from './draftOrder.js?v=202610301535';
+import { availableChampions, fearlessLocked } from './availability.js?v=202610301535';
+import { seriesWinner, WINS_NEEDED } from './series.js?v=202610301535';
+import { computeResult, ROLES } from './winrate.js?v=202610301535';
+import { autoAssignRoles } from './roles.js?v=202610301535';
+import { AI_ID, AI_LEVELS } from './ai.js?v=202610301535';
 
 export const ACTION_MS = 30000;
 export const REVEAL_MS = 5000;
@@ -19,26 +19,41 @@ export function createGame(code, hostId, now) {
   };
 }
 
+// Assainit ce qui vient de la base : l'autre joueur peut y écrire n'importe quoi.
+// Identifiants (champions, équipes, joueurs) : lettres/chiffres seulement ; nombres : vrais nombres.
+const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+const id = (v) => (typeof v === 'string' && ID_RE.test(v) ? v : null);
+const ids = (arr) => (Array.isArray(arr) ? arr : Object.values(arr || {})).map(id).filter(Boolean).slice(0, 5);
+const num = (v, d = 0) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+const int = (v, lo, hi, d = lo) => { const n = Math.trunc(num(v, d)); return n < lo || n > hi ? d : n; };
+const PHASES = ['lobby', 'draft', 'roles', 'result', 'sideChoice', 'seriesEnd'];
+
 // Firebase supprime les tableaux/objets vides et les null : on les remet.
 export function normalize(raw) {
-  if (!raw) return raw;
+  if (!raw || typeof raw !== 'object') return null;
   const s = { ...raw };
-  s.guestId = s.guestId ?? null;
-  s.seats = { ...(s.seats || {}) };
-  s.ai = s.ai ?? null;
-  for (const k of [s.hostId, s.guestId, s.ai && AI_ID]) if (k && !s.seats[k]) s.seats[k] = {};
-  for (const k of Object.keys(s.seats)) s.seats[k] = { team: null, side: null, ...s.seats[k] };
-  s.series = s.series ?? 0;
-  s.presel = s.presel ?? null;
-  s.wins = { ...(s.wins || {}) };
-  s.step = s.step ?? 0; s.deadline = s.deadline ?? null; s.sideChooser = s.sideChooser ?? null;
-  s.format = s.format || 'bo1';
-  s.games = (Array.isArray(s.games) ? s.games : Object.values(s.games || {})).map(g => ({
-    ...g,
-    bans: { blue: [...(g.bans?.blue || [])], red: [...(g.bans?.red || [])] },
-    picks: { blue: [...(g.picks?.blue || [])], red: [...(g.picks?.red || [])] },
-    roles: { blue: g.roles?.blue || null, red: g.roles?.red || null },
-    result: g.result || null,
+  s.code = typeof s.code === 'string' && /^[A-Z2-9]{4}$/.test(s.code) ? s.code : '????';
+  s.hostId = id(s.hostId); s.guestId = id(s.guestId); s.sideChooser = id(s.sideChooser);
+  s.phase = PHASES.includes(s.phase) ? s.phase : 'lobby';
+  s.format = s.format in WINS_NEEDED ? s.format : 'bo1';
+  s.step = int(s.step, 0, DRAFT_ORDER.length, 0);
+  s.series = int(s.series, 0, 1e6, 0);
+  s.deadline = s.deadline == null ? null : num(s.deadline, null);
+  s.revealUntil = num(s.revealUntil, 0);
+  s.ai = s.ai && AI_LEVELS.includes(s.ai.level) ? { level: s.ai.level } : null;
+  s.wins = Object.fromEntries(Object.entries(s.wins || {}).filter(([k]) => id(k)).map(([k, v]) => [k, int(v, 0, 9, 0)]));
+  const seats = {};
+  for (const [k, v] of Object.entries(s.seats || {})) if (id(k)) seats[k] = { team: id(v?.team), side: SIDES.includes(v?.side) ? v.side : null };
+  s.seats = seats;
+  s.presel = s.presel && id(s.presel.champ) ? { step: int(s.presel.step, 0, DRAFT_ORDER.length, -1), champ: s.presel.champ } : null;
+  for (const k of [s.hostId, s.guestId, s.ai && AI_ID]) if (k && !s.seats[k]) s.seats[k] = { team: null, side: null };
+  const roles = (r) => (r && typeof r === 'object' && ROLES.every(x => id(r[x])) ? Object.fromEntries(ROLES.map(x => [x, r[x]])) : null);
+  s.games = (Array.isArray(s.games) ? s.games : Object.values(s.games || {})).slice(0, 5).filter(g => g && typeof g === 'object').map(g => ({
+    blueTeam: id(g.blueTeam), redTeam: id(g.redTeam),
+    bans: { blue: ids(g.bans?.blue), red: ids(g.bans?.red) },
+    picks: { blue: ids(g.picks?.blue), red: ids(g.picks?.red) },
+    roles: { blue: roles(g.roles?.blue), red: roles(g.roles?.red) },
+    result: g.result && typeof g.result === 'object' ? g.result : null, // recalculé localement à l'affichage (main.js)
   }));
   return s;
 }

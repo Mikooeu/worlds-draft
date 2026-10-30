@@ -19,7 +19,7 @@ export function champIcon(data, id, extra = '', decorative = false) {
   if (!id) return `<div class="champ-icon ${extra}"></div>`;
   const url = data.iconUrl(id), name = data.champions[id]?.name || id;
   return url
-    ? `<img class="champ-icon ${extra}" src="${url}" alt="${decorative ? '' : esc(name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'champ-icon',textContent:this.alt}))">`
+    ? `<img class="champ-icon ${extra}" src="${esc(url)}" alt="${decorative ? '' : esc(name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'champ-icon',textContent:this.alt}))">`
     : `<div class="champ-icon ${extra}">${esc(name)}</div>`;
 }
 export const champName = (data, id) => data.champions[id]?.name || id;

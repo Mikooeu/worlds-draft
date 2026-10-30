@@ -1,11 +1,12 @@
-import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610301531';
-import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610301531';
-import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610301531';
-import { ROLES } from '../logic/winrate.js?v=202610301531';
+import { esc, teamBadge, champIcon, champName, ROLE_FR } from './common.js?v=202610301535';
+import { DRAFT_ORDER } from '../logic/draftOrder.js?v=202610301535';
+import { availableChampions, fearlessLocked } from '../logic/availability.js?v=202610301535';
+import { ROLES } from '../logic/winrate.js?v=202610301535';
 
 export function seriesLine(s, data) {
   if (s.format === 'bo1') return 'BO1';
   const [a, b] = Object.keys(s.wins);
+  if (!data.teams[a] || !data.teams[b]) return s.format.toUpperCase();
   return `${s.format.toUpperCase()} · Game ${s.games.length} · ${data.teams[a].tag} ${s.wins[a]} – ${s.wins[b]} ${data.teams[b].tag}`;
 }
 

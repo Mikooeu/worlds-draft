@@ -1,20 +1,20 @@
-import { sound } from './audio.js?v=202610301531';
-import { generateNarrative, scoreAt } from './logic/narrative.js?v=202610301531';
-import { loadData } from './data.js?v=202610301531';
-import { openStore } from './store/store.js?v=202610301531';
-import { createGame, normalize } from './logic/game.js?v=202610301531';
-import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301531';
-import { autoAssignRoles } from './logic/roles.js?v=202610301531';
-import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301531';
-import { ROLES } from './logic/winrate.js?v=202610301531';
-import { toast, resetButton } from './ui/common.js?v=202610301531';
-import { champTooltip } from './ui/tooltip.js?v=202610301531';
-import { createTimeoutGate } from './timeouts.js?v=202610301531';
-import { renderHome } from './ui/home.js?v=202610301531';
-import { renderLobby } from './ui/lobby.js?v=202610301531';
-import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301531';
-import { renderRoles } from './ui/roles.js?v=202610301531';
-import { renderResult, renderSideChoice, renderNarrative, feedItem, updateNarrHud } from './ui/result.js?v=202610301531';
+import { sound } from './audio.js?v=202610301535';
+import { generateNarrative, scoreAt } from './logic/narrative.js?v=202610301535';
+import { loadData } from './data.js?v=202610301535';
+import { openStore } from './store/store.js?v=202610301535';
+import { createGame, normalize } from './logic/game.js?v=202610301535';
+import { DRAFT_ORDER } from './logic/draftOrder.js?v=202610301535';
+import { autoAssignRoles } from './logic/roles.js?v=202610301535';
+import { aiChoose, aiRoles, AI_ID } from './logic/ai.js?v=202610301535';
+import { ROLES, computeResult } from './logic/winrate.js?v=202610301535';
+import { toast, resetButton } from './ui/common.js?v=202610301535';
+import { champTooltip } from './ui/tooltip.js?v=202610301535';
+import { createTimeoutGate } from './timeouts.js?v=202610301535';
+import { renderHome } from './ui/home.js?v=202610301535';
+import { renderLobby } from './ui/lobby.js?v=202610301535';
+import { renderDraft, applyDraftFilters, showSelection } from './ui/draft.js?v=202610301535';
+import { renderRoles } from './ui/roles.js?v=202610301535';
+import { renderResult, renderSideChoice, renderNarrative, feedItem, updateNarrHud } from './ui/result.js?v=202610301535';
 
 const app = document.getElementById('app');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -159,7 +159,7 @@ function openGame(c) {
   unsub?.();
   let lastSig = null;
   unsub = store.subscribe(c, (raw) => {
-    state = raw ? normalize(raw) : null;
+    state = raw ? checkWithData(normalize(raw)) : null;
     playTransitions(state);
     // un changement de pré-sélection seul ne redessine pas l'écran (pas de clignotement)
     const sig = state ? JSON.stringify({ ...state, presel: null }) : 'null';
@@ -171,6 +171,26 @@ function openGame(c) {
     render();
   });
   render();
+}
+
+// Vérifie l'état reçu contre les données du jeu : équipes connues, champions connus,
+// et résultat RECALCULÉ ici à partir des picks et des rôles (on ne fait pas confiance au résultat stocké).
+function checkWithData(st) {
+  if (!st) return st;
+  const known = (t) => !t || !!data.teams[t];
+  const champ = (c) => !!data.champions[c];
+  for (const k of Object.keys(st.seats)) if (!known(st.seats[k].team)) st.seats[k].team = null;
+  for (const t of Object.keys(st.wins)) if (!data.teams[t]) delete st.wins[t];
+  st.games = st.games.filter(g => data.teams[g.blueTeam] && data.teams[g.redTeam]).map(g => {
+    for (const k of ['bans', 'picks']) for (const side of ['blue', 'red']) g[k][side] = g[k][side].filter(champ);
+    if (!g.result) return g;
+    if (!g.roles.blue || !g.roles.red || ![...Object.values(g.roles.blue), ...Object.values(g.roles.red)].every(champ)) return { ...g, result: null };
+    const r = computeResult(data, { team: g.blueTeam, roles: g.roles.blue }, { team: g.redTeam, roles: g.roles.red });
+    const winnerTeam = r.winner === 'blue' ? g.blueTeam : g.redTeam;
+    return { ...g, result: { pBlue: r.pBlue, displayBlue: r.displayBlue, displayRed: r.displayRed, winner: r.winner, winnerTeam, lanes: r.lanes, synergy: r.synergy } };
+  });
+  if (['result', 'seriesEnd'].includes(st.phase) && !st.games.at(-1)?.result) st.phase = 'lobby';
+  return st;
 }
 
 async function createNew() {
