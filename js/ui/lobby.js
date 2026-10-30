@@ -1,5 +1,5 @@
-import { opponentId } from '../logic/game.js?v=202610301522';
-import { esc, teamBadge, shortName } from './common.js?v=202610301522';
+import { opponentId } from '../logic/game.js?v=202610301531';
+import { esc, teamBadge, shortName } from './common.js?v=202610301531';
 
 const SIDE_LABEL = { blue: 'Blue side', red: 'Red side' };
 
