@@ -1,5 +1,5 @@
-import { opponentId } from '../logic/game.js?v=202610301503';
-import { esc, teamBadge, shortName } from './common.js?v=202610301503';
+import { opponentId } from '../logic/game.js?v=202610301510';
+import { esc, teamBadge, shortName } from './common.js?v=202610301510';
 
 const SIDE_LABEL = { blue: 'Blue side', red: 'Red side' };
 
@@ -69,7 +69,7 @@ export function renderLobby(s, data, me, opts = {}) {
       <div class="regions">${regions.map(r => `<div class="region"><div class="region-name">${esc(r)}</div><div class="teams">${
         playable.filter(t => t.region === r).map(t => {
           const mine = pickSeat.team === t.tag, theirs = otherSeat.team === t.tag;
-          return `<button class="team-btn ${mine ? 'mine' : ''} ${theirs ? 'theirs' : ''}" data-act="team" data-v="${t.tag}" ${theirs ? 'disabled' : ''} aria-pressed="${mine}">${teamBadge(t)}<span class="tn" title="${esc(t.name)}">${esc(shortName(t))}<span class="rec">${t.wins}V – ${t.losses}D</span></span>${theirs ? `<span class="taken">${forAi ? 'Toi' : vsAi ? 'IA' : 'Adversaire'}</span>` : ''}</button>`;
+          return `<button class="team-btn ${mine ? 'mine' : ''} ${theirs ? 'theirs' : ''}" data-act="team" data-v="${t.tag}" ${theirs ? 'disabled' : ''} aria-pressed="${mine}">${teamBadge(t)}<span class="tn" title="${esc(t.name)}">${esc(shortName(t))}${theirs ? `<span class="rec taken">${forAi ? 'Toi' : vsAi ? 'IA' : 'Adversaire'}</span>` : `<span class="rec">${t.wins}V – ${t.losses}D</span>`}</span></button>`;
         }).join('')}</div></div>`).join('')}</div>
     </section>
 
