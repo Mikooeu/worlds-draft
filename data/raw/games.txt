@@ -32,3 +32,8 @@ r4-mkoi-t1-2|T1|MKOI|Doran:Gwen;Oner:Jarvan IV;Faker:Orianna;Peyz:Jhin;Keria:Kar
 r4-lyon-ig-1|IG|LYON|TheShy:Ornn;Wei:Vi;RooKie:Aurora;JiaQi:Yunara;meiko:Lulu|Dhokla:Rumble;Inspired:Nocturne;Saint:Sylas;Berserker:Ezreal;Isles:Karma
 r4-lyon-ig-2|LYON|IG|Dhokla:Olaf;Inspired:Qiyana;Saint:Taliyah;Berserker:Corki;Isles:Alistar|TheShy:Zaahen;Wei:Lee Sin;RooKie:Annie;JiaQi:Jhin;meiko:Nautilus
 r4-lyon-ig-3|IG|LYON|TheShy:Jayce;Wei:Trundle;RooKie:Orianna;JiaQi:Caitlyn;meiko:Lux|Dhokla:KSante;Inspired:Xin Zhao;Saint:LeBlanc;Berserker:Lucian;Isles:Milio
+r4-tes-blg-1|BLG|TES|Bin:Gnar;XUN:Vi;Knight:Orianna;Viper:Ezreal;ON:Nautilus|369:Jayce;Tian:Qiyana;Creme:Viktor;JackeyLove:Jhin;Zhuo:Alistar
+r4-tes-blg-2|TES|BLG|369:Aatrox;Tian:Jarvan IV;Creme:Locke;JackeyLove:Lucian;Zhuo:Milio|Bin:KSante;XUN:Wukong;Knight:LeBlanc;Viper:Ashe;ON:Seraphine
+r4-tes-blg-3|TES|BLG|369:Renekton;Tian:Pantheon;Creme:Syndra;JackeyLove:Tristana;Zhuo:Lulu|Bin:Ambessa;XUN:Maokai;Knight:Yone;Viper:Kalista;ON:Renata Glasc
+r4-kc-cfo-1|KC|CFO|Canna:Galio;Yike:Wukong;Kyeahoo:Cassiopeia;Caliste:Tristana;Busio:Nautilus|Rest:Rumble;Shad0w:Jarvan IV;Pout:Syndra;Doggo:Kaisa;Kino:Alistar
+r4-kc-cfo-2|KC|CFO|Canna:Camille;Yike:Pantheon;Kyeahoo:Viktor;Caliste:Yunara;Busio:Lulu|Rest:Ambessa;Shad0w:Lee Sin;Pout:Ryze;Doggo:Caitlyn;Kino:Karma
