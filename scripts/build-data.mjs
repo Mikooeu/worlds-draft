@@ -8,6 +8,7 @@ export { champKey };
 const ROLES = ['top', 'jungle', 'mid', 'adc', 'support'];
 
 // resultsTxt : « date|vainqueur|perdant|nb de games » pour des games dont les picks ne sont pas encore publiés (bilan seulement).
+export const KO_START = '2026-11-03'; // début de la phase finale des Worlds 2026
 export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', resultsTxt = '') {
   const [header, ...rows] = teamsCsv.trim().split(/\r?\n/);
   const cols = header.split(',');
@@ -20,7 +21,9 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
   const champions = {}, matchups = Object.fromEntries(ROLES.map(r => [r, {}])), duos = {}, pairs = {};
   // bilan des équipes en séries (un Bo3 gagné = 1 victoire) : games gagnées par paire d'équipes
   const series = {};
-  const addGame = (w, l, n = 1) => { const k = [w, l].sort().join('|'); series[k] ??= {}; series[k][w] = (series[k][w] || 0) + n; };
+  // phase finale (ids de game « ko-… », ou résultats datés à partir de KO_START) : séries séparées de la phase suisse,
+  // car deux équipes peuvent s'y recroiser
+  const addGame = (w, l, n = 1, ko = false) => { const k = [w, l].sort().join('|') + (ko ? '|ko' : ''); series[k] ??= {}; series[k][w] = (series[k][w] || 0) + n; };
   const bump = (o, k, win) => { o[k] ??= { games: 0, wins: 0 }; o[k].games++; if (win) o[k].wins++; };
 
   const lines = [
@@ -30,7 +33,7 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
   for (const [line, isMain] of lines) {
     const [gameId, wTag, lTag, wPicks, lPicks] = line.split('|');
     const byRole = {};
-    if (isMain && teams[wTag] && teams[lTag]) addGame(wTag, lTag); // bilan : Main Event seulement
+    if (isMain && teams[wTag] && teams[lTag]) addGame(wTag, lTag, 1, gameId.startsWith('ko-')); // bilan : Main Event seulement
     for (const [tag, list, win] of [[wTag, wPicks, true], [lTag, lPicks, false]]) {
       if (!teams[tag]) throw new Error(`game ${gameId}: équipe inconnue ${tag}`);
       const entries = list.split(';').map(s => { const i = s.indexOf(':'); return [s.slice(0, i).trim(), s.slice(i + 1).trim()]; });
@@ -59,9 +62,9 @@ export function buildData(teamsCsv, gamesTxt, updatedAt, playinTxt = '', results
     }
   }
   for (const line of resultsTxt.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))) {
-    const [, w, l, n = '1'] = line.split('|');
+    const [date, w, l, n = '1'] = line.split('|');
     if (!teams[w] || !teams[l]) throw new Error(`résultat sans picks : équipe inconnue dans « ${line} »`);
-    addGame(w, l, +n);
+    addGame(w, l, +n, date >= KO_START);
   }
   // une série par paire d'équipes (pas de revanche en phase suisse) ; égalité = série pas encore finie
   for (const [k, score] of Object.entries(series)) {

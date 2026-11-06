@@ -57,3 +57,7 @@ test('resolveData keeps unknown stat champions instead of dropping them', () => 
   assert.ok(r.unknown.includes('Ahri'));
   assert.equal(r.champions.ahri.games, 2);
 });
+test('phase finale : une revanche de la phase suisse compte comme une nouvelle série', () => {
+  const r = buildData(teams, '', 'x', '', '2026-10-25|AAA|BBB|2\n2026-11-04|AAA|BBB|3');
+  assert.deepEqual([r.teams.AAA.wins, r.teams.BBB.losses], [2, 2]);
+});
