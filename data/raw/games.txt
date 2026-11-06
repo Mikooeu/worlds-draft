@@ -37,3 +37,25 @@ r4-tes-blg-2|TES|BLG|369:Aatrox;Tian:Jarvan IV;Creme:Locke;JackeyLove:Lucian;Zhu
 r4-tes-blg-3|TES|BLG|369:Renekton;Tian:Pantheon;Creme:Syndra;JackeyLove:Tristana;Zhuo:Lulu|Bin:Ambessa;XUN:Maokai;Knight:Yone;Viper:Kalista;ON:Renata Glasc
 r4-kc-cfo-1|KC|CFO|Canna:Galio;Yike:Wukong;Kyeahoo:Cassiopeia;Caliste:Tristana;Busio:Nautilus|Rest:Rumble;Shad0w:Jarvan IV;Pout:Syndra;Doggo:Kaisa;Kino:Alistar
 r4-kc-cfo-2|KC|CFO|Canna:Camille;Yike:Pantheon;Kyeahoo:Viktor;Caliste:Yunara;Busio:Lulu|Rest:Ambessa;Shad0w:Lee Sin;Pout:Ryze;Doggo:Caitlyn;Kino:Karma
+sws4l2-1|LOS|TL|Zest:Jayce;Curse:Trundle;Feisty:Syndra;Duduhh:Ashe;Ackerman:Seraphine|Morgan:Ambessa;Josedeodo:Nocturne;Quid:Sylas;Yeon:Ziggs;CoreJJ:Nautilus
+sws4l2-2|TL|LOS|Morgan:Ornn;Josedeodo:Xin Zhao;Quid:Orianna;Yeon:Lucian;CoreJJ:Nami|Zest:Rumble;Curse:Jarvan IV;Feisty:Galio;Duduhh:Ezreal;Ackerman:Karma
+sws4l2-3|LOS|TL|Zest:Tristana;Curse:Pantheon;Feisty:Taliyah;Duduhh:Kalista;Ackerman:Renata Glasc|Morgan:Gnar;Josedeodo:Sejuani;Quid:Viktor;Yeon:Yunara;CoreJJ:Lulu
+sws4l3-1|HLE|G2|Zeus:KSante;Kanavi:Lee Sin;Zeka:Syndra;Gumayusi:Corki;Delight:Alistar|BrokenBlade:Olaf;SkewMond:Pantheon;Caps:Cassiopeia;Hans Sama:Jhin;Labrov:Nautilus
+sws4l3-2|HLE|G2|Zeus:Ambessa;Kanavi:Jarvan IV;Zeka:Swain;Gumayusi:Lucian;Delight:Milio|BrokenBlade:Camille;SkewMond:Qiyana;Caps:Galio;Hans Sama:Xayah;Labrov:Rakan
+swsr5-1-1|KC|MKOI|Canna:Renekton;Yike:Wukong;Kyeahoo:Syndra;Caliste:Ashe;Busio:Seraphine|Myrwn:Camille;Elyoya:Sejuani;jojopyun:Cassiopeia;Supa:Zeri;Alvaro:Yuumi
+swsr5-1-2|KC|MKOI|Canna:Rumble;Yike:Pantheon;Kyeahoo:Viktor;Caliste:Sivir;Busio:Lulu|Myrwn:Ornn;Elyoya:Lee Sin;jojopyun:Anivia;Supa:Ezreal;Alvaro:Karma
+swsr5-2-1|LOS|LYON|Zest:Aurora;Curse:Vi;Feisty:Cassiopeia;Duduhh:KaiSa;Ackerman:Nautilus|Dhokla:Rumble;Inspired:Pantheon;Saint:Syndra;Berserker:Ezreal;Isles:Alistar
+swsr5-2-2|LYON|LOS|Dhokla:Gnar;Inspired:Lee Sin;Saint:Orianna;Berserker:Yunara;Isles:Lulu|Zest:Ambessa;Curse:Qiyana;Feisty:LeBlanc;Duduhh:Caitlyn;Ackerman:Karma
+swsr5-2-3|LYON|LOS|Dhokla:KSante;Inspired:Nocturne;Saint:Taliyah;Berserker:Lucian;Isles:Milio|Zest:Renekton;Curse:ChoGath;Feisty:Ryze;Duduhh:Kalista;Ackerman:Renata Glasc
+swsr5-3-1|BLG|HLE|Bin:Gnar;XUN:Lee Sin;Knight:Orianna;Viper:Ezreal;ON:Nautilus|Zeus:Rumble;Kanavi:Jarvan IV;Zeka:Cassiopeia;Gumayusi:Corki;Delight:Alistar
+swsr5-3-2|BLG|HLE|Bin:Olaf;XUN:Pantheon;Knight:Locke;Viper:Yunara;ON:Lulu|Zeus:KSante;Kanavi:Skarner;Zeka:Syndra;Gumayusi:Caitlyn;Delight:Karma
+ko-qf-dk-blg-1|BLG|DK|Bin:Ambessa;XUN:Naafiri;Knight:Galio;Viper:Cassiopeia;ON:Nautilus|Siwoo:Rumble;Lucid:Qiyana;ShowMaker:Akali;Smash:Corki;Career:Rell
+ko-qf-dk-blg-2|BLG|DK|Bin:Gnar;XUN:Lee Sin;Knight:Orianna;Viper:Ezreal;ON:Leona|Siwoo:Kennen;Lucid:Jarvan IV;ShowMaker:Ryze;Smash:Yunara;Career:Lulu
+ko-qf-dk-blg-3|BLG|DK|Bin:Jax;XUN:Trundle;Knight:Ahri;Viper:Lucian;ON:Milio|Siwoo:Olaf;Lucid:Pantheon;ShowMaker:Viktor;Smash:Aphelios;Career:Thresh
+ko-qf-gen-lyon-1|GEN|LYON|Kiin:Olaf;Canyon:Qiyana;Chovy:Galio;Ruler:Jhin;Duro:Leona|Dhokla:Jax;Inspired:Lee Sin;Saint:Orianna;Berserker:Ezreal;Isles:Nautilus
+ko-qf-gen-lyon-2|GEN|LYON|Kiin:Sion;Canyon:Jarvan IV;Chovy:Viktor;Ruler:Ashe;Duro:Seraphine|Dhokla:Jayce;Inspired:Wukong;Saint:Cassiopeia;Berserker:Mel;Isles:Pyke
+ko-qf-gen-lyon-3|GEN|LYON|Kiin:Aurora;Canyon:Pantheon;Chovy:Taliyah;Ruler:Xayah;Duro:Rakan|Dhokla:Gangplank;Inspired:Trundle;Saint:Anivia;Berserker:Corki;Isles:Alistar
+ko-qf-tes-ig-1|IG|TES|TheShy:Gnar;Wei:Qiyana;RooKie:Syndra;JiaQi:KaiSa;meiko:Nautilus|369:Ambessa;Tian:Vi;Creme:Cassiopeia;JackeyLove:Ezreal;Zhuo:Rell
+ko-qf-tes-ig-2|TES|IG|369:Renekton;Tian:Xin Zhao;Creme:Orianna;JackeyLove:Kalista;Zhuo:Renata Glasc|TheShy:Vayne;Wei:Wukong;RooKie:Viktor;JiaQi:Yunara;meiko:Lulu
+ko-qf-tes-ig-3|IG|TES|TheShy:Ornn;Wei:Jayce;RooKie:Annie;JiaQi:Zeri;meiko:Yuumi|369:Rumble;Tian:Skarner;Creme:Yone;JackeyLove:Ashe;Zhuo:Seraphine
+ko-qf-tes-ig-4|IG|TES|TheShy:KSante;Wei:Naafiri;RooKie:Taliyah;JiaQi:Jhin;meiko:Alistar|369:Aatrox;Tian:Maokai;Creme:Aurora;JackeyLove:Lucian;Zhuo:Milio

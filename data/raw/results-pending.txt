@@ -1,13 +1,2 @@
 # Résultats confirmés dont gol.gg n'a pas encore publié les picks (bilan des équipes seulement).
 # date|vainqueur|perdant|nombre de games gagnées (le bilan compte la série : 2-0 en Bo3 = 1 victoire) — à retirer quand les games sont ajoutées à games.txt
-2026-10-30|LOS|TL|2
-2026-10-30|TL|LOS|1
-2026-10-30|HLE|G2|2
-2026-10-31|KC|MKOI|2
-2026-10-31|LYON|LOS|2
-2026-10-31|LOS|LYON|1
-2026-10-31|BLG|HLE|2
-2026-11-03|IG|TES|3
-2026-11-03|TES|IG|1
-2026-11-04|GEN|LYON|3
-2026-11-05|BLG|DK|3

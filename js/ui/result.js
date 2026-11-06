@@ -1,6 +1,6 @@
-import { ROLES } from '../logic/winrate.js?v=202611061703';
-import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202611061703';
-import { seriesLine } from './draft.js?v=202611061703';
+import { ROLES } from '../logic/winrate.js?v=202611061720';
+import { esc, teamBadge, champIcon, champName, ROLE_FR, pct } from './common.js?v=202611061720';
+import { seriesLine } from './draft.js?v=202611061720';
 
 const games = (n) => `${n} partie${n > 1 ? 's' : ''}`;
 const SRC = { worlds: 'Worlds', season: 'Split été' };
